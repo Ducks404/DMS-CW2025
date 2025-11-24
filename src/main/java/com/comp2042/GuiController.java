@@ -76,6 +76,16 @@ public class GuiController implements Initializable {
                         moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
                         keyEvent.consume();
                     }
+                    if (keyEvent.getCode() == KeyCode.P) {
+                        pauseGame(null);
+                        keyEvent.consume();
+                    }
+                }
+                else if (isPause.getValue() == Boolean.TRUE) {
+                    if (keyEvent.getCode() == KeyCode.P) {
+                        unPauseGame(null);
+                        keyEvent.consume();
+                    }
                 }
                 if (keyEvent.getCode() == KeyCode.N) {
                     newGame(null);
@@ -220,6 +230,16 @@ public class GuiController implements Initializable {
     }
 
     public void pauseGame(ActionEvent actionEvent) {
+        timeLine.stop();
         gamePanel.requestFocus();
+        timeLine.play();
+        isPause.setValue(Boolean.TRUE);
+    }
+
+    public void unPauseGame(ActionEvent actionEvent) {
+        timeLine.stop();
+        gamePanel.requestFocus();
+        timeLine.play();
+        isPause.setValue(Boolean.FALSE);
     }
 }
