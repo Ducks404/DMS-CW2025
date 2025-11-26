@@ -16,10 +16,10 @@ public class SimpleBoard implements Board {
     private Point currentOffset;
     private final Score score;
 
-    public SimpleBoard(int width, int height) {
+    public SimpleBoard(int height, int width) {
         this.width = width;
         this.height = height;
-        currentGameMatrix = new int[width][height];
+        currentGameMatrix = new int[height][width];
         brickGenerator = new RandomBrickGenerator();
         brickRotator = new BrickRotator();
         score = new Score();
@@ -85,7 +85,7 @@ public class SimpleBoard implements Board {
     public boolean createNewBrick() {
         Brick currentBrick = brickGenerator.getBrick();
         brickRotator.setBrick(currentBrick);
-        currentOffset = new Point(4, 10);
+        currentOffset = new Point(width/2-1,0);
         return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }
 
