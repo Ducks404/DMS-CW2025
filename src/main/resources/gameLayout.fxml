@@ -19,6 +19,8 @@
     <Group fx:id="groupNotification" layoutX="14" layoutY="203">
         <VBox alignment="CENTER">
             <GameOverPanel fx:id="gameOverPanel"/>
+        </VBox>
+        <VBox alignment="CENTER">
             <PausePanel fx:id="pausePanel"/>
         </VBox>
     </Group>

@@ -96,6 +96,7 @@ public class GuiController implements Initializable {
             }
         });
         gameOverPanel.setVisible(false);
+        pausePanel.setVisible(false);
 
         final Reflection reflection = new Reflection();
         reflection.setFraction(0.8);
@@ -235,6 +236,7 @@ public class GuiController implements Initializable {
     public void pauseGame(ActionEvent actionEvent) {
         timeLine.stop();
         gamePanel.requestFocus();
+        pausePanel.setVisible(true);
         timeLine.play();
         isPause.setValue(Boolean.TRUE);
     }
@@ -242,6 +244,7 @@ public class GuiController implements Initializable {
     public void unPauseGame(ActionEvent actionEvent) {
         timeLine.stop();
         gamePanel.requestFocus();
+        pausePanel.setVisible(false);
         timeLine.play();
         isPause.setValue(Boolean.FALSE);
     }
