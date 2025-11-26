@@ -11,18 +11,20 @@
       xmlns:fx="http://javafx.com/fxml">
 
     <StackPane styleClass="gameBoard" fx:id="gameBoard">
-        <GridPane fx:id="gamePanel" hgap="1" vgap="1"/>
+        <Pane snapToPixel="false" style="-fx-background-color:#004455">
+            <GridPane fx:id="gamePanel" hgap="1" vgap="1" snapToPixel="false"/>
 
-        <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
+            <GridPane fx:id="brickPanel" vgap="1" hgap="1" snapToPixel="false"/>
 
-        <Group fx:id="groupNotification">
-            <VBox alignment="CENTER">
-                <GameOverPanel fx:id="gameOverPanel"/>
-            </VBox>
-            <VBox alignment="CENTER">
-                <PausePanel fx:id="pausePanel"/>
-            </VBox>
-        </Group>
+            <Group fx:id="groupNotification">
+                <VBox alignment="CENTER">
+                    <GameOverPanel fx:id="gameOverPanel"/>
+                </VBox>
+                <VBox alignment="CENTER">
+                    <PausePanel fx:id="pausePanel"/>
+                </VBox>
+            </Group>
+        </Pane>
     </StackPane>
 
     <stylesheets>
