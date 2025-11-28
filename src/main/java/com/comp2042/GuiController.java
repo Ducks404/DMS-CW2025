@@ -106,12 +106,12 @@ public class GuiController implements Initializable {
 
     public void initGameView(int[][] boardMatrix, ViewData brick) {
         displayMatrix = new Rectangle[boardMatrix.length][boardMatrix[0].length];
-        for (int i = 0; i < boardMatrix.length; i++) {
+        for (int i = 2; i < boardMatrix.length; i++) {
             for (int j = 0; j < boardMatrix[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
                 rectangle.setFill(Color.TRANSPARENT);
                 displayMatrix[i][j] = rectangle;
-                gamePanel.add(rectangle, j, i);
+                gamePanel.add(rectangle, j, i-2);
             }
         }
 
@@ -125,7 +125,7 @@ public class GuiController implements Initializable {
             }
         }
         brickPanel.setLayoutX(brick.getxPosition() * (brickPanel.getHgap() + BRICK_SIZE));
-        brickPanel.setLayoutY(brick.getyPosition() * (brickPanel.getVgap() + BRICK_SIZE));
+        brickPanel.setLayoutY((brick.getyPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
 
         timeLine = new Timeline(new KeyFrame(
                 Duration.millis(400),
@@ -173,7 +173,7 @@ public class GuiController implements Initializable {
     private void refreshBrick(ViewData brick) {
         if (isPause.getValue() == Boolean.FALSE) {
             brickPanel.setLayoutX(brick.getxPosition() * (brickPanel.getHgap() + BRICK_SIZE));
-            brickPanel.setLayoutY(brick.getyPosition() * (brickPanel.getVgap() + BRICK_SIZE));
+            brickPanel.setLayoutY((brick.getyPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
             for (int i = 0; i < brick.getBrickData().length; i++) {
                 for (int j = 0; j < brick.getBrickData()[i].length; j++) {
                     setRectangleData(brick.getBrickData()[i][j], rectangles[i][j]);
