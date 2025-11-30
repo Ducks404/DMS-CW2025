@@ -12,7 +12,7 @@ public class BrickRotator {
     }
 
     public int[][] getNextShape() {
-        return brick.getShapeMatrix().get(nextShapeIndex());
+        return MatrixOperations.copy(brick.getShapeMatrix().get(nextShapeIndex()));
     }
 
     public void changeToNextShape() {
