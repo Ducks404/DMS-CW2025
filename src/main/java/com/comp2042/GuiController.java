@@ -163,7 +163,7 @@ public class GuiController implements Initializable {
 
     private void setBrickPanelLayout(ViewData brick){
         brickPanel.setLayoutX(brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE));
-        brickPanel.setLayoutY((brick.yPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
+        brickPanel.setLayoutY((brick.yPosition()-ROWS_ABOVE_GRID) * (brickPanel.getVgap() + BRICK_SIZE));
     }
 
     public void refreshGameBackground(int[][] board) {
