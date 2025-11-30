@@ -199,12 +199,12 @@ public class GuiController implements Initializable {
     private void moveDown(MoveEvent event) {
         if (isPause.getValue() == Boolean.FALSE) {
             DownData downData = eventListener.onDownEvent(event);
-            if (downData.getClearRow() != null && downData.getClearRow().linesRemoved() > 0) {
-                NotificationPanel notificationPanel = new NotificationPanel("+" + downData.getClearRow().scoreBonus());
+            if (downData.clearRow() != null && downData.clearRow().linesRemoved() > 0) {
+                NotificationPanel notificationPanel = new NotificationPanel("+" + downData.clearRow().scoreBonus());
                 groupNotification.getChildren().add(notificationPanel);
                 notificationPanel.showScore(groupNotification.getChildren());
             }
-            refreshBrick(downData.getViewData());
+            refreshBrick(downData.viewData());
         }
         gamePanel.requestFocus();
     }
