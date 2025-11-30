@@ -115,17 +115,17 @@ public class GuiController implements Initializable {
             }
         }
 
-        rectangles = new Rectangle[brick.getBrickData().length][brick.getBrickData()[0].length];
-        for (int i = 0; i < brick.getBrickData().length; i++) {
-            for (int j = 0; j < brick.getBrickData()[i].length; j++) {
+        rectangles = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
+        for (int i = 0; i < brick.brickData().length; i++) {
+            for (int j = 0; j < brick.brickData()[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(getFillColor(brick.getBrickData()[i][j]));
+                rectangle.setFill(getFillColor(brick.brickData()[i][j]));
                 rectangles[i][j] = rectangle;
                 brickPanel.add(rectangle, j, i);
             }
         }
-        brickPanel.setLayoutX(brick.getxPosition() * (brickPanel.getHgap() + BRICK_SIZE));
-        brickPanel.setLayoutY((brick.getyPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
+        brickPanel.setLayoutX(brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE));
+        brickPanel.setLayoutY((brick.yPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
 
         timeLine = new Timeline(new KeyFrame(
                 Duration.millis(400),
@@ -172,11 +172,11 @@ public class GuiController implements Initializable {
 
     private void refreshBrick(ViewData brick) {
         if (isPause.getValue() == Boolean.FALSE) {
-            brickPanel.setLayoutX(brick.getxPosition() * (brickPanel.getHgap() + BRICK_SIZE));
-            brickPanel.setLayoutY((brick.getyPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
-            for (int i = 0; i < brick.getBrickData().length; i++) {
-                for (int j = 0; j < brick.getBrickData()[i].length; j++) {
-                    setRectangleData(brick.getBrickData()[i][j], rectangles[i][j]);
+            brickPanel.setLayoutX(brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE));
+            brickPanel.setLayoutY((brick.yPosition()-2) * (brickPanel.getVgap() + BRICK_SIZE));
+            for (int i = 0; i < brick.brickData().length; i++) {
+                for (int j = 0; j < brick.brickData()[i].length; j++) {
+                    setRectangleData(brick.brickData()[i][j], rectangles[i][j]);
                 }
             }
         }
