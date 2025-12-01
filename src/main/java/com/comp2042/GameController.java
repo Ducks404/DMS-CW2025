@@ -8,6 +8,8 @@ public class GameController implements InputEventListener {
 
     private final GuiController viewGuiController;
 
+    private AnimationTimer gameLoop;
+
     public GameController(GuiController c) {
         viewGuiController = c;
         board.createNewBrick();
@@ -18,7 +20,7 @@ public class GameController implements InputEventListener {
     }
 
     public void start() {
-        new AnimationTimer() {
+        gameLoop = new AnimationTimer() {
             private long lastUpdate = 0;
 
             @Override
@@ -39,7 +41,9 @@ public class GameController implements InputEventListener {
                     lastUpdate = now;
                 }
             }
-        }.start();
+        };
+
+        gameLoop.start();
     }
 
     @Override
