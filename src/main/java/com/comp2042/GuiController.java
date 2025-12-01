@@ -127,12 +127,12 @@ public class GuiController implements Initializable {
         }
         setBrickPanelLayout(brick);
 
-        timeLine = new Timeline(new KeyFrame(
-                Duration.millis(400),
-                ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
-        ));
-        timeLine.setCycleCount(Timeline.INDEFINITE);
-        timeLine.play();
+//        timeLine = new Timeline(new KeyFrame(
+//                Duration.millis(400),
+//                ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
+//        ));
+//        timeLine.setCycleCount(Timeline.INDEFINITE);
+//        timeLine.play();
     }
 
     private Paint getFillColor(int i) {
@@ -150,7 +150,7 @@ public class GuiController implements Initializable {
     }
 
 
-    private void refreshBrick(ViewData brick) {
+    public void refreshBrick(ViewData brick) {
         if (isPause.getValue() == Boolean.FALSE) {
             setBrickPanelLayout(brick);
             for (int i = 0; i < brick.brickData().length; i++) {

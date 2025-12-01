@@ -1,5 +1,7 @@
 package com.comp2042;
 
+import javafx.animation.AnimationTimer;
+
 public class GameController implements InputEventListener {
 
     private final Board board = new SimpleBoard(25, 10);
@@ -12,6 +14,32 @@ public class GameController implements InputEventListener {
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
         viewGuiController.bindScore(board.getScore().scoreProperty());
+        start();
+    }
+
+    public void start() {
+        new AnimationTimer() {
+            private long lastUpdate = 0;
+
+            @Override
+            public void handle(long now) {
+                if (lastUpdate == 0) {
+                    lastUpdate = now;
+                    return;
+                }
+
+                long interval = 400_000_000;
+                if (now - lastUpdate >= interval) {
+                    DownData downData = onDownEvent(new MoveEvent(EventType.DOWN, EventSource.THREAD));
+                    if (downData.clearRow() != null && downData.clearRow().linesRemoved() > 0) {
+                        System.out.println("400ms");
+                        // viewGuiController.sendNewNotif
+                    }
+                    viewGuiController.refreshBrick(downData.viewData());
+                    lastUpdate = now;
+                }
+            }
+        }.start();
     }
 
     @Override
