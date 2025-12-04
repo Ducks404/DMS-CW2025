@@ -1,24 +1,19 @@
 package com.comp2042;
 
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.effect.Reflection;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -96,7 +91,7 @@ public class GuiController implements Initializable {
 
 //        timeLine = new Timeline(new KeyFrame(
 //                Duration.millis(400),
-//                ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
+//                ae -> moveDown(new GameEvent(EventType.DOWN, EventSource.THREAD))
 //        ));
 //        timeLine.setCycleCount(Timeline.INDEFINITE);
 //        timeLine.play();
@@ -147,7 +142,7 @@ public class GuiController implements Initializable {
         rectangle.setArcWidth(9);
     }
 
-    private void moveDown(MoveEvent event) {
+    private void moveDown(GameEvent event) {
         if (isPause.getValue() == Boolean.FALSE) {
             DownData downData = eventListener.onDownEvent(event);
             if (downData.clearRow() != null && downData.clearRow().linesRemoved() > 0) {

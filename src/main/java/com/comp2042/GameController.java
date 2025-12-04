@@ -30,7 +30,7 @@ public class GameController implements InputEventListener {
 
                 long interval = 400_000_000;
                 if (now - lastUpdate >= interval) {
-                    DownData downData = onDownEvent(new MoveEvent(EventType.DOWN, EventSource.THREAD));
+                    DownData downData = onDownEvent(new GameEvent(EventType.MOVE_DOWN, EventSource.THREAD));
                     if (downData.clearRow() != null && downData.clearRow().linesRemoved() > 0) {
                         System.out.println("400ms");
                         // viewGuiController.sendNewNotif
@@ -45,7 +45,22 @@ public class GameController implements InputEventListener {
     }
 
     @Override
-    public DownData onDownEvent(MoveEvent event) {
+    public void handleEvent(EventType eventType) {
+        EventSource eventSource = EventSource.USER;
+        GameEvent gameEvent = new GameEvent(eventType, eventSource);
+        switch (eventType) {
+            case EventType.MOVE_DOWN -> onDownEvent(gameEvent);
+            case EventType.MOVE_LEFT -> onLeftEvent(gameEvent);
+            case EventType.MOVE_RIGHT -> onRightEvent(gameEvent);
+            case EventType.MOVE_ROTATE -> onRotateEvent(gameEvent);
+            case EventType.PAUSE -> onPauseEvent();
+            case EventType.NEW_GAME -> createNewGame();
+            default -> System.err.println("Game event not handled by this game controller.");
+        }
+    }
+
+    @Override
+    public DownData onDownEvent(GameEvent event) {
         boolean canMove = board.moveBrickDown();
         ClearRow clearRow = null;
         if (!canMove) {
@@ -74,21 +89,21 @@ public class GameController implements InputEventListener {
     }
 
     @Override
-    public ViewData onLeftEvent(MoveEvent event) {
+    public ViewData onLeftEvent(GameEvent event) {
         board.moveBrickLeft();
         viewGuiController.refreshBrick(board.getViewData());
         return board.getViewData();
     }
 
     @Override
-    public ViewData onRightEvent(MoveEvent event) {
+    public ViewData onRightEvent(GameEvent event) {
         board.moveBrickRight();
         viewGuiController.refreshBrick(board.getViewData());
         return board.getViewData();
     }
 
     @Override
-    public ViewData onRotateEvent(MoveEvent event) {
+    public ViewData onRotateEvent(GameEvent event) {
         board.rotateLeftBrick();
         viewGuiController.refreshBrick(board.getViewData());
         return board.getViewData();

@@ -13,24 +13,23 @@ public class GameViewModel implements ViewModel {
     @Override
     public void handleKey(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.LEFT || keyEvent.getCode() == KeyCode.A) {
-            eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER));
+            eventListener.handleEvent(EventType.MOVE_LEFT);
         }
         else if (keyEvent.getCode() == KeyCode.RIGHT || keyEvent.getCode() == KeyCode.D) {
-            eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER));
+            eventListener.handleEvent(EventType.MOVE_RIGHT);
         }
         else if (keyEvent.getCode() == KeyCode.UP || keyEvent.getCode() == KeyCode.W) {
-            eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER));
+            eventListener.handleEvent(EventType.MOVE_ROTATE);
         }
         else if (keyEvent.getCode() == KeyCode.DOWN || keyEvent.getCode() == KeyCode.S) {
-            eventListener.onDownEvent(new MoveEvent(EventType.DOWN, EventSource.USER));
+            eventListener.handleEvent(EventType.MOVE_DOWN);
         }
         else if (keyEvent.getCode() == KeyCode.P) {
-            eventListener.onPauseEvent();
+            eventListener.handleEvent(EventType.PAUSE);
         }
         else if (keyEvent.getCode() == KeyCode.N) {
-            eventListener.createNewGame();
+            eventListener.handleEvent(EventType.NEW_GAME);
         }
-
         keyEvent.consume();
     }
 }
