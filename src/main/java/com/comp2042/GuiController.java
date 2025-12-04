@@ -47,6 +47,8 @@ public class GuiController implements Initializable {
 
     private InputEventListener eventListener;
 
+    private ViewModel viewModel;
+
     private Rectangle[][] rectangles;
 
     private Timeline timeLine;
@@ -60,42 +62,7 @@ public class GuiController implements Initializable {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
-        gamePanel.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (isPause.getValue() == Boolean.FALSE && isGameOver.getValue() == Boolean.FALSE) {
-                    if (keyEvent.getCode() == KeyCode.LEFT || keyEvent.getCode() == KeyCode.A) {
-                        refreshBrick(eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER)));
-                        keyEvent.consume();
-                    }
-                    if (keyEvent.getCode() == KeyCode.RIGHT || keyEvent.getCode() == KeyCode.D) {
-                        refreshBrick(eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER)));
-                        keyEvent.consume();
-                    }
-                    if (keyEvent.getCode() == KeyCode.UP || keyEvent.getCode() == KeyCode.W) {
-                        refreshBrick(eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER)));
-                        keyEvent.consume();
-                    }
-                    if (keyEvent.getCode() == KeyCode.DOWN || keyEvent.getCode() == KeyCode.S) {
-                        moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
-                        keyEvent.consume();
-                    }
-                    if (keyEvent.getCode() == KeyCode.P) {
-                        pauseGame(null);
-                        keyEvent.consume();
-                    }
-                }
-                else if (isPause.getValue() == Boolean.TRUE) {
-                    if (keyEvent.getCode() == KeyCode.P) {
-                        unPauseGame(null);
-                        keyEvent.consume();
-                    }
-                }
-                if (keyEvent.getCode() == KeyCode.N) {
-                    newGame(null);
-                }
-            }
-        });
+        gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
         gameOverPanel.setVisible(false);
         pausePanel.setVisible(false);
 
@@ -195,6 +162,10 @@ public class GuiController implements Initializable {
 
     public void setEventListener(InputEventListener eventListener) {
         this.eventListener = eventListener;
+    }
+
+    public void setViewModel(ViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     public void bindScore(IntegerProperty integerProperty) {

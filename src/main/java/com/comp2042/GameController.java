@@ -10,13 +10,11 @@ public class GameController implements InputEventListener {
 
     private AnimationTimer gameLoop;
 
-    public GameController(GuiController c) {
-        viewGuiController = c;
+    public GameController(GuiController viewGuiController) {
         board.createNewBrick();
-        viewGuiController.setEventListener(this);
+        this.viewGuiController = viewGuiController;
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
         viewGuiController.bindScore(board.getScore().scoreProperty());
-        start();
     }
 
     public void start() {
@@ -67,32 +65,43 @@ public class GameController implements InputEventListener {
                 board.getScore().add(1);
             }
         }
+
+        if (clearRow != null && clearRow.linesRemoved() > 0) {
+            System.out.println("Line cleared");
+        }
+        viewGuiController.refreshBrick(board.getViewData());
         return new DownData(clearRow, board.getViewData());
     }
 
     @Override
     public ViewData onLeftEvent(MoveEvent event) {
         board.moveBrickLeft();
+        viewGuiController.refreshBrick(board.getViewData());
         return board.getViewData();
     }
 
     @Override
     public ViewData onRightEvent(MoveEvent event) {
         board.moveBrickRight();
+        viewGuiController.refreshBrick(board.getViewData());
         return board.getViewData();
     }
 
     @Override
     public ViewData onRotateEvent(MoveEvent event) {
         board.rotateLeftBrick();
+        viewGuiController.refreshBrick(board.getViewData());
         return board.getViewData();
     }
-
 
     @Override
     public ViewData createNewGame() {
         board.newGame();
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
         return board.getViewData();
+    }
+
+    public void onPauseEvent() {
+        System.out.println("Game paused");
     }
 }
