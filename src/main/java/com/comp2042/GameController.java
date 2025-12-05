@@ -31,11 +31,6 @@ public class GameController implements InputEventListener {
                 long interval = 400_000_000;
                 if (now - lastUpdate >= interval) {
                     DownData downData = onDownEvent(new GameEvent(EventType.MOVE_DOWN, EventSource.THREAD));
-                    if (downData.clearRow() != null && downData.clearRow().linesRemoved() > 0) {
-                        System.out.println("400ms");
-                        // viewGuiController.sendNewNotif
-                    }
-                    gameRenderer.refreshBrick(downData.viewData());
                     lastUpdate = now;
                 }
             }
