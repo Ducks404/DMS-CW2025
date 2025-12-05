@@ -33,4 +33,8 @@ public class GameModel {
     public BooleanProperty gameOverProperty() {
         return isGameOver;
     }
+
+    public void setIsGameOver(boolean bool) {
+        isGameOver.setValue(bool);
+    }
 }

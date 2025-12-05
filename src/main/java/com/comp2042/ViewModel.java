@@ -1,11 +1,14 @@
 package com.comp2042;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyEvent;
 
 public interface ViewModel {
 
-    public void handleKey(KeyEvent keyEvent);
+    void handleKey(KeyEvent keyEvent);
 
-    public ReadOnlyBooleanProperty pauseProperty();
+    ObservableValue<Boolean> pauseProperty();
+
+    ObservableValue<Boolean> gameOverProperty();
 }

@@ -88,6 +88,7 @@ public class GameController implements InputEventListener {
     private void gameOver() {
         System.out.println("Game Over");
         gameLoop.stop();
+        gameModel.setIsGameOver(true);
     }
 
     @Override
@@ -113,9 +114,11 @@ public class GameController implements InputEventListener {
 
     @Override
     public ViewData createNewGame() {
+        gameModel.setIsGameOver(false);
         board.newGame();
         gameRenderer.refreshGameBackground(board.getBoardMatrix());
         gameRenderer.refreshBrick(board.getViewData());
+        gameLoop.start();
         return board.getViewData();
     }
 

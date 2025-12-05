@@ -67,6 +67,7 @@ public class GuiController implements Initializable {
 
     public void bindViewModel() {
         pausePanel.visibleProperty().bind(viewModel.pauseProperty());
+        gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
     }
 
     public GridPane getGamePanel() {
