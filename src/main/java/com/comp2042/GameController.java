@@ -123,6 +123,12 @@ public class GameController implements InputEventListener {
     }
 
     public void onPauseEvent() {
-        gameModel.setIsPause(!gameModel.pauseProperty().getValue());
+        if (gameModel.pauseProperty().getValue()) {
+            gameLoop.start();
+            gameModel.setIsPause(false);
+        } else {
+            gameLoop.stop();
+            gameModel.setIsPause(true);
+        }
     }
 }
