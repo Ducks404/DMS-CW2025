@@ -9,16 +9,10 @@ public class GameViewModel implements ViewModel {
     private final BaseInputMap inputMap;
     private final GameModel gameModel;
 
-    private final ReadOnlyBooleanWrapper isPause = new ReadOnlyBooleanWrapper();
-    private final ReadOnlyBooleanWrapper isGameOver = new ReadOnlyBooleanWrapper();
-
     public GameViewModel(InputEventListener eventListener, GameModel gameModel){
         this.eventListener = eventListener;
         this.inputMap = new GameInputMap();
         this.gameModel = gameModel;
-
-        isPause.bind(gameModel.pauseProperty());
-        isGameOver.bind(gameModel.gameOverProperty());
     }
 
     @Override
@@ -28,10 +22,10 @@ public class GameViewModel implements ViewModel {
     }
 
     public ReadOnlyBooleanProperty pauseProperty() {
-        return isPause.getReadOnlyProperty();
+        return gameModel.pauseProperty();
     }
 
     public ReadOnlyBooleanProperty gameOverProperty() {
-        return isGameOver.getReadOnlyProperty();
+        return gameModel.gameOverProperty();
     }
 }
