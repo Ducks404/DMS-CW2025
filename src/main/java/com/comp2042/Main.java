@@ -29,9 +29,11 @@ public class Main extends Application {
         GridPane gamePanel = guiController.getGamePanel();
         GridPane brickPanel = guiController.getBrickPanel();
         GameRenderer gameRenderer = new GameRenderer(gamePanel, brickPanel);
-        GameController gameController = new GameController(gameRenderer);
-        ViewModel gameViewModel = new GameViewModel(gameController);
+        GameModel gameModel = new GameModel();
+        GameController gameController = new GameController(gameRenderer, gameModel);
+        ViewModel gameViewModel = new GameViewModel(gameController, gameModel);
         guiController.setViewModel(gameViewModel);
+        guiController.bindViewModel();
 
         gameController.start();
     }

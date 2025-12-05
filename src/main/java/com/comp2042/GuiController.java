@@ -45,9 +45,6 @@ public class GuiController implements Initializable {
 
     private Timeline timeLine;
 
-    private final BooleanProperty isPause = new SimpleBooleanProperty();
-
-    private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,6 +63,10 @@ public class GuiController implements Initializable {
 
     public void setViewModel(ViewModel viewModel) {
         this.viewModel = viewModel;
+    }
+
+    public void bindViewModel() {
+        pausePanel.visibleProperty().bind(viewModel.pauseProperty());
     }
 
     public GridPane getGamePanel() {
@@ -96,11 +97,11 @@ public class GuiController implements Initializable {
     public void bindScore(IntegerProperty integerProperty) {
     }
 
-    public void gameOver() {
-        timeLine.stop();
-        gameOverPanel.setVisible(true);
-        isGameOver.setValue(Boolean.TRUE);
-    }
+//    public void gameOver() {
+//        timeLine.stop();
+//        gameOverPanel.setVisible(true);
+//        isGameOver.setValue(Boolean.TRUE);
+//    }
 //
 //    public void newGame(ActionEvent actionEvent) {
 //        timeLine.stop();
@@ -113,19 +114,19 @@ public class GuiController implements Initializable {
 //        isGameOver.setValue(Boolean.FALSE);
 //    }
 
-    public void pauseGame(ActionEvent actionEvent) {
-        timeLine.stop();
-        gamePanel.requestFocus();
-        pausePanel.setVisible(true);
-        timeLine.play();
-        isPause.setValue(Boolean.TRUE);
-    }
-
-    public void unPauseGame(ActionEvent actionEvent) {
-        timeLine.stop();
-        gamePanel.requestFocus();
-        pausePanel.setVisible(false);
-        timeLine.play();
-        isPause.setValue(Boolean.FALSE);
-    }
+//    public void pauseGame(ActionEvent actionEvent) {
+//        timeLine.stop();
+//        gamePanel.requestFocus();
+//        pausePanel.setVisible(true);
+//        timeLine.play();
+//        isPause.setValue(Boolean.TRUE);
+//    }
+//
+//    public void unPauseGame(ActionEvent actionEvent) {
+//        timeLine.stop();
+//        gamePanel.requestFocus();
+//        pausePanel.setVisible(false);
+//        timeLine.play();
+//        isPause.setValue(Boolean.FALSE);
+//    }
 }

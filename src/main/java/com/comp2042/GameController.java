@@ -7,13 +7,15 @@ public class GameController implements InputEventListener {
     private final Board board = new SimpleBoard(25, 10);
 
     private final GameRenderer gameRenderer;
+    private final GameModel gameModel;
 
     private AnimationTimer gameLoop;
 
-    public GameController(GameRenderer gameRenderer) {
+    public GameController(GameRenderer gameRenderer, GameModel gameModel) {
         board.createNewBrick();
         this.gameRenderer = gameRenderer;
         gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+        this.gameModel = gameModel;
 //        viewGuiController.bindScore(board.getScore().scoreProperty());
     }
 
@@ -30,7 +32,7 @@ public class GameController implements InputEventListener {
 
                 long interval = 400_000_000;
                 if (now - lastUpdate >= interval) {
-                    DownData downData = onDownEvent(new GameEvent(EventType.MOVE_DOWN, EventSource.THREAD));
+                    onDownEvent(new GameEvent(EventType.MOVE_DOWN, EventSource.THREAD));
                     lastUpdate = now;
                 }
             }
@@ -118,6 +120,6 @@ public class GameController implements InputEventListener {
     }
 
     public void onPauseEvent() {
-        System.out.println("Game paused");
+        gameModel.setIsPause(!gameModel.pauseProperty().getValue());
     }
 }
