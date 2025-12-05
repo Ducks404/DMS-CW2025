@@ -58,6 +58,9 @@ public class GameController implements InputEventListener {
 
     @Override
     public DownData onDownEvent(GameEvent event) {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return null;
+        }
         boolean canMove = board.moveBrickDown();
         ClearRow clearRow = null;
         if (!canMove) {
@@ -93,6 +96,9 @@ public class GameController implements InputEventListener {
 
     @Override
     public ViewData onLeftEvent(GameEvent event) {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return null;
+        }
         board.moveBrickLeft();
         gameRenderer.refreshBrick(board.getViewData());
         return board.getViewData();
@@ -100,6 +106,9 @@ public class GameController implements InputEventListener {
 
     @Override
     public ViewData onRightEvent(GameEvent event) {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return null;
+        }
         board.moveBrickRight();
         gameRenderer.refreshBrick(board.getViewData());
         return board.getViewData();
@@ -107,6 +116,9 @@ public class GameController implements InputEventListener {
 
     @Override
     public ViewData onRotateEvent(GameEvent event) {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return null;
+        }
         board.rotateLeftBrick();
         gameRenderer.refreshBrick(board.getViewData());
         return board.getViewData();
