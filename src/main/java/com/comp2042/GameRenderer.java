@@ -1,5 +1,6 @@
 package com.comp2042;
 
+import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -12,14 +13,16 @@ public class GameRenderer {
 
     private final GridPane gamePanel;
     private final GridPane brickPanel;
+    private final Group groupNotification;
 
     private Rectangle[][] displayMatrix;
 
     private Rectangle[][] rectangles;
 
-    public GameRenderer(GridPane gamePanel, GridPane brickPanel) {
+    public GameRenderer(GridPane gamePanel, GridPane brickPanel, Group groupNotification) {
         this.gamePanel = gamePanel;
         this.brickPanel = brickPanel;
+        this.groupNotification = groupNotification;
     }
 
 
@@ -75,6 +78,13 @@ public class GameRenderer {
             }
         }
     }
+
+    public void sendNotification(int scoreBonus) {
+        NotificationPanel notificationPanel = new NotificationPanel("+" + scoreBonus);
+        groupNotification.getChildren().add(notificationPanel);
+        notificationPanel.showScore(groupNotification.getChildren());
+    }
+
 
     private void setRectangleData(int color, Rectangle rectangle) {
         rectangle.setFill(getFillColor(color));

@@ -83,6 +83,7 @@ public class GameController implements InputEventListener {
 
         if (clearRow != null && clearRow.linesRemoved() > 0) {
             System.out.println("Line cleared");
+            gameRenderer.sendNotification(clearRow.scoreBonus());
         }
         gameRenderer.refreshBrick(board.getViewData());
         return new DownData(clearRow, board.getViewData());

@@ -77,6 +77,10 @@ public class GuiController implements Initializable {
     public GridPane getBrickPanel() {
         return brickPanel;
     }
+
+    public Group getGroupNotification() {
+        return groupNotification;
+    }
 //
 //    private void moveDown(GameEvent event) {
 //        if (isPause.getValue() == Boolean.FALSE) {

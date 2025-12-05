@@ -2,6 +2,7 @@ package com.comp2042;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
@@ -28,7 +29,8 @@ public class Main extends Application {
 
         GridPane gamePanel = guiController.getGamePanel();
         GridPane brickPanel = guiController.getBrickPanel();
-        GameRenderer gameRenderer = new GameRenderer(gamePanel, brickPanel);
+        Group groupNotification = guiController.getGroupNotification();
+        GameRenderer gameRenderer = new GameRenderer(gamePanel, brickPanel, groupNotification);
         GameModel gameModel = new GameModel();
         GameController gameController = new GameController(gameRenderer, gameModel);
         ViewModel gameViewModel = new GameViewModel(gameController, gameModel);
