@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -25,7 +26,10 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        GameController gameController = new GameController(guiController);
+        GridPane gamePanel = guiController.getGamePanel();
+        GridPane brickPanel = guiController.getBrickPanel();
+        GameRenderer gameRenderer = new GameRenderer(gamePanel, brickPanel);
+        GameController gameController = new GameController(gameRenderer);
         ViewModel gameViewModel = new GameViewModel(gameController);
         guiController.setViewModel(gameViewModel);
 
