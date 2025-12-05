@@ -22,5 +22,7 @@ public interface Board {
 
     Score getScore();
 
+    void addScore(int num);
+
     void newGame();
 }

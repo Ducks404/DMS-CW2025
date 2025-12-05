@@ -62,7 +62,7 @@ public class GameController implements InputEventListener {
             board.mergeBrickToBackground();
             clearRow = board.clearRows();
             if (clearRow.linesRemoved() > 0) {
-                board.getScore().add(clearRow.scoreBonus());
+                board.addScore(clearRow.scoreBonus());
             }
             if (board.createNewBrick()) {
                 gameOver();
@@ -72,7 +72,7 @@ public class GameController implements InputEventListener {
 
         } else {
             if (event.eventSource() == EventSource.USER) {
-                board.getScore().add(1);
+                board.addScore(1);
             }
         }
 
