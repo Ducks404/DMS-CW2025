@@ -12,12 +12,19 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Main extends Application {
+    private static final int PREF_WIDTH = 600;
+    private static final int PREF_HEIGHT = 900;
+    private static final int MIN_WIDTH = 600;
+    private static final int MIN_HEIGHT = 900;
+    private static final int MAX_WIDTH = 900;
+    private static final int MAX_HEIGHT = 1350;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -29,7 +36,24 @@ public class Main extends Application {
         GuiController guiController = fxmlLoader.getController();
 
         primaryStage.setTitle("TetrisJFX");
-        Scene scene = new Scene(root, 300, 510);
+
+        if (root instanceof Region regionRoot) {
+            regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
+            regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        } else {
+            System.out.println("Root is not a Region! Can't set sizes.");
+        }
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+
+        primaryStage.setMinWidth(MIN_WIDTH);
+        primaryStage.setMinHeight(MIN_HEIGHT);
+        primaryStage.setMaxWidth(MAX_WIDTH);
+        primaryStage.setMaxHeight(MAX_HEIGHT);
+
+        primaryStage.sizeToScene();
         primaryStage.setScene(scene);
         primaryStage.show();
 
