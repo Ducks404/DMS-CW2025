@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.view;
 
 import com.tetris.logic.ViewData;
 import javafx.scene.Group;
