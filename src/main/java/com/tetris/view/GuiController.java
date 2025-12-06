@@ -4,6 +4,7 @@ import com.tetris.viewmodel.ViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
@@ -27,6 +28,9 @@ public class GuiController implements Initializable {
 
     @FXML
     private PausePanel pausePanel;
+
+    @FXML
+    private Label scoreLabel;
 
     private ViewModel viewModel;
 
@@ -52,6 +56,7 @@ public class GuiController implements Initializable {
     public void bindViewModel() {
         pausePanel.visibleProperty().bind(viewModel.pauseProperty());
         gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
+        scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
     }
 
     public GridPane getGamePanel() {
