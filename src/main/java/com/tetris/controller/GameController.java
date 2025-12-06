@@ -1,6 +1,9 @@
 package com.tetris.controller;
 
 import com.tetris.*;
+import com.tetris.input.EventSource;
+import com.tetris.input.EventType;
+import com.tetris.input.GameEvent;
 import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
 import com.tetris.logic.GameModel;

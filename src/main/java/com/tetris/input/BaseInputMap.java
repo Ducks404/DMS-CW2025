@@ -1,10 +1,10 @@
-package com.tetris;
+package com.tetris.input;
 
 import javafx.scene.input.KeyCode;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseInputMap implements InputMap{
+public class BaseInputMap implements InputMap {
     final Map<KeyCode, EventType> map = new HashMap<>();
 
     @Override

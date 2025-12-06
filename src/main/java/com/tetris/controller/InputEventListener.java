@@ -1,6 +1,6 @@
 package com.tetris.controller;
 
-import com.tetris.EventType;
+import com.tetris.input.EventType;
 
 public interface InputEventListener {
 

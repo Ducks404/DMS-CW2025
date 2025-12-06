@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.input;
 
 import javafx.scene.input.KeyCode;
 
