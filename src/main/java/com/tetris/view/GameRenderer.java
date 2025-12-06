@@ -4,7 +4,6 @@ import com.tetris.logic.ViewData;
 import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class GameRenderer {
@@ -41,7 +40,7 @@ public class GameRenderer {
         for (int i = 0; i < brick.brickData().length; i++) {
             for (int j = 0; j < brick.brickData()[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(getFillColor(brick.brickData()[i][j]));
+                rectangle.setFill(DrawBrickOperations.getFillColor(brick.brickData()[i][j]));
                 rectangles[i][j] = rectangle;
                 brickPanel.add(rectangle, j, i);
             }
@@ -57,43 +56,19 @@ public class GameRenderer {
     public void refreshGameBackground(int[][] board) {
         for (int i = ROWS_ABOVE_GRID; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                setRectangleData(board[i][j], displayMatrix[i][j]);
+                DrawBrickOperations.setRectangleData(board[i][j], displayMatrix[i][j]);
             }
         }
     }
 
     public void refreshBrick(ViewData brick) {
         setBrickPanelLayout(brick);
-        for (int i = 0; i < brick.brickData().length; i++) {
-            for (int j = 0; j < brick.brickData()[i].length; j++) {
-                setRectangleData(brick.brickData()[i][j], rectangles[i][j]);
-            }
-        }
+        DrawBrickOperations.drawGrid(brick, rectangles);
     }
 
     public void sendNotification(int scoreBonus) {
         NotificationPanel notificationPanel = new NotificationPanel("+" + scoreBonus);
         groupNotification.getChildren().add(notificationPanel);
         notificationPanel.showScore(groupNotification.getChildren());
-    }
-
-    private void setRectangleData(int color, Rectangle rectangle) {
-        rectangle.setFill(getFillColor(color));
-        rectangle.setArcHeight(9);
-        rectangle.setArcWidth(9);
-    }
-
-    private Paint getFillColor(int i) {
-        return switch (i) {
-            case 0 -> Color.TRANSPARENT;
-            case 1 -> Color.AQUA;
-            case 2 -> Color.BLUEVIOLET;
-            case 3 -> Color.DARKGREEN;
-            case 4 -> Color.YELLOW;
-            case 5 -> Color.RED;
-            case 6 -> Color.BEIGE;
-            case 7 -> Color.BURLYWOOD;
-            default -> Color.WHITE;
-        };
     }
 }
