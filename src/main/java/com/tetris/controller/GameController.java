@@ -2,7 +2,6 @@ package com.tetris.controller;
 
 import com.tetris.input.EventSource;
 import com.tetris.input.EventType;
-import com.tetris.input.GameEvent;
 import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
 import com.tetris.logic.GameModel;
@@ -41,7 +40,7 @@ public class GameController implements InputEventListener {
 
                 long interval = 400_000_000;
                 if (now - lastUpdate >= interval) {
-                    onDownEvent(new GameEvent(EventType.MOVE_DOWN, EventSource.THREAD));
+                    onDownEvent(EventSource.THREAD);
                     lastUpdate = now;
                 }
             }
@@ -52,10 +51,8 @@ public class GameController implements InputEventListener {
 
     @Override
     public void handleEvent(EventType eventType) {
-        EventSource eventSource = EventSource.USER;
-        GameEvent gameEvent = new GameEvent(eventType, eventSource);
         switch (eventType) {
-            case EventType.MOVE_DOWN -> onDownEvent(gameEvent);
+            case EventType.MOVE_DOWN -> onDownEvent(EventSource.USER);
             case EventType.MOVE_LEFT -> onLeftEvent();
             case EventType.MOVE_RIGHT -> onRightEvent();
             case EventType.MOVE_ROTATE -> onRotateEvent();
@@ -65,7 +62,7 @@ public class GameController implements InputEventListener {
         }
     }
 
-    private void onDownEvent(GameEvent event) {
+    private void onDownEvent(EventSource eventSource) {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -84,7 +81,7 @@ public class GameController implements InputEventListener {
             gameRenderer.refreshGameBackground(board.getBoardMatrix());
 
         } else {
-            if (event.eventSource() == EventSource.USER) {
+            if (eventSource == EventSource.USER) {
                 board.addScore(1);
             }
         }
