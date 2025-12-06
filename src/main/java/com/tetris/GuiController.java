@@ -1,5 +1,6 @@
 package com.tetris;
 
+import com.tetris.viewmodel.ViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;

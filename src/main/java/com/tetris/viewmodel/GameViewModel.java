@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.viewmodel;
 
 import com.tetris.controller.InputEventListener;
 import com.tetris.input.BaseInputMap;

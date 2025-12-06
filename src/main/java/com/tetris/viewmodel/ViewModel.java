@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.viewmodel;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;

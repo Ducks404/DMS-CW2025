@@ -2,6 +2,8 @@ package com.tetris;
 
 import com.tetris.controller.GameController;
 import com.tetris.logic.GameModel;
+import com.tetris.viewmodel.GameViewModel;
+import com.tetris.viewmodel.ViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
