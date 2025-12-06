@@ -4,6 +4,7 @@ import com.tetris.*;
 import com.tetris.logic.bricks.Brick;
 import com.tetris.logic.bricks.BrickGenerator;
 import com.tetris.logic.bricks.RandomBrickGenerator;
+import com.tetris.util.MatrixOperations;
 
 import java.awt.*;
 

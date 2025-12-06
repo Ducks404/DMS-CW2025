@@ -1,6 +1,6 @@
 package com.tetris.logic;
 
-import com.tetris.MatrixOperations;
+import com.tetris.util.MatrixOperations;
 
 public record ClearRow(int linesRemoved, int[][] newMatrix, int scoreBonus) {
 

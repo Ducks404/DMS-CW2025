@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.util;
 
 import com.tetris.logic.ClearRow;
 

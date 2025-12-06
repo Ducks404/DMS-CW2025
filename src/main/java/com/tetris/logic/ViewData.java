@@ -1,6 +1,6 @@
 package com.tetris.logic;
 
-import com.tetris.MatrixOperations;
+import com.tetris.util.MatrixOperations;
 
 public record ViewData(int[][] brickData, int xPosition, int yPosition, int[][] nextBrickData) {
 

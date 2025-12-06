@@ -1,6 +1,6 @@
 package com.tetris.logic.bricks;
 
-import com.tetris.MatrixOperations;
+import com.tetris.util.MatrixOperations;
 
 import java.util.ArrayList;
 import java.util.List;
