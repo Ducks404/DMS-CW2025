@@ -117,6 +117,10 @@ public class SimpleBoard implements Board {
         return score;
     }
 
+    @Override
+    public void addScore(int num) {
+        score.add(num);
+    }
 
     @Override
     public void newGame() {

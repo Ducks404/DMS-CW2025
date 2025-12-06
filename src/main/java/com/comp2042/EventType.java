@@ -1,5 +1,5 @@
 package com.comp2042;
 
 public enum EventType {
-    DOWN, LEFT, RIGHT, ROTATE
+    MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_ROTATE, PAUSE, NEW_GAME
 }
