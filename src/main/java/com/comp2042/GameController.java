@@ -46,19 +46,18 @@ public class GameController implements InputEventListener {
         GameEvent gameEvent = new GameEvent(eventType, eventSource);
         switch (eventType) {
             case EventType.MOVE_DOWN -> onDownEvent(gameEvent);
-            case EventType.MOVE_LEFT -> onLeftEvent(gameEvent);
-            case EventType.MOVE_RIGHT -> onRightEvent(gameEvent);
-            case EventType.MOVE_ROTATE -> onRotateEvent(gameEvent);
+            case EventType.MOVE_LEFT -> onLeftEvent();
+            case EventType.MOVE_RIGHT -> onRightEvent();
+            case EventType.MOVE_ROTATE -> onRotateEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
             default -> System.err.println("Game event not handled by this game controller.");
         }
     }
 
-    @Override
-    public DownData onDownEvent(GameEvent event) {
+    private void onDownEvent(GameEvent event) {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return null;
+            return;
         }
         boolean canMove = board.moveBrickDown();
         ClearRow clearRow = null;
@@ -84,7 +83,6 @@ public class GameController implements InputEventListener {
             gameRenderer.sendNotification(clearRow.scoreBonus());
         }
         gameRenderer.refreshBrick(board.getViewData());
-        return new DownData(clearRow, board.getViewData());
     }
 
     private void gameOver() {
@@ -92,47 +90,40 @@ public class GameController implements InputEventListener {
         gameModel.setIsGameOver(true);
     }
 
-    @Override
-    public ViewData onLeftEvent(GameEvent event) {
+    private void onLeftEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return null;
+            return;
         }
         board.moveBrickLeft();
         gameRenderer.refreshBrick(board.getViewData());
-        return board.getViewData();
     }
 
-    @Override
-    public ViewData onRightEvent(GameEvent event) {
+
+    private void onRightEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return null;
+            return;
         }
         board.moveBrickRight();
         gameRenderer.refreshBrick(board.getViewData());
-        return board.getViewData();
     }
 
-    @Override
-    public ViewData onRotateEvent(GameEvent event) {
+    private void onRotateEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return null;
+            return;
         }
         board.rotateLeftBrick();
         gameRenderer.refreshBrick(board.getViewData());
-        return board.getViewData();
     }
 
-    @Override
-    public ViewData createNewGame() {
+    private void createNewGame() {
         gameModel.setIsGameOver(false);
         board.newGame();
         gameRenderer.refreshGameBackground(board.getBoardMatrix());
         gameRenderer.refreshBrick(board.getViewData());
         gameLoop.start();
-        return board.getViewData();
     }
 
-    public void onPauseEvent() {
+    private void onPauseEvent() {
         if (gameModel.pauseProperty().getValue()) {
             gameLoop.start();
             gameModel.setIsPause(false);
