@@ -16,7 +16,6 @@ public class GameRenderer {
     private final Group groupNotification;
 
     private Rectangle[][] displayMatrix;
-
     private Rectangle[][] rectangles;
 
     public GameRenderer(GridPane gamePanel, GridPane brickPanel, Group groupNotification) {
@@ -47,15 +46,7 @@ public class GameRenderer {
             }
         }
         setBrickPanelLayout(brick);
-
-//        timeLine = new Timeline(new KeyFrame(
-//                Duration.millis(400),
-//                ae -> moveDown(new GameEvent(EventType.DOWN, EventSource.THREAD))
-//        ));
-//        timeLine.setCycleCount(Timeline.INDEFINITE);
-//        timeLine.play();
     }
-
 
     private void setBrickPanelLayout(ViewData brick){
         brickPanel.setLayoutX(brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE));
@@ -85,13 +76,11 @@ public class GameRenderer {
         notificationPanel.showScore(groupNotification.getChildren());
     }
 
-
     private void setRectangleData(int color, Rectangle rectangle) {
         rectangle.setFill(getFillColor(color));
         rectangle.setArcHeight(9);
         rectangle.setArcWidth(9);
     }
-
 
     private Paint getFillColor(int i) {
         return switch (i) {

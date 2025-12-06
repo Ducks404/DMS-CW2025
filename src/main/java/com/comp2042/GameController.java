@@ -16,7 +16,6 @@ public class GameController implements InputEventListener {
         this.gameRenderer = gameRenderer;
         gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
         this.gameModel = gameModel;
-//        viewGuiController.bindScore(board.getScore().scoreProperty());
     }
 
     public void start() {
@@ -82,7 +81,6 @@ public class GameController implements InputEventListener {
         }
 
         if (clearRow != null && clearRow.linesRemoved() > 0) {
-            System.out.println("Line cleared");
             gameRenderer.sendNotification(clearRow.scoreBonus());
         }
         gameRenderer.refreshBrick(board.getViewData());
@@ -90,7 +88,6 @@ public class GameController implements InputEventListener {
     }
 
     private void gameOver() {
-        System.out.println("Game Over");
         gameLoop.stop();
         gameModel.setIsGameOver(true);
     }
