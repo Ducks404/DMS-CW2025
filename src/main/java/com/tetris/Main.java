@@ -1,5 +1,6 @@
 package com.tetris;
 
+import com.tetris.controller.GameController;
 import com.tetris.logic.GameModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
