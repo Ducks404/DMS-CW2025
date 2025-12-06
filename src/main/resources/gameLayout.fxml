@@ -31,6 +31,12 @@
             </center>
         </BorderPane>
     </VBox>
+    <VBox>
+        <VBox alignment="TOP_CENTER">
+            <Label styleClass="scoreClass">Score</Label>
+            <Label styleClass="scoreClass" fx:id="scoreLabel"/>
+        </VBox>
+    </VBox>
 
     <stylesheets>
         <URL value="@window_style.css"/>
