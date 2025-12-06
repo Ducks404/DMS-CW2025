@@ -64,6 +64,13 @@
     -fx-background-color: red;
 }
 
+.scoreContainer {
+    -fx-padding: 10px;
+    -fx-border-color: yellow;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
+
 .scoreClass{
     -fx-font-family: "Let's go Digital";
     -fx-font-size: 38;

@@ -9,10 +9,11 @@
 <?import java.net.URL?>
 <HBox fx:controller="com.tetris.view.GuiController"
       xmlns:fx="http://javafx.com/fxml"
-      alignment="CENTER">
+      alignment="CENTER"
+      spacing="10">
 
     <VBox>
-        <BorderPane fx:id="gameBoard" styleClass="gameBoard">
+        <BorderPane styleClass="gameBoard">
             <center>
                 <Pane snapToPixel="false" style="-fx-background-color:#004455">
                     <GridPane fx:id="gamePanel" hgap="1" vgap="1" snapToPixel="false"/>
@@ -32,11 +33,12 @@
         </BorderPane>
     </VBox>
     <VBox>
-        <VBox alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER" styleClass="scoreContainer">
             <Label styleClass="scoreClass">Score</Label>
             <Label styleClass="scoreClass" fx:id="scoreLabel"/>
         </VBox>
     </VBox>
+
 
     <stylesheets>
         <URL value="@window_style.css"/>
