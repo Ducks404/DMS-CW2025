@@ -1,6 +1,7 @@
 package com.comp2042;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class GameModel {
@@ -9,7 +10,7 @@ public class GameModel {
 
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
-    private final Score score = new Score();
+    private Score score;
 
     private int[][] nextBrick;
 
@@ -32,5 +33,13 @@ public class GameModel {
 
     public void setIsGameOver(boolean bool) {
         isGameOver.setValue(bool);
+    }
+
+    public IntegerProperty scoreProperty() {
+        return score.scoreProperty();
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
     }
 }

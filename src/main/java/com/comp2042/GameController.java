@@ -15,7 +15,9 @@ public class GameController implements InputEventListener {
         board.createNewBrick();
         this.gameRenderer = gameRenderer;
         gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+
         this.gameModel = gameModel;
+        gameModel.setScore(board.getScore());
     }
 
     public void start() {

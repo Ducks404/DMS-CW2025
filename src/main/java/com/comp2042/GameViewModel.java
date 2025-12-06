@@ -1,6 +1,8 @@
 package com.comp2042;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.scene.input.KeyEvent;
 
 public class GameViewModel implements ViewModel {
@@ -29,5 +31,9 @@ public class GameViewModel implements ViewModel {
 
     public ReadOnlyBooleanProperty gameOverProperty() {
         return gameModel.gameOverProperty();
+    }
+
+    public ReadOnlyIntegerProperty scoreProperty() {
+        return gameModel.scoreProperty();
     }
 }
