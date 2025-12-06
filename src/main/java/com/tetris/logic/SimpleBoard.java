@@ -1,5 +1,6 @@
-package com.tetris;
+package com.tetris.logic;
 
+import com.tetris.*;
 import com.tetris.logic.bricks.Brick;
 import com.tetris.logic.bricks.BrickGenerator;
 import com.tetris.logic.bricks.RandomBrickGenerator;

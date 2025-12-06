@@ -1,5 +1,6 @@
 package com.tetris;
 
+import com.tetris.logic.GameModel;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.input.KeyEvent;

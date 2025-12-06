@@ -1,5 +1,6 @@
 package com.tetris;
 
+import com.tetris.logic.ViewData;
 import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;

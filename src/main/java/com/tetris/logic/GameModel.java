@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.logic;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

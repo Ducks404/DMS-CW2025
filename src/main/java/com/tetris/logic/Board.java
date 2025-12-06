@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.logic;
 
 public interface Board {
 

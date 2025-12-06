@@ -1,5 +1,9 @@
 package com.tetris;
 
+import com.tetris.logic.Board;
+import com.tetris.logic.ClearRow;
+import com.tetris.logic.GameModel;
+import com.tetris.logic.SimpleBoard;
 import javafx.animation.AnimationTimer;
 
 public class GameController implements InputEventListener {

@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.logic;
 
 import com.tetris.logic.bricks.Brick;
 
