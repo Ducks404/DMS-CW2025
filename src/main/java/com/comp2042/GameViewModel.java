@@ -17,7 +17,10 @@ public class GameViewModel implements ViewModel {
 
     @Override
     public void handleKey(KeyEvent keyEvent) {
-        eventListener.handleEvent(inputMap.get(keyEvent.getCode()));
+        EventType intent = inputMap.get(keyEvent.getCode());
+        if (intent != null) {
+            eventListener.handleEvent(intent);
+        }
         keyEvent.consume();
     }
 
