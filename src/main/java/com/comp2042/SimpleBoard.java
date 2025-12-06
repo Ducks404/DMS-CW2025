@@ -16,10 +16,10 @@ public class SimpleBoard implements Board {
     private Point currentOffset;
     private final Score score;
 
-    public SimpleBoard(int width, int height) {
+    public SimpleBoard(int height, int width) {
         this.width = width;
         this.height = height;
-        currentGameMatrix = new int[width][height];
+        currentGameMatrix = new int[height][width];
         brickGenerator = new RandomBrickGenerator();
         brickRotator = new BrickRotator();
         score = new Score();
@@ -71,12 +71,12 @@ public class SimpleBoard implements Board {
     @Override
     public boolean rotateLeftBrick() {
         int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
-        NextShapeInfo nextShape = brickRotator.getNextShape();
-        boolean conflict = MatrixOperations.intersect(currentMatrix, nextShape.getShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+        int[][] nextShape = brickRotator.getNextShape();
+        boolean conflict = MatrixOperations.intersect(currentMatrix, nextShape, (int) currentOffset.getX(), (int) currentOffset.getY());
         if (conflict) {
             return false;
         } else {
-            brickRotator.setCurrentShape(nextShape.getPosition());
+            brickRotator.changeToNextShape();
             return true;
         }
     }
@@ -85,7 +85,7 @@ public class SimpleBoard implements Board {
     public boolean createNewBrick() {
         Brick currentBrick = brickGenerator.getBrick();
         brickRotator.setBrick(currentBrick);
-        currentOffset = new Point(4, 10);
+        currentOffset = new Point(width/2-1,0);
         return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }
 
@@ -107,7 +107,7 @@ public class SimpleBoard implements Board {
     @Override
     public ClearRow clearRows() {
         ClearRow clearRow = MatrixOperations.checkRemoving(currentGameMatrix);
-        currentGameMatrix = clearRow.getNewMatrix();
+        currentGameMatrix = clearRow.newMatrix();
         return clearRow;
 
     }
@@ -117,10 +117,14 @@ public class SimpleBoard implements Board {
         return score;
     }
 
+    @Override
+    public void addScore(int num) {
+        score.add(num);
+    }
 
     @Override
     public void newGame() {
-        currentGameMatrix = new int[width][height];
+        currentGameMatrix = new int[height][width];
         score.reset();
         createNewBrick();
     }

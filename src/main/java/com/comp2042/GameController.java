@@ -1,65 +1,137 @@
 package com.comp2042;
 
+import javafx.animation.AnimationTimer;
+
 public class GameController implements InputEventListener {
 
-    private Board board = new SimpleBoard(25, 10);
+    private final Board board = new SimpleBoard(25, 10);
 
-    private final GuiController viewGuiController;
+    private final GameRenderer gameRenderer;
+    private final GameModel gameModel;
 
-    public GameController(GuiController c) {
-        viewGuiController = c;
+    private AnimationTimer gameLoop;
+
+    public GameController(GameRenderer gameRenderer, GameModel gameModel) {
         board.createNewBrick();
-        viewGuiController.setEventListener(this);
-        viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
-        viewGuiController.bindScore(board.getScore().scoreProperty());
+        this.gameRenderer = gameRenderer;
+        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+
+        this.gameModel = gameModel;
+        gameModel.setScore(board.getScore());
+    }
+
+    public void start() {
+        gameLoop = new AnimationTimer() {
+            private long lastUpdate = 0;
+
+            @Override
+            public void handle(long now) {
+                if (lastUpdate == 0) {
+                    lastUpdate = now;
+                    return;
+                }
+
+                long interval = 400_000_000;
+                if (now - lastUpdate >= interval) {
+                    onDownEvent(new GameEvent(EventType.MOVE_DOWN, EventSource.THREAD));
+                    lastUpdate = now;
+                }
+            }
+        };
+
+        gameLoop.start();
     }
 
     @Override
-    public DownData onDownEvent(MoveEvent event) {
+    public void handleEvent(EventType eventType) {
+        EventSource eventSource = EventSource.USER;
+        GameEvent gameEvent = new GameEvent(eventType, eventSource);
+        switch (eventType) {
+            case EventType.MOVE_DOWN -> onDownEvent(gameEvent);
+            case EventType.MOVE_LEFT -> onLeftEvent();
+            case EventType.MOVE_RIGHT -> onRightEvent();
+            case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.PAUSE -> onPauseEvent();
+            case EventType.NEW_GAME -> createNewGame();
+            default -> System.err.println("Game event not handled by this game controller.");
+        }
+    }
+
+    private void onDownEvent(GameEvent event) {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
         boolean canMove = board.moveBrickDown();
         ClearRow clearRow = null;
         if (!canMove) {
             board.mergeBrickToBackground();
             clearRow = board.clearRows();
-            if (clearRow.getLinesRemoved() > 0) {
-                board.getScore().add(clearRow.getScoreBonus());
+            if (clearRow.linesRemoved() > 0) {
+                board.addScore(clearRow.scoreBonus());
             }
             if (board.createNewBrick()) {
-                viewGuiController.gameOver();
+                gameOver();
             }
 
-            viewGuiController.refreshGameBackground(board.getBoardMatrix());
+            gameRenderer.refreshGameBackground(board.getBoardMatrix());
 
         } else {
-            if (event.getEventSource() == EventSource.USER) {
-                board.getScore().add(1);
+            if (event.eventSource() == EventSource.USER) {
+                board.addScore(1);
             }
         }
-        return new DownData(clearRow, board.getViewData());
+
+        if (clearRow != null && clearRow.linesRemoved() > 0) {
+            gameRenderer.sendNotification(clearRow.scoreBonus());
+        }
+        gameRenderer.refreshBrick(board.getViewData());
     }
 
-    @Override
-    public ViewData onLeftEvent(MoveEvent event) {
+    private void gameOver() {
+        gameLoop.stop();
+        gameModel.setIsGameOver(true);
+    }
+
+    private void onLeftEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
         board.moveBrickLeft();
-        return board.getViewData();
+        gameRenderer.refreshBrick(board.getViewData());
     }
 
-    @Override
-    public ViewData onRightEvent(MoveEvent event) {
+
+    private void onRightEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
         board.moveBrickRight();
-        return board.getViewData();
+        gameRenderer.refreshBrick(board.getViewData());
     }
 
-    @Override
-    public ViewData onRotateEvent(MoveEvent event) {
+    private void onRotateEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
         board.rotateLeftBrick();
-        return board.getViewData();
+        gameRenderer.refreshBrick(board.getViewData());
     }
 
-
-    @Override
-    public void createNewGame() {
+    private void createNewGame() {
+        gameModel.setIsGameOver(false);
         board.newGame();
-        viewGuiController.refreshGameBackground(board.getBoardMatrix());
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+        gameRenderer.refreshBrick(board.getViewData());
+        gameLoop.start();
+    }
+
+    private void onPauseEvent() {
+        if (gameModel.pauseProperty().getValue()) {
+            gameLoop.start();
+            gameModel.setIsPause(false);
+        } else {
+            gameLoop.stop();
+            gameModel.setIsPause(true);
+        }
     }
 }
