@@ -131,6 +131,8 @@ public class GameController implements InputEventListener {
             gameModel.setHold(board.getViewData().holdBrickData());
             gameModel.setCanHold(false);
             gameModel.setNextBrick(board.getViewData().nextBrickData());
+
+            gameRenderer.refreshBrick(board.getViewData());
         }
     }
 
