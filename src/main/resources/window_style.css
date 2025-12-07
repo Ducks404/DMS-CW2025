@@ -78,15 +78,29 @@
     -fx-text-fill: yellow;
 }
 
-.nextBrickContainer {
+.brickContainer {
     -fx-padding: 10px;
-    -fx-border-color: blue;
     -fx-border-width: 2px;
     -fx-border-radius: 5px;
 }
 
-.nextLabel {
+.containerLabel {
     -fx-font-family: "Let's go Digital";
     -fx-font-size: 38;
+}
+
+.nextBrickContainer {
+    -fx-border-color: blue;
+}
+
+.nextLabel {
+    -fx-text-fill: blue;
+}
+
+.holdBrickContainer {
+    -fx-border-color: blue;
+}
+
+.holdLabel {
     -fx-text-fill: blue;
 }
