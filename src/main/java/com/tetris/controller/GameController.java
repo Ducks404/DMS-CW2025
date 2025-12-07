@@ -56,6 +56,7 @@ public class GameController implements InputEventListener {
             case EventType.MOVE_LEFT -> onLeftEvent();
             case EventType.MOVE_RIGHT -> onRightEvent();
             case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.HARD_DROP -> onHardDropEvent();
             case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
@@ -63,33 +64,53 @@ public class GameController implements InputEventListener {
         }
     }
 
+    private void onHardDropEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        boolean canMove;
+        do {
+            canMove = board.moveBrickDown();
+        } while (canMove);
+        handleBrickOnFloor();
+
+        gameRenderer.refreshBrick(board.getViewData());
+
+    }
+
     private void onDownEvent(EventSource eventSource) {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
         boolean canMove = board.moveBrickDown();
-        ClearRow clearRow = null;
         if (!canMove) {
-            board.mergeBrickToBackground();
-            clearRow = board.clearRows();
-            if (clearRow.linesRemoved() > 0) {
-                board.addScore(clearRow.scoreBonus());
-            }
-            if (newBrick()) {
-                gameOver();
-            }
-
-            gameRenderer.refreshGameBackground(board.getBoardMatrix());
+            handleBrickOnFloor();
         } else {
             if (eventSource == EventSource.USER) {
                 board.addScore(1);
             }
         }
 
-        if (clearRow != null && clearRow.linesRemoved() > 0) {
+        gameRenderer.refreshBrick(board.getViewData());
+    }
+
+    private void handleBrickOnFloor() {
+        board.mergeBrickToBackground();
+        checkClearedRows();
+
+        if (newBrick()) {
+            gameOver();
+        }
+
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+    }
+
+    private void checkClearedRows() {
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.linesRemoved() > 0) {
+            board.addScore(clearRow.scoreBonus());
             gameRenderer.sendNotification(clearRow.scoreBonus());
         }
-        gameRenderer.refreshBrick(board.getViewData());
     }
 
     private void gameOver() {
@@ -131,8 +152,6 @@ public class GameController implements InputEventListener {
             gameModel.setHold(board.getViewData().holdBrickData());
             gameModel.setCanHold(false);
             gameModel.setNextBrick(board.getViewData().nextBrickData());
-
-            gameRenderer.refreshBrick(board.getViewData());
         }
     }
 
