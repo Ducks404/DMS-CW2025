@@ -63,7 +63,7 @@ public class GameRenderer {
 
     public void refreshBrick(ViewData brick) {
         setBrickPanelLayout(brick);
-        DrawBrickOperations.drawGrid(brick, rectangles);
+        DrawBrickOperations.drawGrid(brick.brickData(), rectangles);
     }
 
     public void sendNotification(int scoreBonus) {

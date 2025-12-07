@@ -1,6 +1,5 @@
 package com.tetris.view;
 
-import com.tetris.logic.ViewData;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -9,10 +8,10 @@ public class DrawBrickOperations {
 
     private DrawBrickOperations() {}
 
-    public static void drawGrid(ViewData gridData, Rectangle[][] grid) {
-        for (int i = 0; i < gridData.brickData().length; i++) {
-            for (int j = 0; j < gridData.brickData()[i].length; j++) {
-                DrawBrickOperations.setRectangleData(gridData.brickData()[i][j], grid[i][j]);
+    public static void drawGrid(int[][] gridData, Rectangle[][] grid) {
+        for (int i = 0; i < gridData.length; i++) {
+            for (int j = 0; j < gridData.length; j++) {
+                DrawBrickOperations.setRectangleData(gridData[i][j], grid[i][j]);
             }
         }
     }
