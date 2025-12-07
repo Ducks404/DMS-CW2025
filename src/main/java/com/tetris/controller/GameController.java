@@ -56,11 +56,26 @@ public class GameController implements InputEventListener {
             case EventType.MOVE_LEFT -> onLeftEvent();
             case EventType.MOVE_RIGHT -> onRightEvent();
             case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.HARD_DROP -> onHardDropEvent();
             case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
             default -> System.err.println("Game event not handled by this game controller.");
         }
+    }
+
+    private void onHardDropEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        boolean canMove;
+        do {
+            canMove = board.moveBrickDown();
+        } while (canMove);
+        handleBrickOnFloor();
+
+        gameRenderer.refreshBrick(board.getViewData());
+
     }
 
     private void onDownEvent(EventSource eventSource) {
@@ -69,14 +84,7 @@ public class GameController implements InputEventListener {
         }
         boolean canMove = board.moveBrickDown();
         if (!canMove) {
-            board.mergeBrickToBackground();
-            checkClearedRows();
-
-            if (newBrick()) {
-                gameOver();
-            }
-
-            gameRenderer.refreshGameBackground(board.getBoardMatrix());
+            handleBrickOnFloor();
         } else {
             if (eventSource == EventSource.USER) {
                 board.addScore(1);
@@ -84,6 +92,17 @@ public class GameController implements InputEventListener {
         }
 
         gameRenderer.refreshBrick(board.getViewData());
+    }
+
+    private void handleBrickOnFloor() {
+        board.mergeBrickToBackground();
+        checkClearedRows();
+
+        if (newBrick()) {
+            gameOver();
+        }
+
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
     }
 
     private void checkClearedRows() {
