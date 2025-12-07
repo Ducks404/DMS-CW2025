@@ -11,6 +11,7 @@ import javafx.animation.AnimationTimer;
 
 public class GameController implements InputEventListener {
 
+    private static final int BASE_BONUS = 50;
     private final Board board = new SimpleBoard(25, 10);
 
     private final GameRenderer gameRenderer;
@@ -108,8 +109,9 @@ public class GameController implements InputEventListener {
     private void checkClearedRows() {
         ClearRow clearRow = board.clearRows();
         if (clearRow.linesRemoved() > 0) {
-            board.addScore(clearRow.scoreBonus());
-            gameRenderer.sendNotification(clearRow.scoreBonus());
+            int scoreBonus = BASE_BONUS * clearRow.linesRemoved() * clearRow.linesRemoved();
+            board.addScore(scoreBonus);
+            gameRenderer.sendNotification(scoreBonus);
         }
     }
 
