@@ -11,5 +11,6 @@ public class GameInputMap extends BaseInputMap {
         bind(KeyCode.P, EventType.PAUSE);
         bind(KeyCode.N, EventType.NEW_GAME);
         bind(KeyCode.H, EventType.HOLD);
+        bind(KeyCode.SPACE, EventType.HARD_DROP);
     }
 }
