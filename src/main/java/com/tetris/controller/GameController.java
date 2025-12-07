@@ -19,13 +19,12 @@ public class GameController implements InputEventListener {
     private AnimationTimer gameLoop;
 
     public GameController(GameRenderer gameRenderer, GameModel gameModel) {
-        board.createNewBrick();
-        this.gameRenderer = gameRenderer;
-        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
-
         this.gameModel = gameModel;
         gameModel.setScore(board.getScore());
-        updateNextBrick();
+        newBrick();
+
+        this.gameRenderer = gameRenderer;
+        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
     }
 
     public void start() {
@@ -57,10 +56,26 @@ public class GameController implements InputEventListener {
             case EventType.MOVE_LEFT -> onLeftEvent();
             case EventType.MOVE_RIGHT -> onRightEvent();
             case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.HARD_DROP -> onHardDropEvent();
+            case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
             default -> System.err.println("Game event not handled by this game controller.");
         }
+    }
+
+    private void onHardDropEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        boolean canMove;
+        do {
+            canMove = board.moveBrickDown();
+        } while (canMove);
+        handleBrickOnFloor();
+
+        gameRenderer.refreshBrick(board.getViewData());
+
     }
 
     private void onDownEvent(EventSource eventSource) {
@@ -68,29 +83,34 @@ public class GameController implements InputEventListener {
             return;
         }
         boolean canMove = board.moveBrickDown();
-        ClearRow clearRow = null;
         if (!canMove) {
-            board.mergeBrickToBackground();
-            clearRow = board.clearRows();
-            if (clearRow.linesRemoved() > 0) {
-                board.addScore(clearRow.scoreBonus());
-            }
-            if (board.createNewBrick()) {
-                gameOver();
-            }
-
-            gameRenderer.refreshGameBackground(board.getBoardMatrix());
-            updateNextBrick();
+            handleBrickOnFloor();
         } else {
             if (eventSource == EventSource.USER) {
                 board.addScore(1);
             }
         }
 
-        if (clearRow != null && clearRow.linesRemoved() > 0) {
+        gameRenderer.refreshBrick(board.getViewData());
+    }
+
+    private void handleBrickOnFloor() {
+        board.mergeBrickToBackground();
+        checkClearedRows();
+
+        if (newBrick()) {
+            gameOver();
+        }
+
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+    }
+
+    private void checkClearedRows() {
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.linesRemoved() > 0) {
+            board.addScore(clearRow.scoreBonus());
             gameRenderer.sendNotification(clearRow.scoreBonus());
         }
-        gameRenderer.refreshBrick(board.getViewData());
     }
 
     private void gameOver() {
@@ -123,6 +143,18 @@ public class GameController implements InputEventListener {
         gameRenderer.refreshBrick(board.getViewData());
     }
 
+    private void onHoldEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        if (gameModel.canHoldProperty().getValue()) {
+            board.holdBrick();
+            gameModel.setHold(board.getViewData().holdBrickData());
+            gameModel.setCanHold(false);
+            gameModel.setNextBrick(board.getViewData().nextBrickData());
+        }
+    }
+
     private void createNewGame() {
         gameModel.setIsGameOver(false);
         board.newGame();
@@ -141,10 +173,11 @@ public class GameController implements InputEventListener {
         }
     }
 
-    private void updateNextBrick() {
-        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return;
-        }
+    private boolean newBrick() {
+        boolean collisionsOnNewBrick = board.createNewBrick();
         gameModel.setNextBrick(board.getViewData().nextBrickData());
+        gameModel.setHold(board.getViewData().holdBrickData());
+        gameModel.setCanHold(true);
+        return collisionsOnNewBrick;
     }
 }

@@ -45,4 +45,8 @@ public class GameViewModel implements ViewModel {
     public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {
         return gameModel.nextBrickProperty();
     }
+
+    public ReadOnlyObjectProperty<int[][]> holdBrickProperty() {
+        return gameModel.holdBrickProperty();
+    }
 }

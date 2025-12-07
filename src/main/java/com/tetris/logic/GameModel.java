@@ -12,9 +12,13 @@ public class GameModel {
 
     private final ObjectProperty<int[][]> nextBrick = new SimpleObjectProperty<>(new int[0][0]);
 
+    private final BooleanProperty canHold = new SimpleBooleanProperty();
+    private final ObjectProperty<int[][]> holdBrick = new SimpleObjectProperty<>(new int[0][0]);
+
     public GameModel() {
         isPause.setValue(false);
         isGameOver.setValue(false);
+        canHold.setValue(true);
     }
 
     public BooleanProperty pauseProperty() {
@@ -47,5 +51,21 @@ public class GameModel {
 
     public void setNextBrick(int[][] brick) {
         nextBrick.set(brick);
+    }
+
+    public void setCanHold(boolean bool) {
+        canHold.setValue(bool);
+    }
+
+    public ReadOnlyBooleanProperty canHoldProperty() {
+        return canHold;
+    }
+
+    public ReadOnlyObjectProperty<int[][]> holdBrickProperty() {
+        return holdBrick;
+    }
+
+    public void setHold(int[][] brick) {
+        holdBrick.set(brick);
     }
 }

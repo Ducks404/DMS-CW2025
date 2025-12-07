@@ -16,4 +16,6 @@ public interface ViewModel {
     ReadOnlyIntegerProperty scoreProperty();
 
     ReadOnlyObjectProperty<int[][]> nextBrickProperty();
+
+    ReadOnlyObjectProperty<int[][]> holdBrickProperty();
 }
