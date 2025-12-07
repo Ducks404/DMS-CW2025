@@ -56,6 +56,7 @@ public class GameController implements InputEventListener {
             case EventType.MOVE_LEFT -> onLeftEvent();
             case EventType.MOVE_RIGHT -> onRightEvent();
             case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
             default -> System.err.println("Game event not handled by this game controller.");
@@ -129,6 +130,7 @@ public class GameController implements InputEventListener {
             board.holdBrick();
             gameModel.setHold(board.getViewData().holdBrickData());
             gameModel.setCanHold(false);
+            gameModel.setNextBrick(board.getViewData().nextBrickData());
         }
     }
 
