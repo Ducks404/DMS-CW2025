@@ -27,4 +27,6 @@ public interface Board {
     void addScore(int num);
 
     void newGame();
+
+    int getRowUntilCollision();
 }
