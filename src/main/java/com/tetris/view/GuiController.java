@@ -4,6 +4,7 @@ import com.tetris.viewmodel.ViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
@@ -12,6 +13,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
+
+    @FXML
+    private GridPane nextBrickPanel;
 
     @FXML
     private GridPane gamePanel;
@@ -28,7 +32,11 @@ public class GuiController implements Initializable {
     @FXML
     private PausePanel pausePanel;
 
+    @FXML
+    private Label scoreLabel;
+
     private ViewModel viewModel;
+    private final HudRenderer hudRenderer = new HudRenderer();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,6 +60,18 @@ public class GuiController implements Initializable {
     public void bindViewModel() {
         pausePanel.visibleProperty().bind(viewModel.pauseProperty());
         gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
+        scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
+        viewModel.nextBrickProperty().addListener((obs, oldVal, newVal) -> {
+            hudRenderer.refreshPreview(nextBrickPanel, newVal);
+        });
+    }
+
+    public void initHud() {
+        if (viewModel == null) {
+            return;
+        }
+        hudRenderer.setNextPanel(nextBrickPanel);
+        hudRenderer.initHudView(viewModel.nextBrickProperty().getValue());
     }
 
     public GridPane getGamePanel() {
