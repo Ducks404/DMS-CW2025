@@ -32,10 +32,14 @@
             </center>
         </BorderPane>
     </VBox>
-    <VBox>
+    <VBox spacing="10">
         <VBox alignment="TOP_CENTER" styleClass="scoreContainer">
             <Label styleClass="scoreClass">Score</Label>
             <Label styleClass="scoreClass" fx:id="scoreLabel"/>
+        </VBox>
+        <VBox styleClass="nextBrickContainer" alignment="CENTER">
+            <Label styleClass="nextLabel">Next:</Label>
+            <GridPane fx:id="nextBrickPanel" vgap="1" hgap="1"/>
         </VBox>
     </VBox>
 

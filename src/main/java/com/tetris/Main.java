@@ -66,6 +66,7 @@ public class Main extends Application {
         ViewModel gameViewModel = new GameViewModel(gameController, gameModel);
         guiController.setViewModel(gameViewModel);
         guiController.bindViewModel();
+        guiController.initHud();
 
         gameController.start();
     }

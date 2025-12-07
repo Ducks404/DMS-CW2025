@@ -1,8 +1,6 @@
 package com.tetris.logic;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 
 public class GameModel {
 
@@ -12,7 +10,7 @@ public class GameModel {
 
     private Score score;
 
-    private int[][] nextBrick;
+    private final ObjectProperty<int[][]> nextBrick = new SimpleObjectProperty<>(new int[0][0]);
 
     public GameModel() {
         isPause.setValue(false);
@@ -41,5 +39,13 @@ public class GameModel {
 
     public void setScore(Score score) {
         this.score = score;
+    }
+
+    public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {
+        return nextBrick;
+    }
+
+    public void setNextBrick(int[][] brick) {
+        nextBrick.set(brick);
     }
 }

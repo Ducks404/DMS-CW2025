@@ -7,6 +7,7 @@ import com.tetris.input.GameInputMap;
 import com.tetris.logic.GameModel;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.input.KeyEvent;
 
 public class GameViewModel implements ViewModel {
@@ -39,5 +40,9 @@ public class GameViewModel implements ViewModel {
 
     public ReadOnlyIntegerProperty scoreProperty() {
         return gameModel.scoreProperty();
+    }
+
+    public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {
+        return gameModel.nextBrickProperty();
     }
 }

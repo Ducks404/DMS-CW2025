@@ -25,6 +25,7 @@ public class GameController implements InputEventListener {
 
         this.gameModel = gameModel;
         gameModel.setScore(board.getScore());
+        updateNextBrick();
     }
 
     public void start() {
@@ -79,7 +80,7 @@ public class GameController implements InputEventListener {
             }
 
             gameRenderer.refreshGameBackground(board.getBoardMatrix());
-
+            updateNextBrick();
         } else {
             if (eventSource == EventSource.USER) {
                 board.addScore(1);
@@ -138,5 +139,12 @@ public class GameController implements InputEventListener {
             gameLoop.stop();
             gameModel.setIsPause(true);
         }
+    }
+
+    private void updateNextBrick() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        gameModel.setNextBrick(board.getViewData().nextBrickData());
     }
 }
