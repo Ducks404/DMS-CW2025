@@ -3,6 +3,7 @@ package com.tetris.logic;
 import com.tetris.*;
 import com.tetris.logic.bricks.Brick;
 import com.tetris.logic.bricks.BrickGenerator;
+import com.tetris.logic.bricks.NullBrick;
 import com.tetris.logic.bricks.RandomBrickGenerator;
 import com.tetris.util.MatrixOperations;
 
@@ -14,7 +15,7 @@ public class SimpleBoard implements Board {
     private final int height;
     private final BrickGenerator brickGenerator;
     private final BrickRotator brickRotator;
-    private Brick holdBrick;
+    private Brick holdBrick = NullBrick.getInstance();
     private int[][] currentGameMatrix;
     private Point currentOffset;
     private final Score score;
@@ -93,7 +94,7 @@ public class SimpleBoard implements Board {
     @Override
     public void holdBrick() {
         Brick temp;
-        if (holdBrick == null) {
+        if (holdBrick == NullBrick.getInstance()) {
             temp = brickGenerator.getBrick();
         } else {
             temp = holdBrick;
@@ -115,7 +116,7 @@ public class SimpleBoard implements Board {
 
     @Override
     public ViewData getViewData() {
-        return new ViewData(brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY(), brickGenerator.getNextBrick().getShapeMatrix().get(0));
+        return new ViewData(brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY(), brickGenerator.getNextBrick().getShapeMatrix().getFirst(), holdBrick.getShapeMatrix().getFirst());
     }
 
     @Override
