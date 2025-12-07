@@ -15,6 +15,9 @@ import java.util.ResourceBundle;
 public class GuiController implements Initializable {
 
     @FXML
+    private GridPane holdBrickPanel;
+
+    @FXML
     private GridPane nextBrickPanel;
 
     @FXML
@@ -64,14 +67,17 @@ public class GuiController implements Initializable {
         viewModel.nextBrickProperty().addListener((obs, oldVal, newVal) -> {
             hudRenderer.refreshPreview(nextBrickPanel, newVal);
         });
+        viewModel.holdBrickProperty().addListener((obs, oldVal, newVal) -> {
+            hudRenderer.refreshPreview(holdBrickPanel, newVal);
+        });
     }
 
     public void initHud() {
         if (viewModel == null) {
             return;
         }
-        hudRenderer.setNextPanel(nextBrickPanel);
-        hudRenderer.initHudView(viewModel.nextBrickProperty().getValue());
+        hudRenderer.initPreview(nextBrickPanel, viewModel.nextBrickProperty().getValue());
+        hudRenderer.initPreview(holdBrickPanel, viewModel.holdBrickProperty().getValue());
     }
 
     public GridPane getGamePanel() {

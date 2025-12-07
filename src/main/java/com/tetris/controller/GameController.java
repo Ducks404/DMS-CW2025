@@ -155,6 +155,7 @@ public class GameController implements InputEventListener {
     private boolean newBrick() {
         boolean collisionsOnNewBrick = board.createNewBrick();
         gameModel.setNextBrick(board.getViewData().nextBrickData());
+        gameModel.setHold(board.getViewData().holdBrickData());
         gameModel.setCanHold(true);
         return collisionsOnNewBrick;
     }

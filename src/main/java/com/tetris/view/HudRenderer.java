@@ -9,13 +9,7 @@ import java.util.Map;
 public class HudRenderer {
     private final static int PREVIEW_BRICK_SIZE = 20;
 
-    private GridPane nextPanel;
-
     private final Map<GridPane, Rectangle[][]> gridToRectangles = new HashMap<GridPane, Rectangle[][]>();
-
-    public void initHudView(int[][] nextData) {
-        initPreview(nextPanel, nextData);
-    }
 
     public void initPreview(GridPane brickPanel, int[][] brick) {
         Rectangle[][] rectangles = new Rectangle[brick.length][brick[0].length];
@@ -33,9 +27,5 @@ public class HudRenderer {
 
     public void refreshPreview(GridPane nextBrick, int[][] brick) {
         DrawBrickOperations.drawGrid(brick, gridToRectangles.get(nextBrick));
-    }
-
-    public void setNextPanel(GridPane nextPanel) {
-        this.nextPanel = nextPanel;
     }
 }
