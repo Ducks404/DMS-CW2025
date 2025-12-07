@@ -19,13 +19,12 @@ public class GameController implements InputEventListener {
     private AnimationTimer gameLoop;
 
     public GameController(GameRenderer gameRenderer, GameModel gameModel) {
-        board.createNewBrick();
-        this.gameRenderer = gameRenderer;
-        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
-
         this.gameModel = gameModel;
         gameModel.setScore(board.getScore());
-        updateNextBrick();
+        newBrick();
+
+        this.gameRenderer = gameRenderer;
+        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
     }
 
     public void start() {
@@ -57,6 +56,7 @@ public class GameController implements InputEventListener {
             case EventType.MOVE_LEFT -> onLeftEvent();
             case EventType.MOVE_RIGHT -> onRightEvent();
             case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
             default -> System.err.println("Game event not handled by this game controller.");
@@ -75,12 +75,11 @@ public class GameController implements InputEventListener {
             if (clearRow.linesRemoved() > 0) {
                 board.addScore(clearRow.scoreBonus());
             }
-            if (board.createNewBrick()) {
+            if (newBrick()) {
                 gameOver();
             }
 
             gameRenderer.refreshGameBackground(board.getBoardMatrix());
-            updateNextBrick();
         } else {
             if (eventSource == EventSource.USER) {
                 board.addScore(1);
@@ -123,6 +122,18 @@ public class GameController implements InputEventListener {
         gameRenderer.refreshBrick(board.getViewData());
     }
 
+    private void onHoldEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        if (gameModel.canHoldProperty().getValue()) {
+            board.holdBrick();
+            gameModel.setHold(board.getViewData().holdBrickData());
+            gameModel.setCanHold(false);
+            gameModel.setNextBrick(board.getViewData().nextBrickData());
+        }
+    }
+
     private void createNewGame() {
         gameModel.setIsGameOver(false);
         board.newGame();
@@ -141,10 +152,11 @@ public class GameController implements InputEventListener {
         }
     }
 
-    private void updateNextBrick() {
-        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return;
-        }
+    private boolean newBrick() {
+        boolean collisionsOnNewBrick = board.createNewBrick();
         gameModel.setNextBrick(board.getViewData().nextBrickData());
+        gameModel.setHold(board.getViewData().holdBrickData());
+        gameModel.setCanHold(true);
+        return collisionsOnNewBrick;
     }
 }

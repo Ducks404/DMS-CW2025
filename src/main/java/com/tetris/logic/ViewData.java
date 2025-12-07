@@ -2,7 +2,7 @@ package com.tetris.logic;
 
 import com.tetris.util.MatrixOperations;
 
-public record ViewData(int[][] brickData, int xPosition, int yPosition, int[][] nextBrickData) {
+public record ViewData(int[][] brickData, int xPosition, int yPosition, int[][] nextBrickData, int[][] holdBrickData) {
 
     @Override
     public int[][] brickData() {
@@ -12,5 +12,10 @@ public record ViewData(int[][] brickData, int xPosition, int yPosition, int[][] 
     @Override
     public int[][] nextBrickData() {
         return MatrixOperations.copy(nextBrickData);
+    }
+
+    @Override
+    public int[][] holdBrickData() {
+        return MatrixOperations.copy(holdBrickData);
     }
 }
