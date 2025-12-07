@@ -16,7 +16,7 @@ public class GameRenderer {
     private final Group groupNotification;
 
     private Rectangle[][] displayMatrix;
-    private Rectangle[][] rectangles;
+    private Rectangle[][] brickMatrix;
 
     public GameRenderer(GridPane gamePanel, GridPane brickPanel, Group groupNotification) {
         this.gamePanel = gamePanel;
@@ -36,15 +36,15 @@ public class GameRenderer {
             }
         }
 
-        rectangles = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
+        brickMatrix = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
         for (int i = 0; i < brick.brickData().length; i++) {
             for (int j = 0; j < brick.brickData()[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(DrawBrickOperations.getFillColor(brick.brickData()[i][j]));
-                rectangles[i][j] = rectangle;
+                brickMatrix[i][j] = rectangle;
                 brickPanel.add(rectangle, j, i);
             }
         }
+        DrawBrickOperations.drawGrid(brick.brickData(), brickMatrix);
         setBrickPanelLayout(brick);
     }
 
@@ -63,7 +63,7 @@ public class GameRenderer {
 
     public void refreshBrick(ViewData brick) {
         setBrickPanelLayout(brick);
-        DrawBrickOperations.drawGrid(brick.brickData(), rectangles);
+        DrawBrickOperations.drawGrid(brick.brickData(), brickMatrix);
     }
 
     public void sendNotification(int scoreBonus) {
