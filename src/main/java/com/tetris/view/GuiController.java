@@ -15,6 +15,9 @@ import java.util.ResourceBundle;
 public class GuiController implements Initializable {
 
     @FXML
+    private GridPane nextBrickPanel;
+
+    @FXML
     private GridPane gamePanel;
 
     @FXML
@@ -33,6 +36,7 @@ public class GuiController implements Initializable {
     private Label scoreLabel;
 
     private ViewModel viewModel;
+    private final HudRenderer hudRenderer = new HudRenderer();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,6 +61,17 @@ public class GuiController implements Initializable {
         pausePanel.visibleProperty().bind(viewModel.pauseProperty());
         gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
         scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
+        viewModel.nextBrickProperty().addListener((obs, oldVal, newVal) -> {
+            hudRenderer.refreshPreview(nextBrickPanel, newVal);
+        });
+    }
+
+    public void initHud() {
+        if (viewModel == null) {
+            return;
+        }
+        hudRenderer.setNextPanel(nextBrickPanel);
+        hudRenderer.initHudView(viewModel.nextBrickProperty().getValue());
     }
 
     public GridPane getGamePanel() {

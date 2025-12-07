@@ -2,6 +2,7 @@ package com.tetris.viewmodel;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.input.KeyEvent;
 
 public interface ViewModel {
@@ -13,4 +14,6 @@ public interface ViewModel {
     ReadOnlyBooleanProperty gameOverProperty();
 
     ReadOnlyIntegerProperty scoreProperty();
+
+    ReadOnlyObjectProperty<int[][]> nextBrickProperty();
 }
