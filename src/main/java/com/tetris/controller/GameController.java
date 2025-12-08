@@ -159,6 +159,7 @@ public class GameController implements InputEventListener {
 
     private void createNewGame() {
         gameModel.setIsGameOver(false);
+        gameModel.setIsPause(false);
         board.newGame();
         gameRenderer.refreshGameBackground(board.getBoardMatrix());
         gameRenderer.refreshBrick(board.getViewData());
