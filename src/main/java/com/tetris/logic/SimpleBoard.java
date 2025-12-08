@@ -149,7 +149,7 @@ public class SimpleBoard implements Board {
     }
 
     @Override
-    public int getRowUntilCollision() {
+    public int getRowUntilFloor() {
         int numRows = 0;
         int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
         boolean conflict;
@@ -160,6 +160,6 @@ public class SimpleBoard implements Board {
             conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
         } while (!conflict);
 
-        return numRows;
+        return numRows-1;
     }
 }

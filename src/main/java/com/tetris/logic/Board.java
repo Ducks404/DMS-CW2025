@@ -28,5 +28,5 @@ public interface Board {
 
     void newGame();
 
-    int getRowUntilCollision();
+    int getRowUntilFloor();
 }

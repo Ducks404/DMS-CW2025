@@ -69,10 +69,12 @@ public class GameController implements InputEventListener {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
-        boolean canMove;
-        do {
-            canMove = board.moveBrickDown();
-        } while (canMove);
+        int rowsUntilFloor = board.getRowUntilFloor();
+        boolean collision;
+        for (int i=0; i<rowsUntilFloor; i++) {
+            collision = !board.moveBrickDown();
+            if (collision) {System.out.println("Collided");break;};
+        }
         handleBrickOnFloor();
 
         gameRenderer.refreshBrick(board.getViewData());
@@ -93,7 +95,7 @@ public class GameController implements InputEventListener {
         }
 
         gameRenderer.refreshBrick(board.getViewData());
-        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilCollision());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 
     private void handleBrickOnFloor() {
@@ -106,7 +108,7 @@ public class GameController implements InputEventListener {
 
         gameRenderer.refreshGameBackground(board.getBoardMatrix());
         gameRenderer.refreshBrick(board.getViewData());
-        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilCollision());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 
     private void checkClearedRows() {
@@ -129,7 +131,7 @@ public class GameController implements InputEventListener {
         }
         board.moveBrickLeft();
         gameRenderer.refreshBrick(board.getViewData());
-        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilCollision());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 
 
@@ -139,7 +141,7 @@ public class GameController implements InputEventListener {
         }
         board.moveBrickRight();
         gameRenderer.refreshBrick(board.getViewData());
-        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilCollision());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 
     private void onRotateEvent() {
@@ -148,7 +150,7 @@ public class GameController implements InputEventListener {
         }
         board.rotateLeftBrick();
         gameRenderer.refreshBrick(board.getViewData());
-        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilCollision());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 
     private void onHoldEvent() {
@@ -168,7 +170,7 @@ public class GameController implements InputEventListener {
         board.newGame();
         gameRenderer.refreshGameBackground(board.getBoardMatrix());
         gameRenderer.refreshBrick(board.getViewData());
-        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilCollision());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
         gameLoop.start();
     }
 

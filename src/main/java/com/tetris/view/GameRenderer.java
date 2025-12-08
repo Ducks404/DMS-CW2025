@@ -88,9 +88,9 @@ public class GameRenderer {
         notificationPanel.showScore(groupNotification.getChildren());
     }
 
-    public void refreshGhost(ViewData brick, int rowUntilCollision) {
+    public void refreshGhost(ViewData brick, int rowUntilFloor) {
         ghostPanel.setLayoutX(brick.xPosition() * (ghostPanel.getHgap() + BRICK_SIZE));
-        ghostPanel.setLayoutY((brick.yPosition() + rowUntilCollision-1 - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE));
+        ghostPanel.setLayoutY((brick.yPosition() + rowUntilFloor - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE));
         DrawBrickOperations.drawGrid(brick.brickData(), ghostMatrix, 0.25);
     }
 }
