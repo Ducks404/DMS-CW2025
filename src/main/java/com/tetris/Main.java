@@ -12,6 +12,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -57,10 +58,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        GridPane gamePanel = guiController.getGamePanel();
-        GridPane brickPanel = guiController.getBrickPanel();
-        Group groupNotification = guiController.getGroupNotification();
-        GameRenderer gameRenderer = new GameRenderer(gamePanel, brickPanel, groupNotification);
+        Pane gameArea = guiController.getGameArea();
+        GameRenderer gameRenderer = new GameRenderer(gameArea);
         GameModel gameModel = new GameModel();
         GameController gameController = new GameController(gameRenderer, gameModel);
         ViewModel gameViewModel = new GameViewModel(gameController, gameModel);

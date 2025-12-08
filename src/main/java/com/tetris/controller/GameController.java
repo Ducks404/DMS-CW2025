@@ -69,13 +69,15 @@ public class GameController implements InputEventListener {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
-        boolean canMove;
-        do {
-            canMove = board.moveBrickDown();
-        } while (canMove);
+        int rowsUntilFloor = board.getRowUntilFloor();
+        boolean collision;
+        for (int i=0; i<rowsUntilFloor; i++) {
+            collision = !board.moveBrickDown();
+            if (collision) {System.out.println("Collided");break;};
+        }
         handleBrickOnFloor();
 
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
 
     }
 
@@ -92,7 +94,7 @@ public class GameController implements InputEventListener {
             }
         }
 
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
     }
 
     private void handleBrickOnFloor() {
@@ -102,8 +104,7 @@ public class GameController implements InputEventListener {
         if (newBrick()) {
             gameOver();
         }
-
-        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+        refresh();
     }
 
     private void checkClearedRows() {
@@ -125,7 +126,7 @@ public class GameController implements InputEventListener {
             return;
         }
         board.moveBrickLeft();
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
     }
 
 
@@ -134,7 +135,7 @@ public class GameController implements InputEventListener {
             return;
         }
         board.moveBrickRight();
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
     }
 
     private void onRotateEvent() {
@@ -142,7 +143,7 @@ public class GameController implements InputEventListener {
             return;
         }
         board.rotateLeftBrick();
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
     }
 
     private void onHoldEvent() {
@@ -154,14 +155,15 @@ public class GameController implements InputEventListener {
             gameModel.setHold(board.getViewData().holdBrickData());
             gameModel.setCanHold(false);
             gameModel.setNextBrick(board.getViewData().nextBrickData());
+
+            refresh();
         }
     }
 
     private void createNewGame() {
         gameModel.setIsGameOver(false);
         board.newGame();
-        gameRenderer.refreshGameBackground(board.getBoardMatrix());
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
         gameLoop.start();
     }
 
@@ -181,5 +183,11 @@ public class GameController implements InputEventListener {
         gameModel.setHold(board.getViewData().holdBrickData());
         gameModel.setCanHold(true);
         return collisionsOnNewBrick;
+    }
+
+    private void refresh() {
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+        gameRenderer.refreshBrick(board.getViewData());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 }

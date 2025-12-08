@@ -1,6 +1,5 @@
 package com.tetris.logic;
 
-import com.tetris.*;
 import com.tetris.logic.bricks.Brick;
 import com.tetris.logic.bricks.BrickGenerator;
 import com.tetris.logic.bricks.NullBrick;
@@ -147,5 +146,20 @@ public class SimpleBoard implements Board {
         currentGameMatrix = new int[height][width];
         score.reset();
         createNewBrick();
+    }
+
+    @Override
+    public int getRowUntilFloor() {
+        int numRows = 0;
+        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
+        boolean conflict;
+        do {
+            numRows++;
+            Point p = new Point(currentOffset);
+            p.translate(0, numRows);
+            conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
+        } while (!conflict);
+
+        return numRows-1;
     }
 }
