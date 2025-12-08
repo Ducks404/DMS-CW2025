@@ -14,20 +14,30 @@ public class GameRenderer {
     private static final int BRICK_SIZE = 20;
     private static final int ROWS_ABOVE_GRID = 2;
 
-    private final GridPane gamePanel;
-    private final GridPane brickPanel;
-    private final Group groupNotification;
-    private final GridPane ghostPanel;
+    private GridPane gamePanel;
+    private GridPane brickPanel;
+    private Group groupNotification;
+    private GridPane ghostPanel;
 
     private Rectangle[][] displayMatrix;
     private Rectangle[][] brickMatrix;
     private Rectangle[][] ghostMatrix;
 
-    public GameRenderer(Pane gameArea) {
-        this.gamePanel = (GridPane) gameArea.lookup("#gamePanel");
-        this.brickPanel = (GridPane) gameArea.lookup("#brickPanel");
-        this.groupNotification = (Group) gameArea.lookup("#groupNotification");
-        this.ghostPanel = (GridPane) gameArea.lookup("#ghostPanel");
+    public GameRenderer() {
+
+    }
+
+    public void setGamePanel(GridPane gamePanel) {
+        this.gamePanel = gamePanel;
+    }
+    public void setBrickPanel(GridPane brickPanel) {
+        this.brickPanel = brickPanel;
+    }
+    public void setGhostPanel(GridPane ghostPanel) {
+        this.ghostPanel = ghostPanel;
+    }
+    public void setGroupNotification(Group groupNotification) {
+        this.groupNotification = groupNotification;
     }
 
     private Rectangle[][] initGrid(GridPane gridPane, int[][] matrix) {
@@ -79,4 +89,5 @@ public class GameRenderer {
         ghostPanel.setLayoutY((brick.yPosition() + rowUntilFloor - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE));
         DrawBrickOperations.drawGrid(brick.brickData(), ghostMatrix, 0.25);
     }
+
 }
