@@ -1,7 +1,9 @@
 package com.tetris;
 
 import com.tetris.controller.GameController;
+import com.tetris.input.GameInputMap;
 import com.tetris.logic.GameModel;
+import com.tetris.logic.SettingsModel;
 import com.tetris.view.GameRenderer;
 import com.tetris.view.GuiController;
 import com.tetris.viewmodel.GameViewModel;
@@ -61,8 +63,10 @@ public class Main extends Application {
         GameRenderer gameRenderer = new GameRenderer();
         guiController.setGameRenderer(gameRenderer);
         GameModel gameModel = new GameModel();
+        SettingsModel settingsModel = new SettingsModel();
+        settingsModel.setInputMap(new GameInputMap());
         GameController gameController = new GameController(gameRenderer, gameModel);
-        ViewModel gameViewModel = new GameViewModel(gameController, gameModel);
+        ViewModel gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
         guiController.setViewModel(gameViewModel);
         guiController.bindViewModel();
         guiController.initHud();
