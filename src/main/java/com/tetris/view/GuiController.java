@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class GuiController implements Initializable {
 
     @FXML
-    private Pane gameArea;
+    private GridPane ghostPanel;
 
     @FXML
     private GridPane holdBrickPanel;
@@ -44,6 +44,7 @@ public class GuiController implements Initializable {
 
     private ViewModel viewModel;
     private final HudRenderer hudRenderer = new HudRenderer();
+    private GameRenderer gameRenderer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -84,19 +85,11 @@ public class GuiController implements Initializable {
         hudRenderer.initPreview(holdBrickPanel, viewModel.holdBrickProperty().getValue());
     }
 
-    public GridPane getGamePanel() {
-        return gamePanel;
-    }
-
-    public GridPane getBrickPanel() {
-        return brickPanel;
-    }
-
-    public Group getGroupNotification() {
-        return groupNotification;
-    }
-
-    public Pane getGameArea() {
-        return gameArea;
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.gameRenderer = gameRenderer;
+        gameRenderer.setGamePanel(gamePanel);
+        gameRenderer.setBrickPanel(brickPanel);
+        gameRenderer.setGhostPanel(ghostPanel);
+        gameRenderer.setGroupNotification(groupNotification);
     }
 }

@@ -58,8 +58,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        Pane gameArea = guiController.getGameArea();
-        GameRenderer gameRenderer = new GameRenderer(gameArea);
+        GameRenderer gameRenderer = new GameRenderer();
+        guiController.setGameRenderer(gameRenderer);
         GameModel gameModel = new GameModel();
         GameController gameController = new GameController(gameRenderer, gameModel);
         ViewModel gameViewModel = new GameViewModel(gameController, gameModel);
