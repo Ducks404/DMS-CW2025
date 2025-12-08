@@ -11,6 +11,8 @@ import javafx.animation.AnimationTimer;
 
 public class GameController implements InputEventListener {
 
+    private double SPEED = 2.3; // Rows per Second
+    private static final int SCORE_PER_ROW = 1;
     private static final int BASE_BONUS = 50;
     private final Board board = new SimpleBoard(25, 10);
 
@@ -39,7 +41,7 @@ public class GameController implements InputEventListener {
                     return;
                 }
 
-                long interval = 400_000_000;
+                long interval = (long) (1.0/SPEED * 1_000_000_000);
                 if (now - lastUpdate >= interval) {
                     onDownEvent(EventSource.THREAD);
                     lastUpdate = now;
@@ -70,15 +72,15 @@ public class GameController implements InputEventListener {
             return;
         }
         int rowsUntilFloor = board.getRowUntilFloor();
-        boolean collision;
+
         for (int i=0; i<rowsUntilFloor; i++) {
-            collision = !board.moveBrickDown();
-            if (collision) {System.out.println("Collided");break;};
+            board.moveBrickDown();
+            board.addScore(SCORE_PER_ROW);
         }
+
         handleBrickOnFloor();
 
         refresh();
-
     }
 
     private void onDownEvent(EventSource eventSource) {
@@ -90,35 +92,11 @@ public class GameController implements InputEventListener {
             handleBrickOnFloor();
         } else {
             if (eventSource == EventSource.USER) {
-                board.addScore(1);
+                board.addScore(SCORE_PER_ROW);
             }
         }
 
         refresh();
-    }
-
-    private void handleBrickOnFloor() {
-        board.mergeBrickToBackground();
-        checkClearedRows();
-
-        if (newBrick()) {
-            gameOver();
-        }
-        refresh();
-    }
-
-    private void checkClearedRows() {
-        ClearRow clearRow = board.clearRows();
-        if (clearRow.linesRemoved() > 0) {
-            int scoreBonus = BASE_BONUS * clearRow.linesRemoved() * clearRow.linesRemoved();
-            board.addScore(scoreBonus);
-            gameRenderer.sendNotification(scoreBonus);
-        }
-    }
-
-    private void gameOver() {
-        gameLoop.stop();
-        gameModel.setIsGameOver(true);
     }
 
     private void onLeftEvent() {
@@ -128,7 +106,6 @@ public class GameController implements InputEventListener {
         board.moveBrickLeft();
         refresh();
     }
-
 
     private void onRightEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
@@ -158,6 +135,30 @@ public class GameController implements InputEventListener {
 
             refresh();
         }
+    }
+
+    private void handleBrickOnFloor() {
+        board.mergeBrickToBackground();
+        checkClearedRows();
+
+        if (newBrick()) {
+            gameOver();
+        }
+        refresh();
+    }
+
+    private void checkClearedRows() {
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.linesRemoved() > 0) {
+            int scoreBonus = BASE_BONUS * clearRow.linesRemoved() * clearRow.linesRemoved();
+            board.addScore(scoreBonus);
+            gameRenderer.sendNotification(scoreBonus);
+        }
+    }
+
+    private void gameOver() {
+        gameLoop.stop();
+        gameModel.setIsGameOver(true);
     }
 
     private void createNewGame() {
