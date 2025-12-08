@@ -23,9 +23,7 @@ public class GameRenderer {
     private Rectangle[][] brickMatrix;
     private Rectangle[][] ghostMatrix;
 
-    public GameRenderer() {
-
-    }
+    public GameRenderer() {}
 
     public void setGamePanel(GridPane gamePanel) {
         this.gamePanel = gamePanel;
@@ -49,24 +47,24 @@ public class GameRenderer {
                 gridPane.add(rectangle, j, i);
             }
         }
-        DrawBrickOperations.drawGrid(matrix, rectangles);
 
         return rectangles;
     }
 
     public void initGameView(int[][] boardMatrix, ViewData brick) {
         displayMatrix = initGrid(gamePanel, Arrays.copyOfRange(boardMatrix, ROWS_ABOVE_GRID, boardMatrix.length));
+        refreshGameBackground(boardMatrix);
 
         brickMatrix = initGrid(brickPanel, brick.brickData());
-        setBrickPanelLayout(brick);
+        refreshBrick(brick);
 
         ghostMatrix = initGrid(ghostPanel, brick.brickData());
         refreshGhost(brick, boardMatrix.length-ROWS_ABOVE_GRID-1);
     }
 
-    private void setBrickPanelLayout(ViewData brick){
-        brickPanel.setLayoutX(brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE));
-        brickPanel.setLayoutY((brick.yPosition()-ROWS_ABOVE_GRID) * (brickPanel.getVgap() + BRICK_SIZE));
+    private void setPanelLayout(Pane panel, double x, double y) {
+        panel.setLayoutX(x);
+        panel.setLayoutY(y);
     }
 
     public void refreshGameBackground(int[][] board) {
@@ -74,8 +72,19 @@ public class GameRenderer {
     }
 
     public void refreshBrick(ViewData brick) {
-        setBrickPanelLayout(brick);
+        setPanelLayout(brickPanel,
+                brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE),
+                (brick.yPosition()-ROWS_ABOVE_GRID) * (brickPanel.getVgap() + BRICK_SIZE)
+        );
         DrawBrickOperations.drawGrid(brick.brickData(), brickMatrix);
+    }
+
+    public void refreshGhost(ViewData brick, int rowUntilFloor) {
+        setPanelLayout(ghostPanel,
+                brick.xPosition() * (ghostPanel.getHgap() + BRICK_SIZE),
+                (brick.yPosition() + rowUntilFloor - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE)
+        );
+        DrawBrickOperations.drawGrid(brick.brickData(), ghostMatrix, 0.25);
     }
 
     public void sendNotification(int scoreBonus) {
@@ -83,11 +92,4 @@ public class GameRenderer {
         groupNotification.getChildren().add(notificationPanel);
         notificationPanel.showScore(groupNotification.getChildren());
     }
-
-    public void refreshGhost(ViewData brick, int rowUntilFloor) {
-        ghostPanel.setLayoutX(brick.xPosition() * (ghostPanel.getHgap() + BRICK_SIZE));
-        ghostPanel.setLayoutY((brick.yPosition() + rowUntilFloor - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE));
-        DrawBrickOperations.drawGrid(brick.brickData(), ghostMatrix, 0.25);
-    }
-
 }
