@@ -17,8 +17,12 @@ public class BaseInputMap implements InputMap {
     }
 
     @Override
-    public void bind(KeyCode key, EventType eventType) {
+    public int bind(KeyCode key, EventType eventType) {
+        if (!has(key)) {
+            return 1;
+        }
         map.put(key, eventType);
+        return 0;
     }
 
     @Override
