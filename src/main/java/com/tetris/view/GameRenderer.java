@@ -3,6 +3,7 @@ package com.tetris.view;
 import com.tetris.logic.ViewData;
 import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -14,14 +15,18 @@ public class GameRenderer {
     private final GridPane gamePanel;
     private final GridPane brickPanel;
     private final Group groupNotification;
+    private final GridPane ghostPanel;
 
     private Rectangle[][] displayMatrix;
-    private Rectangle[][] rectangles;
+    private Rectangle[][] brickMatrix;
+    private Rectangle[][] ghostMatrix;
 
-    public GameRenderer(GridPane gamePanel, GridPane brickPanel, Group groupNotification) {
-        this.gamePanel = gamePanel;
-        this.brickPanel = brickPanel;
-        this.groupNotification = groupNotification;
+    public GameRenderer(Pane gameArea) {
+        this.gamePanel = (GridPane) gameArea.lookup("#gamePanel");
+        this.brickPanel = (GridPane) gameArea.lookup("#brickPanel");
+        this.groupNotification = (Group) gameArea.lookup("#groupNotification");
+        this.ghostPanel = (GridPane) gameArea.lookup("#ghostPanel");
+//        gameArea.getChildren().add(ghostPanel);
     }
 
 
@@ -36,16 +41,27 @@ public class GameRenderer {
             }
         }
 
-        rectangles = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
+        brickMatrix = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
         for (int i = 0; i < brick.brickData().length; i++) {
             for (int j = 0; j < brick.brickData()[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
                 rectangle.setFill(DrawBrickOperations.getFillColor(brick.brickData()[i][j]));
-                rectangles[i][j] = rectangle;
+                brickMatrix[i][j] = rectangle;
                 brickPanel.add(rectangle, j, i);
             }
         }
         setBrickPanelLayout(brick);
+
+        ghostMatrix = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
+        for (int i = 0; i < brick.brickData().length; i++) {
+            for (int j = 0; j < brick.brickData()[i].length; j++) {
+                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
+                rectangle.setFill(((Color) DrawBrickOperations.getFillColor(brick.brickData()[i][j])).deriveColor(1.0, 1.0, 1.0, 0.25));
+                ghostMatrix[i][j] = rectangle;
+                ghostPanel.add(rectangle, j, i);
+            }
+        }
+        refreshGhost(brick, 0);
     }
 
     private void setBrickPanelLayout(ViewData brick){
@@ -63,12 +79,18 @@ public class GameRenderer {
 
     public void refreshBrick(ViewData brick) {
         setBrickPanelLayout(brick);
-        DrawBrickOperations.drawGrid(brick.brickData(), rectangles);
+        DrawBrickOperations.drawGrid(brick.brickData(), brickMatrix);
     }
 
     public void sendNotification(int scoreBonus) {
         NotificationPanel notificationPanel = new NotificationPanel("+" + scoreBonus);
         groupNotification.getChildren().add(notificationPanel);
         notificationPanel.showScore(groupNotification.getChildren());
+    }
+
+    public void refreshGhost(ViewData brick, int rowUntilCollision) {
+        ghostPanel.setLayoutX(brick.xPosition() * (ghostPanel.getHgap() + BRICK_SIZE));
+        ghostPanel.setLayoutY((brick.yPosition() + rowUntilCollision-1 - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE));
+        DrawBrickOperations.drawGrid(brick.brickData(), ghostMatrix, 0.25);
     }
 }

@@ -7,12 +7,16 @@ import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
+
+    @FXML
+    private Pane gameArea;
 
     @FXML
     private GridPane holdBrickPanel;
@@ -90,5 +94,9 @@ public class GuiController implements Initializable {
 
     public Group getGroupNotification() {
         return groupNotification;
+    }
+
+    public Pane getGameArea() {
+        return gameArea;
     }
 }
