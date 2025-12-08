@@ -116,3 +116,8 @@
     -fx-font-size: 30;
     -fx-text-fill: white;
 }
+
+.controlText {
+    -fx-font-size: 18;
+    -fx-text-fill: white;
+}

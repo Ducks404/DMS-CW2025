@@ -6,8 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
 import java.net.URL;
@@ -15,6 +14,10 @@ import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
 
+    @FXML
+    private HBox root;
+    @FXML
+    private VBox gameArea;
     @FXML
     private GridPane ghostPanel;
 
@@ -49,12 +52,12 @@ public class GuiController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
+        gameArea.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
         gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
         gameOverPanel.setVisible(false);
         pausePanel.setVisible(false);
-
         final Reflection reflection = new Reflection();
         reflection.setFraction(0.8);
         reflection.setTopOpacity(0.9);

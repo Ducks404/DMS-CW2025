@@ -24,8 +24,8 @@ public class Main extends Application {
     private static final int PREF_HEIGHT = 900;
     private static final int MIN_WIDTH = 600;
     private static final int MIN_HEIGHT = 900;
-    private static final int MAX_WIDTH = 900;
-    private static final int MAX_HEIGHT = 1350;
+    private static final int MAX_WIDTH = 1350;
+    private static final int MAX_HEIGHT = 900;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -41,7 +41,7 @@ public class Main extends Application {
         if (root instanceof Region regionRoot) {
             regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
             regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
-            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+//            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
             System.out.println("Root is not a Region! Can't set sizes.");
         }
@@ -51,8 +51,8 @@ public class Main extends Application {
 
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
-        primaryStage.setMaxWidth(MAX_WIDTH);
-        primaryStage.setMaxHeight(MAX_HEIGHT);
+//        primaryStage.setMaxWidth(MAX_WIDTH);
+//        primaryStage.setMaxHeight(MAX_HEIGHT);
 
         primaryStage.sizeToScene();
         primaryStage.setScene(scene);
