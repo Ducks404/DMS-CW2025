@@ -10,7 +10,7 @@ public class DrawBrickOperations {
 
     public static void drawGrid(int[][] gridData, Rectangle[][] grid, double opacity) {
         for (int i = 0; i < gridData.length; i++) {
-            for (int j = 0; j < gridData.length; j++) {
+            for (int j = 0; j < gridData[0].length; j++) {
                 DrawBrickOperations.setRectangleData(gridData[i][j], grid[i][j], opacity);
             }
         }

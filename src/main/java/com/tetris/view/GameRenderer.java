@@ -7,6 +7,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Arrays;
+
 public class GameRenderer {
 
     private static final int BRICK_SIZE = 20;
@@ -26,42 +28,30 @@ public class GameRenderer {
         this.brickPanel = (GridPane) gameArea.lookup("#brickPanel");
         this.groupNotification = (Group) gameArea.lookup("#groupNotification");
         this.ghostPanel = (GridPane) gameArea.lookup("#ghostPanel");
-//        gameArea.getChildren().add(ghostPanel);
     }
 
+    private Rectangle[][] initGrid(GridPane gridPane, int[][] matrix) {
+        Rectangle[][] rectangles = new Rectangle[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
+                rectangles[i][j] = rectangle;
+                gridPane.add(rectangle, j, i);
+            }
+        }
+        DrawBrickOperations.drawGrid(matrix, rectangles);
+
+        return rectangles;
+    }
 
     public void initGameView(int[][] boardMatrix, ViewData brick) {
-        displayMatrix = new Rectangle[boardMatrix.length][boardMatrix[0].length];
-        for (int i = ROWS_ABOVE_GRID; i < boardMatrix.length; i++) {
-            for (int j = 0; j < boardMatrix[i].length; j++) {
-                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(Color.TRANSPARENT);
-                displayMatrix[i][j] = rectangle;
-                gamePanel.add(rectangle, j, i-ROWS_ABOVE_GRID);
-            }
-        }
+        displayMatrix = initGrid(gamePanel, Arrays.copyOfRange(boardMatrix, ROWS_ABOVE_GRID, boardMatrix.length));
 
-        brickMatrix = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
-        for (int i = 0; i < brick.brickData().length; i++) {
-            for (int j = 0; j < brick.brickData()[i].length; j++) {
-                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(DrawBrickOperations.getFillColor(brick.brickData()[i][j]));
-                brickMatrix[i][j] = rectangle;
-                brickPanel.add(rectangle, j, i);
-            }
-        }
+        brickMatrix = initGrid(brickPanel, brick.brickData());
         setBrickPanelLayout(brick);
 
-        ghostMatrix = new Rectangle[brick.brickData().length][brick.brickData()[0].length];
-        for (int i = 0; i < brick.brickData().length; i++) {
-            for (int j = 0; j < brick.brickData()[i].length; j++) {
-                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(((Color) DrawBrickOperations.getFillColor(brick.brickData()[i][j])).deriveColor(1.0, 1.0, 1.0, 0.25));
-                ghostMatrix[i][j] = rectangle;
-                ghostPanel.add(rectangle, j, i);
-            }
-        }
-        refreshGhost(brick, 0);
+        ghostMatrix = initGrid(ghostPanel, brick.brickData());
+        refreshGhost(brick, boardMatrix.length-ROWS_ABOVE_GRID-1);
     }
 
     private void setBrickPanelLayout(ViewData brick){
@@ -70,11 +60,7 @@ public class GameRenderer {
     }
 
     public void refreshGameBackground(int[][] board) {
-        for (int i = ROWS_ABOVE_GRID; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                DrawBrickOperations.setRectangleData(board[i][j], displayMatrix[i][j]);
-            }
-        }
+        DrawBrickOperations.drawGrid(Arrays.copyOfRange(board, ROWS_ABOVE_GRID, board.length), displayMatrix);
     }
 
     public void refreshBrick(ViewData brick) {
