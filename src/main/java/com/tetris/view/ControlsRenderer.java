@@ -21,7 +21,7 @@ public class ControlsRenderer {
     public ControlsRenderer(ViewModel viewModel, SettingsViewModel settingsViewModel, Pane controlsPanel) {
         this.viewModel = viewModel;
         this.settingsViewModel = settingsViewModel;
-        this. controlsPanel = controlsPanel;
+        this.controlsPanel = controlsPanel;
 
         isRemapMode.bind(settingsViewModel.isRemapModeProperty());
     }
@@ -65,8 +65,8 @@ public class ControlsRenderer {
             } else {
                 controlsButton.setText("Change Keybinds");
             }
-            settingsViewModel.toggleIsRemapMode();
-            viewModel.togglePause();
+            settingsViewModel.onChangeKeybindButtonPressed();
+            viewModel.onChangeKeybindButtonPressed();
         });
         controlsPanel.getChildren().add(controlsButton);
     }

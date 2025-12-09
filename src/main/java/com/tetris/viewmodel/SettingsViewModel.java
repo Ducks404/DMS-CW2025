@@ -65,4 +65,8 @@ public class SettingsViewModel {
     public InputMap getInputMap() {
         return inputMapProperty().getValue();
     }
+
+    public void onChangeKeybindButtonPressed() {
+        toggleIsRemapMode();
+    }
 }

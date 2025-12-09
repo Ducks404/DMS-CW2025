@@ -33,7 +33,7 @@ public class GameViewModel implements ViewModel {
         keyEvent.consume();
     }
 
-    public void togglePause() {
+    private void togglePause() {
         eventListener.handleEvent(EventType.PAUSE);
     }
 
@@ -55,6 +55,11 @@ public class GameViewModel implements ViewModel {
 
     public ReadOnlyObjectProperty<int[][]> holdBrickProperty() {
         return gameModel.holdBrickProperty();
+    }
+
+    @Override
+    public void onChangeKeybindButtonPressed() {
+        togglePause();
     }
 
     private InputMap getInputMap() {

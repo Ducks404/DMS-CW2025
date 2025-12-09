@@ -9,8 +9,6 @@ public interface ViewModel {
 
     void handleKey(KeyEvent keyEvent);
 
-    void togglePause();
-
     ReadOnlyBooleanProperty pauseProperty();
 
     ReadOnlyBooleanProperty gameOverProperty();
@@ -20,4 +18,6 @@ public interface ViewModel {
     ReadOnlyObjectProperty<int[][]> nextBrickProperty();
 
     ReadOnlyObjectProperty<int[][]> holdBrickProperty();
+
+    void onChangeKeybindButtonPressed();
 }
