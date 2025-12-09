@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<HBox fx:id="root" fx:controller="com.tetris.view.mainMenuController"
+<HBox fx:id="root" fx:controller="com.tetris.view.MainMenuController"
       alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
     <VBox alignment="CENTER" maxWidth="Infinity" maxHeight="Infinity" spacing="20.0">
         <Label text="TETRIS" textOverrun="CLIP">

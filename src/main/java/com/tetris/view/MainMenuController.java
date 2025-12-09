@@ -2,12 +2,11 @@ package com.tetris.view;
 
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class mainMenuController implements Initializable {
+public class MainMenuController implements Initializable {
 
     public HBox root;
 
