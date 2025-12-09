@@ -57,7 +57,7 @@ public class GuiController implements Initializable {
 
     private ViewModel viewModel;
     private SettingsViewModel settingsViewModel;
-    private final BooleanProperty isRemapMode = new SimpleBooleanProperty();
+    private ControlsRenderer controlsRenderer;
     private final HudRenderer hudRenderer = new HudRenderer();
     private GameRenderer gameRenderer;
 
@@ -99,53 +99,12 @@ public class GuiController implements Initializable {
 
     public void setSettingsViewModel(SettingsViewModel settingsViewModel) {
         this.settingsViewModel = settingsViewModel;
+
     }
 
     public void bindSettingsViewModel() {
-        isRemapMode.bind(settingsViewModel.isRemapModeProperty());
-
-        for (var entry: settingsViewModel.inputMapProperty().getValue().entrySet()) {
-            HBox line = new HBox();
-            line.setFocusTraversable(false);
-            Label eventLabel = new Label(entry.getValue().getDisplayName());
-            eventLabel.getStyleClass().add("controlText");
-            Label keyLabel = new Label(StringOperations.toTitleCase(entry.getKey().toString()));
-            keyLabel.getStyleClass().add("controlText");
-            Region spacer = new Region();
-            spacer.setMinWidth(10);
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            line.getChildren().addAll(eventLabel, spacer, keyLabel);
-
-            line.setOnMouseClicked(e -> {
-                if (isRemapMode.getValue()) {
-                    settingsViewModel.startRemapping(entry.getValue());
-                    keyLabel.setText("<Press Key>");
-                    line.requestFocus();
-                }
-            });
-
-            line.setOnKeyPressed(e -> {
-                if (settingsViewModel.eventWaitingForKeyProperty().getValue() != null) {
-                    settingsViewModel.finishRemapping(e.getCode());
-                    keyLabel.setText(e.getCode().toString());
-                }
-            });
-
-            controlsPanel.getChildren().add(line);
-        }
-
-        Button controlsButton = new Button("Change Keybinds");
-        controlsButton.setFocusTraversable(false);
-        controlsButton.setOnAction(e -> {
-            if (!isRemapMode.getValue()) {
-                controlsButton.setText("Done");
-            } else {
-                controlsButton.setText("Change Keybinds");
-            }
-            settingsViewModel.toggleIsRemapMode();
-            viewModel.togglePause();
-        });
-        controlsPanel.getChildren().add(controlsButton);
+        this.controlsRenderer = new ControlsRenderer(viewModel, settingsViewModel, controlsPanel);
+        controlsRenderer.render();
     }
 
     public void initHud() {
