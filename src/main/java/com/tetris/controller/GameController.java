@@ -174,6 +174,7 @@ public class GameController implements InputEventListener {
         if (gameModel.pauseProperty().getValue()) {
             gameLoop.start();
             gameModel.setIsPause(false);
+            gameRenderer.requestFocus();
         } else {
             gameLoop.stop();
             gameModel.setIsPause(true);

@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
@@ -105,6 +106,7 @@ public class GuiController implements Initializable {
 
         for (var entry: settingsViewModel.inputMapProperty().getValue().entrySet()) {
             HBox line = new HBox();
+            line.setFocusTraversable(false);
             Label eventLabel = new Label(StringOperations.toTitleCase(entry.getValue().toString()));
             eventLabel.getStyleClass().add("controlText");
             Label keyLabel = new Label(StringOperations.toTitleCase(entry.getKey().toString()));
@@ -113,6 +115,21 @@ public class GuiController implements Initializable {
             spacer.setMinWidth(10);
             HBox.setHgrow(spacer, Priority.ALWAYS);
             line.getChildren().addAll(eventLabel, spacer, keyLabel);
+
+            line.setOnMouseClicked(e -> {
+                if (isRemapMode.getValue()) {
+                    settingsViewModel.startRemapping(entry.getValue());
+                    keyLabel.setText("<Press Key>");
+                    line.requestFocus();
+                }
+            });
+
+            line.setOnKeyPressed(e -> {
+                if (settingsViewModel.eventWaitingForKeyProperty().getValue() != null) {
+                    settingsViewModel.finishRemapping(e.getCode());
+                    keyLabel.setText(e.getCode().toString());
+                }
+            });
 
             controlsPanel.getChildren().add(line);
         }

@@ -19,11 +19,21 @@ public class BaseInputMap implements InputMap {
 
     @Override
     public int bind(KeyCode key, EventType eventType) {
-        if (!has(key)) {
+        if (!map.containsValue(eventType)) {
             return 1;
         }
+        map.remove(keyOf(eventType));
         map.put(key, eventType);
         return 0;
+    }
+
+    private KeyCode keyOf(EventType eventType){
+        for (var entry: map.entrySet()) {
+            if (entry.getValue()== eventType) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     @Override
