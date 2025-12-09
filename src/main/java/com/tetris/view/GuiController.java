@@ -1,5 +1,6 @@
 package com.tetris.view;
 
+import com.tetris.SceneManager;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;
@@ -64,15 +65,9 @@ public class GuiController implements Initializable {
         Platform.runLater(()->{
            gamePanel.requestFocus();
         });
-        Platform.runLater(()->{
-            gamePanel.requestFocus();
-        });
+        groupNotification.setLayoutY(200);
         gameOverPanel.setVisible(false);
         pausePanel.setVisible(false);
-        final Reflection reflection = new Reflection();
-        reflection.setFraction(0.8);
-        reflection.setTopOpacity(0.9);
-        reflection.setTopOffset(-12);
     }
 
     public void setGameViewModel(ViewModel viewModel) {
