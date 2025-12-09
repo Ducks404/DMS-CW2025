@@ -41,7 +41,7 @@ public class Main extends Application {
         init();
         SceneManager sm = SceneManager.getInstance();
         sm.init(primaryStage);
-        sm.switchTo(SceneType.GAME_MODE_NORMAL);
+        sm.switchTo(SceneType.MENU);
     }
 
 
