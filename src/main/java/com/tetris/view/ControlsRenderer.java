@@ -22,11 +22,11 @@ public class ControlsRenderer {
         this.viewModel = viewModel;
         this.settingsViewModel = settingsViewModel;
         this. controlsPanel = controlsPanel;
+
+        isRemapMode.bind(settingsViewModel.isRemapModeProperty());
     }
 
     public void render() {
-        isRemapMode.bind(settingsViewModel.isRemapModeProperty());
-
         for (var entry: settingsViewModel.controlBindingsProperty()) {
             HBox line = new HBox();
             line.setFocusTraversable(false);
