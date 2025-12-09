@@ -1,5 +1,6 @@
 package com.tetris.view;
 
+import com.tetris.util.StringOperations;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;
@@ -101,6 +102,20 @@ public class GuiController implements Initializable {
 
     public void bindSettingsViewModel() {
         isRemapMode.bind(settingsViewModel.isRemapModeProperty());
+
+        for (var entry: settingsViewModel.inputMapProperty().getValue().entrySet()) {
+            HBox line = new HBox();
+            Label eventLabel = new Label(StringOperations.toTitleCase(entry.getValue().toString()));
+            eventLabel.getStyleClass().add("controlText");
+            Label keyLabel = new Label(StringOperations.toTitleCase(entry.getKey().toString()));
+            keyLabel.getStyleClass().add("controlText");
+            Region spacer = new Region();
+            spacer.setMinWidth(10);
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+            line.getChildren().addAll(eventLabel, spacer, keyLabel);
+
+            controlsPanel.getChildren().add(line);
+        }
 
         Button controlsButton = new Button("Change Keybinds");
         controlsButton.setFocusTraversable(false);

@@ -21,13 +21,17 @@
         <VBox styleClass="controlsContainer" alignment="CENTER">
             <Label styleClass="containerLabel, controlsLabel">Controls</Label>
             <VBox fx:id="controlsPanel">
-                <HBox><Label styleClass="controlText">Pause</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">P</Label></HBox>
-                <HBox><Label styleClass="controlText">New Game</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">N</Label></HBox>
-                <HBox><Label styleClass="controlText">Rotate</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↑</Label></HBox>
-                <HBox><Label styleClass="controlText">Left</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">←</Label></HBox>
-                <HBox><Label styleClass="controlText">Right</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">→</Label></HBox>
-                <HBox><Label styleClass="controlText">Soft Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↓</Label></HBox>
-                <HBox><Label styleClass="controlText">Hard Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">Space</Label></HBox>
+                <!-- This Panel is filled in GuiController -->
+                <!-- The order of controls can be decided from the InputMap binding order-->
+
+                <!-- Example final structure -->
+<!--                <HBox><Label styleClass="controlText">Pause</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">P</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">New Game</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">N</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Rotate</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↑</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Left</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">←</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Right</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">→</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Soft Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↓</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Hard Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">Space</Label></HBox>-->
 <!--                <Button>Change Keybinds</Button>-->
             </VBox>
         </VBox>
