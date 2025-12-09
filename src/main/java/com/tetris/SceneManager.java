@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SceneManager {
     private static final int PREF_WIDTH = 600;
@@ -52,16 +53,20 @@ public class SceneManager {
 
     private Scene loadScene(SceneType type) {
         try {
-            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource(type.fxmlPath));
+            FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(type.fxmlPath)));
+            Parent root = fxmlLoader.load();
+            Scene scene;
+            if (root instanceof Region regionRoot) {
+                regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
+                regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+                regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        if (root instanceof Region regionRoot) {
-            regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
-            regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
-            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        } else {
-            System.err.println("Root is not a Region! Can't set sizes.");
-        }
-            return new Scene(root);
+                scene = type.buildScene(fxmlLoader, regionRoot);
+                return scene;
+            } else {
+                throw new IllegalArgumentException("Root is not a Region! Can't set sizes.");
+            }
+
         } catch (IOException e) {
             throw new RuntimeException("Failed to load scene: " + type, e);
         }

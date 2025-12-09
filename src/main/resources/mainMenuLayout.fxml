@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<HBox fx:id="root" fx:controller="com.tetris.view.mainMenuController"
+<HBox fx:id="root" fx:controller="com.tetris.view.MainMenuController"
       alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
     <VBox alignment="CENTER" maxWidth="Infinity" maxHeight="Infinity" spacing="20.0">
         <Label text="TETRIS" textOverrun="CLIP">
@@ -15,12 +15,12 @@
                 <Font name="Consolas Bold" size="52.0"/>
             </font>
         </Label>
-        <Button mnemonicParsing="false" text="Play" textOverrun="CLIP">
+        <Button fx:id="playButton" mnemonicParsing="false" text="Play" textOverrun="CLIP">
             <font>
                 <Font name="Consolas Bold" size="26.0"/>
             </font>
         </Button>
-        <Button mnemonicParsing="false" text="Help">
+        <Button fx:id="helpButton" mnemonicParsing="false" text="Help">
             <font>
                 <Font name="Consolas Bold" size="26.0"/>
             </font>
