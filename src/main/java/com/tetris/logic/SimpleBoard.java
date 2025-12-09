@@ -30,39 +30,28 @@ public class SimpleBoard implements Board {
 
     @Override
     public boolean moveBrickDown() {
-        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
-        Point p = new Point(currentOffset);
-        p.translate(0, 1);
-        boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
-        if (conflict) {
-            return false;
-        } else {
-            currentOffset = p;
-            return true;
-        }
+        return moveBrick(0, 1);
     }
-
 
     @Override
     public boolean moveBrickLeft() {
-        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
-        Point p = new Point(currentOffset);
-        p.translate(-1, 0);
-        boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
-        if (conflict) {
-            return false;
-        } else {
-            currentOffset = p;
-            return true;
-        }
+        return moveBrick(-1, 0);
     }
 
     @Override
     public boolean moveBrickRight() {
+        return moveBrick(1, 0);
+    }
+
+    private boolean moveBrick(int xOffset, int yOffset) {
+        return moveBrick(brickRotator.getCurrentShape(), xOffset, yOffset);
+    }
+
+    private boolean moveBrick(int[][] shape, int xOffset, int yOffset) {
         int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
         Point p = new Point(currentOffset);
-        p.translate(1, 0);
-        boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
+        p.translate(xOffset, yOffset);
+        boolean conflict = MatrixOperations.intersect(currentMatrix, shape, (int) p.getX(), (int) p.getY());
         if (conflict) {
             return false;
         } else {
@@ -77,11 +66,32 @@ public class SimpleBoard implements Board {
         int[][] nextShape = brickRotator.getNextShape();
         boolean conflict = MatrixOperations.intersect(currentMatrix, nextShape, (int) currentOffset.getX(), (int) currentOffset.getY());
         if (conflict) {
-            return false;
+            if (checkForKick(nextShape, currentOffset)) {
+                brickRotator.changeToNextShape();
+                return true;
+            } else {
+                return false;
+            }
         } else {
             brickRotator.changeToNextShape();
             return true;
         }
+    }
+
+    private boolean checkForKick(int[][] nextShape, Point currentOffset) {
+        if (currentOffset.getX() < 0) {
+            for (int xOffset = 1; xOffset <= nextShape[0].length-1; ++xOffset) {
+                if (moveBrick(nextShape, xOffset, 0)) return true;
+            }
+        } else {
+            for (int xOffset = -(nextShape[0].length - 1); xOffset <= -1; ++xOffset) {
+                if (moveBrick(nextShape, xOffset, 0)) return true;
+            }
+        }
+        for (int yOffset = 0; yOffset <= nextShape.length-1; ++yOffset) {
+            if (moveBrick(nextShape, 0, yOffset)) return true;
+        }
+        return false;
     }
 
     @Override
