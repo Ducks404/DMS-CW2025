@@ -1,10 +1,15 @@
 package com.tetris.view;
 
+import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.layout.*;
@@ -15,6 +20,8 @@ import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
 
+    @FXML
+    private VBox controlsPanel;
     @FXML
     private HBox root;
     @FXML
@@ -47,6 +54,8 @@ public class GuiController implements Initializable {
     private Label scoreLabel;
 
     private ViewModel viewModel;
+    private SettingsViewModel settingsViewModel;
+    private final BooleanProperty isRemapMode = new SimpleBooleanProperty();
     private final HudRenderer hudRenderer = new HudRenderer();
     private GameRenderer gameRenderer;
 
@@ -59,6 +68,9 @@ public class GuiController implements Initializable {
         Platform.runLater(()->{
            gamePanel.requestFocus();
         });
+        Platform.runLater(()->{
+            gamePanel.requestFocus();
+        });
         gameOverPanel.setVisible(false);
         pausePanel.setVisible(false);
         final Reflection reflection = new Reflection();
@@ -67,11 +79,11 @@ public class GuiController implements Initializable {
         reflection.setTopOffset(-12);
     }
 
-    public void setViewModel(ViewModel viewModel) {
+    public void setGameViewModel(ViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
-    public void bindViewModel() {
+    public void bindGameViewModel() {
         pausePanel.visibleProperty().bind(viewModel.pauseProperty());
         gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
         scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
@@ -81,6 +93,27 @@ public class GuiController implements Initializable {
         viewModel.holdBrickProperty().addListener((obs, oldVal, newVal) -> {
             hudRenderer.refreshPreview(holdBrickPanel, newVal);
         });
+    }
+
+    public void setSettingsViewModel(SettingsViewModel settingsViewModel) {
+        this.settingsViewModel = settingsViewModel;
+    }
+
+    public void bindSettingsViewModel() {
+        isRemapMode.bind(settingsViewModel.isRemapModeProperty());
+
+        Button controlsButton = new Button("Change Keybinds");
+        controlsButton.setFocusTraversable(false);
+        controlsButton.setOnAction(e -> {
+            if (!isRemapMode.getValue()) {
+                controlsButton.setText("Done");
+            } else {
+                controlsButton.setText("Change Keybinds");
+            }
+            settingsViewModel.toggleIsRemapMode();
+            viewModel.togglePause();
+        });
+        controlsPanel.getChildren().add(controlsButton);
     }
 
     public void initHud() {

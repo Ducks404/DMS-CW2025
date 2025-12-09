@@ -9,6 +9,8 @@ public interface ViewModel {
 
     void handleKey(KeyEvent keyEvent);
 
+    void togglePause();
+
     ReadOnlyBooleanProperty pauseProperty();
 
     ReadOnlyBooleanProperty gameOverProperty();

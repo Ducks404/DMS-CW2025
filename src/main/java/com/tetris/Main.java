@@ -7,14 +7,12 @@ import com.tetris.logic.SettingsModel;
 import com.tetris.view.GameRenderer;
 import com.tetris.view.GuiController;
 import com.tetris.viewmodel.GameViewModel;
+import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -60,15 +58,27 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        GameRenderer gameRenderer = new GameRenderer();
-        guiController.setGameRenderer(gameRenderer);
-        GameModel gameModel = new GameModel();
+        // Settings Model and Settings ViewModel
         SettingsModel settingsModel = new SettingsModel();
         settingsModel.setInputMap(new GameInputMap());
+
+        SettingsViewModel settingsViewModel = new SettingsViewModel(settingsModel);
+        guiController.setSettingsViewModel(settingsViewModel);
+        guiController.bindSettingsViewModel();
+
+        // Game Renderer
+        GameRenderer gameRenderer = new GameRenderer();
+        guiController.setGameRenderer(gameRenderer);
+
+        // Game Model and Game Controller
+        GameModel gameModel = new GameModel();
         GameController gameController = new GameController(gameRenderer, gameModel);
+
+        // Game ViewModel
         ViewModel gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
-        guiController.setViewModel(gameViewModel);
-        guiController.bindViewModel();
+        guiController.setGameViewModel(gameViewModel);
+        guiController.bindGameViewModel();
+
         guiController.initHud();
 
         gameController.start();

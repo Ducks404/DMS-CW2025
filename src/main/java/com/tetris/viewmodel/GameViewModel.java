@@ -33,6 +33,10 @@ public class GameViewModel implements ViewModel {
         keyEvent.consume();
     }
 
+    public void togglePause() {
+        eventListener.handleEvent(EventType.PAUSE);
+    }
+
     public ReadOnlyBooleanProperty pauseProperty() {
         return gameModel.pauseProperty();
     }
