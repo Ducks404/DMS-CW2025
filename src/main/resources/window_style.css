@@ -104,3 +104,25 @@
 .holdLabel {
     -fx-text-fill: blue;
 }
+
+.controlsContainer {
+    -fx-border-color: white;
+    -fx-padding: 10px;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+}
+
+.controlsLabel {
+    -fx-font-size: 30;
+    -fx-text-fill: white;
+}
+
+.controlText {
+    -fx-font-size: 18;
+    -fx-text-fill: white;
+}
+
+.controlTextHover {
+    -fx-font-size: 18;
+    -fx-text-fill: gray;
+}

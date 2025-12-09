@@ -1,18 +1,18 @@
 package com.tetris;
 
 import com.tetris.controller.GameController;
+import com.tetris.input.GameInputMap;
 import com.tetris.logic.GameModel;
+import com.tetris.logic.SettingsModel;
 import com.tetris.view.GameRenderer;
 import com.tetris.view.GuiController;
 import com.tetris.viewmodel.GameViewModel;
+import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -24,8 +24,8 @@ public class Main extends Application {
     private static final int PREF_HEIGHT = 900;
     private static final int MIN_WIDTH = 600;
     private static final int MIN_HEIGHT = 900;
-    private static final int MAX_WIDTH = 900;
-    private static final int MAX_HEIGHT = 1350;
+    private static final int MAX_WIDTH = 1350;
+    private static final int MAX_HEIGHT = 900;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -41,7 +41,7 @@ public class Main extends Application {
         if (root instanceof Region regionRoot) {
             regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
             regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
-            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+//            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
             System.out.println("Root is not a Region! Can't set sizes.");
         }
@@ -51,20 +51,35 @@ public class Main extends Application {
 
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
-        primaryStage.setMaxWidth(MAX_WIDTH);
-        primaryStage.setMaxHeight(MAX_HEIGHT);
+//        primaryStage.setMaxWidth(MAX_WIDTH);
+//        primaryStage.setMaxHeight(MAX_HEIGHT);
 
         primaryStage.sizeToScene();
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        // Game Renderer
         GameRenderer gameRenderer = new GameRenderer();
         guiController.setGameRenderer(gameRenderer);
+
+        // Game Model and Game Controller
         GameModel gameModel = new GameModel();
         GameController gameController = new GameController(gameRenderer, gameModel);
-        ViewModel gameViewModel = new GameViewModel(gameController, gameModel);
-        guiController.setViewModel(gameViewModel);
-        guiController.bindViewModel();
+
+        // Settings Model
+        SettingsModel settingsModel = new SettingsModel();
+        settingsModel.setInputMap(new GameInputMap());
+
+        // Game ViewModel
+        ViewModel gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
+        guiController.setGameViewModel(gameViewModel);
+        guiController.bindGameViewModel();
+
+        // Settings ViewModel
+        SettingsViewModel settingsViewModel = new SettingsViewModel(settingsModel);
+        guiController.setSettingsViewModel(settingsViewModel);
+        guiController.bindSettingsViewModel();
+
         guiController.initHud();
 
         gameController.start();

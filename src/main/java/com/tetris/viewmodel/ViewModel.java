@@ -18,4 +18,6 @@ public interface ViewModel {
     ReadOnlyObjectProperty<int[][]> nextBrickProperty();
 
     ReadOnlyObjectProperty<int[][]> holdBrickProperty();
+
+    void onChangeKeybindButtonPressed();
 }

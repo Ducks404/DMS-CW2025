@@ -92,4 +92,8 @@ public class GameRenderer {
         groupNotification.getChildren().add(notificationPanel);
         notificationPanel.showScore(groupNotification.getChildren());
     }
+
+    public void requestFocus() {
+        gamePanel.requestFocus();
+    }
 }
