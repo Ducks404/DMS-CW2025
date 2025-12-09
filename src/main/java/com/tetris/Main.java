@@ -47,7 +47,18 @@ public class Main extends Application {
         }
 
         Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
+
+        FXMLLoader fxmlLoader1 = new FXMLLoader(getClass().getClassLoader().getResource("mainMenuLayout.fxml"));
+        Parent mainMenuRoot = fxmlLoader1.load();
+        if (mainMenuRoot instanceof Region regionRoot) {
+            regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
+            regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+//            regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        } else {
+            System.out.println("Root is not a Region! Can't set sizes.");
+        }
+        Scene mainMenuScene = new Scene(mainMenuRoot);
+        primaryStage.setScene(mainMenuScene);
 
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
@@ -55,7 +66,7 @@ public class Main extends Application {
 //        primaryStage.setMaxHeight(MAX_HEIGHT);
 
         primaryStage.sizeToScene();
-        primaryStage.setScene(scene);
+        primaryStage.setScene(mainMenuScene);
         primaryStage.show();
 
         // Game Renderer
