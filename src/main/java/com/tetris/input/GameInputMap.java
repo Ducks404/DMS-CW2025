@@ -8,9 +8,9 @@ public class GameInputMap extends BaseInputMap {
         map.put(KeyCode.LEFT, EventType.MOVE_LEFT);
         map.put(KeyCode.RIGHT, EventType.MOVE_RIGHT);
         map.put(KeyCode.DOWN, EventType.MOVE_DOWN);
+        map.put(KeyCode.SPACE, EventType.HARD_DROP);
+        map.put(KeyCode.H, EventType.HOLD);
         map.put(KeyCode.P, EventType.PAUSE);
         map.put(KeyCode.N, EventType.NEW_GAME);
-        map.put(KeyCode.H, EventType.HOLD);
-        map.put(KeyCode.SPACE, EventType.HARD_DROP);
     }
 }

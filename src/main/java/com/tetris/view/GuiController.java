@@ -107,7 +107,7 @@ public class GuiController implements Initializable {
         for (var entry: settingsViewModel.inputMapProperty().getValue().entrySet()) {
             HBox line = new HBox();
             line.setFocusTraversable(false);
-            Label eventLabel = new Label(StringOperations.toTitleCase(entry.getValue().toString()));
+            Label eventLabel = new Label(entry.getValue().getDisplayName());
             eventLabel.getStyleClass().add("controlText");
             Label keyLabel = new Label(StringOperations.toTitleCase(entry.getKey().toString()));
             keyLabel.getStyleClass().add("controlText");

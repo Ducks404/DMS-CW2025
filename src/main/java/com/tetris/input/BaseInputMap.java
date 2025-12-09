@@ -2,11 +2,12 @@ package com.tetris.input;
 
 import javafx.scene.input.KeyCode;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class BaseInputMap implements InputMap {
-    final Map<KeyCode, EventType> map = new HashMap<>();
+    final Map<KeyCode, EventType> map = new LinkedHashMap<>();
 
     @Override
     public EventType get(KeyCode key) {
