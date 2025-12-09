@@ -104,7 +104,7 @@ public class GuiController implements Initializable {
 
     public void bindSettingsViewModel() {
         this.controlsRenderer = new ControlsRenderer(viewModel, settingsViewModel, controlsPanel);
-        controlsRenderer.render();
+        controlsRenderer.initControlsPanel();
     }
 
     public void initHud() {

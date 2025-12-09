@@ -1,5 +1,6 @@
 package com.tetris.view;
 
+import com.tetris.input.ControlBinding;
 import com.tetris.util.StringOperations;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
@@ -26,37 +27,39 @@ public class ControlsRenderer {
         isRemapMode.bind(settingsViewModel.isRemapModeProperty());
     }
 
-    public void render() {
-        for (var entry: settingsViewModel.controlBindingsProperty()) {
-            HBox line = new HBox();
-            line.setFocusTraversable(false);
-            Label eventLabel = new Label(entry.displayName());
-            eventLabel.getStyleClass().add("controlText");
-            Label keyLabel = new Label(StringOperations.toTitleCase(entry.keyCode().toString()));
-            keyLabel.getStyleClass().add("controlText");
-            Region spacer = new Region();
-            spacer.setMinWidth(10);
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            line.getChildren().addAll(eventLabel, spacer, keyLabel);
-
-            line.setOnMouseClicked(e -> {
-                if (isRemapMode.getValue()) {
-                    settingsViewModel.startRemapping(entry.eventType());
-                    keyLabel.setText("<Press Key>");
-                    line.requestFocus();
-                }
-            });
-
-            line.setOnKeyPressed(e -> {
-                if (settingsViewModel.eventWaitingForKeyProperty().getValue() != null) {
-                    settingsViewModel.finishRemapping(e.getCode());
-                    keyLabel.setText(e.getCode().toString());
-                }
-            });
+    public void initControlsPanel() {
+        for (var entry : settingsViewModel.controlBindingsProperty()) {
+            ControlLine line = getControlLine(entry);
 
             controlsPanel.getChildren().add(line);
         }
 
+        Button controlsButton = getControlsButton();
+        controlsPanel.getChildren().add(controlsButton);
+    }
+
+    private ControlLine getControlLine(ControlBinding entry) {
+        ControlLine line = new ControlLine(entry);
+        line.setFocusTraversable(false);
+
+        line.setOnMouseClicked(e -> {
+            if (isRemapMode.getValue()) {
+                settingsViewModel.startRemapping(entry.eventType());
+                line.setKeyLabel("<Press Key>");
+                line.requestFocus();
+            }
+        });
+
+        line.setOnKeyPressed(e -> {
+            if (settingsViewModel.eventWaitingForKeyProperty().getValue() != null) {
+                settingsViewModel.finishRemapping(e.getCode());
+                line.setKeyLabel(e.getCode());
+            }
+        });
+        return line;
+    }
+
+    private Button getControlsButton() {
         Button controlsButton = new Button("Change Keybinds");
         controlsButton.setFocusTraversable(false);
         controlsButton.setOnAction(e -> {
@@ -68,6 +71,6 @@ public class ControlsRenderer {
             settingsViewModel.onChangeKeybindButtonPressed();
             viewModel.onChangeKeybindButtonPressed();
         });
-        controlsPanel.getChildren().add(controlsButton);
+        return controlsButton;
     }
 }
