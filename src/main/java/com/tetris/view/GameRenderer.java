@@ -1,10 +1,10 @@
 package com.tetris.view;
 
 import com.tetris.logic.ViewData;
+import com.tetris.util.DrawBrickOperations;
 import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Arrays;

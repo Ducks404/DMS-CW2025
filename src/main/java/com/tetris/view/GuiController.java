@@ -1,10 +1,8 @@
 package com.tetris.view;
 
-import com.tetris.input.ControlBinding;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -53,7 +51,7 @@ public class GuiController implements Initializable {
 
     private ViewModel viewModel;
     private SettingsViewModel settingsViewModel;
-    private ControlPanelController controlPanelController;
+    private ControlPanelView controlPanelView;
     private final HudRenderer hudRenderer = new HudRenderer();
     private GameRenderer gameRenderer;
 
@@ -99,8 +97,8 @@ public class GuiController implements Initializable {
     }
 
     public void bindSettingsViewModel() {
-        this.controlPanelController = new ControlPanelController(viewModel, settingsViewModel, controlsPanel);
-        controlPanelController.initControlsPanel();
+        this.controlPanelView = new ControlPanelView(viewModel, settingsViewModel, controlsPanel);
+        controlPanelView.initControlsPanel();
     }
 
     public void initHud() {

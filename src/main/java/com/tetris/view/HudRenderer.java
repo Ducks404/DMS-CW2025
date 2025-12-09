@@ -1,5 +1,6 @@
 package com.tetris.view;
 
+import com.tetris.util.DrawBrickOperations;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
