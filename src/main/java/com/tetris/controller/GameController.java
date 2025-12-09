@@ -1,5 +1,7 @@
 package com.tetris.controller;
 
+import com.tetris.SceneManager;
+import com.tetris.SceneType;
 import com.tetris.input.EventSource;
 import com.tetris.input.EventType;
 import com.tetris.logic.Board;
@@ -63,8 +65,12 @@ public class GameController implements InputEventListener {
             case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
+            case EventType.EXIT -> exit();
             default -> System.err.println("Game event not handled by this game controller.");
         }
+    }
+    private void exit() {
+        SceneManager.getInstance().switchTo(SceneType.MENU);
     }
 
     private void onHardDropEvent() {

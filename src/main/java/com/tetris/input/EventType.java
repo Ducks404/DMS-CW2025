@@ -8,7 +8,8 @@ public enum EventType {
     PAUSE("Pause"),
     NEW_GAME("New Game"),
     HOLD("Hold"),
-    HARD_DROP("Hard Drop");
+    HARD_DROP("Hard Drop"),
+    EXIT("Exit");
 
     private final String displayName;
 

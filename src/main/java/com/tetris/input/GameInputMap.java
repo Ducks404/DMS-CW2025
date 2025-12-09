@@ -12,5 +12,6 @@ public class GameInputMap extends BaseInputMap {
         map.put(KeyCode.H, EventType.HOLD);
         map.put(KeyCode.P, EventType.PAUSE);
         map.put(KeyCode.N, EventType.NEW_GAME);
+        map.put(KeyCode.ESCAPE, EventType.EXIT);
     }
 }
