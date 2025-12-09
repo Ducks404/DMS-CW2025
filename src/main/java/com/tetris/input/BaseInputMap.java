@@ -1,5 +1,10 @@
 package com.tetris.input;
 
+import javafx.beans.property.MapProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.scene.input.KeyCode;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -7,7 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class BaseInputMap implements InputMap {
-    final Map<KeyCode, EventType> map = new LinkedHashMap<>();
+    final ObservableMap<KeyCode, EventType> map = FXCollections.observableMap(new LinkedHashMap<>());
+    final MapProperty<KeyCode, EventType> mapProperty = new SimpleMapProperty<>(map);
 
     @Override
     public EventType get(KeyCode key) {
@@ -45,5 +51,10 @@ public class BaseInputMap implements InputMap {
     @Override
     public Set<Map.Entry<KeyCode, EventType>> entrySet() {
         return map.entrySet();
+    }
+
+    @Override
+    public MapProperty<KeyCode, EventType> mapProperty() {
+        return mapProperty;
     }
 }

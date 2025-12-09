@@ -4,12 +4,12 @@ import com.tetris.input.ControlBinding;
 import com.tetris.input.EventType;
 import com.tetris.input.InputMap;
 import com.tetris.logic.SettingsModel;
+import com.tetris.view.ControlLine;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.input.KeyCode;
-
-import javax.naming.ldap.Control;
 
 public class SettingsViewModel {
     private final SettingsModel settingsModel;
@@ -20,14 +20,19 @@ public class SettingsViewModel {
     public SettingsViewModel(SettingsModel settingsModel) {
         this.settingsModel = settingsModel;
         refreshControlBindings();
-        settingsModel.inputMapProperty().addListener((obs, oldMap, newMap) -> refreshControlBindings());
+        settingsModel.inputMapProperty().getValue().mapProperty().addListener(new MapChangeListener<KeyCode, EventType>() {
+            @Override
+            public void onChanged(Change<? extends KeyCode, ? extends EventType> change) {
+                refreshControlBindings();
+            }
+        });
     }
 
     public ObservableList<ControlBinding> controlBindingsProperty() {
         return controlBindings;
     }
 
-    public void refreshControlBindings() {
+    private void refreshControlBindings() {
         controlBindings.clear();
         InputMap inputMap = settingsModel.getInputMap();
         if (inputMap==null) return;
@@ -49,16 +54,16 @@ public class SettingsViewModel {
         return eventWaitingForKey;
     }
 
-    public void toggleIsRemapMode() {
+    private void toggleIsRemapMode() {
         isRemapMode.setValue(!isRemapMode.getValue());
     }
 
-    public void startRemapping(EventType eventType) {
+    private void startRemapping(EventType eventType) {
         eventWaitingForKey.setValue(eventType);
     }
 
-    public void finishRemapping(KeyCode keyCode) {
-        settingsModel.inputMapProperty().get().bind(keyCode, eventWaitingForKey.getValue());
+    private void finishRemapping(KeyCode keyCode) {
+        settingsModel.inputMapProperty().getValue().bind(keyCode, eventWaitingForKey.getValue());
         eventWaitingForKey.setValue(null);
     }
 
@@ -68,5 +73,15 @@ public class SettingsViewModel {
 
     public void onChangeKeybindButtonPressed() {
         toggleIsRemapMode();
+    }
+
+    public void onKeyPressedDuringRemap(KeyCode keyCode) {
+        finishRemapping(keyCode);
+    }
+
+    public void onControlLineClicked(EventType eventType) {
+        if (isRemapModeProperty().getValue() && eventWaitingForKeyProperty().getValue()==null) {
+            startRemapping(eventType);
+        }
     }
 }

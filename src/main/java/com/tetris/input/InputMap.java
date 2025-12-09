@@ -1,5 +1,7 @@
 package com.tetris.input;
 
+import javafx.beans.Observable;
+import javafx.beans.property.MapProperty;
 import javafx.scene.input.KeyCode;
 
 import java.util.Map;
@@ -10,4 +12,5 @@ public interface InputMap {
     int bind(KeyCode key, EventType eventType);
     boolean has(KeyCode key);
     Set<Map.Entry<KeyCode, EventType>> entrySet();
+    MapProperty<KeyCode, EventType> mapProperty();
 }

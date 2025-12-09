@@ -121,3 +121,8 @@
     -fx-font-size: 18;
     -fx-text-fill: white;
 }
+
+.controlTextHover {
+    -fx-font-size: 18;
+    -fx-text-fill: gray;
+}
