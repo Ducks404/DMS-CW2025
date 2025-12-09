@@ -1,6 +1,7 @@
 package com.tetris.view;
 
 import com.tetris.viewmodel.ViewModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -54,8 +55,10 @@ public class GuiController implements Initializable {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
         gameArea.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         gamePanel.setFocusTraversable(true);
-        gamePanel.requestFocus();
         gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
+        Platform.runLater(()->{
+           gamePanel.requestFocus();
+        });
         gameOverPanel.setVisible(false);
         pausePanel.setVisible(false);
         final Reflection reflection = new Reflection();
