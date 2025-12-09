@@ -27,12 +27,12 @@ public class ControlsRenderer {
     public void render() {
         isRemapMode.bind(settingsViewModel.isRemapModeProperty());
 
-        for (var entry: settingsViewModel.inputMapProperty().getValue().entrySet()) {
+        for (var entry: settingsViewModel.controlBindingsProperty()) {
             HBox line = new HBox();
             line.setFocusTraversable(false);
-            Label eventLabel = new Label(entry.getValue().getDisplayName());
+            Label eventLabel = new Label(entry.displayName());
             eventLabel.getStyleClass().add("controlText");
-            Label keyLabel = new Label(StringOperations.toTitleCase(entry.getKey().toString()));
+            Label keyLabel = new Label(StringOperations.toTitleCase(entry.keyCode().toString()));
             keyLabel.getStyleClass().add("controlText");
             Region spacer = new Region();
             spacer.setMinWidth(10);
@@ -41,7 +41,7 @@ public class ControlsRenderer {
 
             line.setOnMouseClicked(e -> {
                 if (isRemapMode.getValue()) {
-                    settingsViewModel.startRemapping(entry.getValue());
+                    settingsViewModel.startRemapping(entry.eventType());
                     keyLabel.setText("<Press Key>");
                     line.requestFocus();
                 }

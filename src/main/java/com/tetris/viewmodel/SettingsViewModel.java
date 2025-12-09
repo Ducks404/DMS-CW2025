@@ -1,10 +1,15 @@
 package com.tetris.viewmodel;
 
+import com.tetris.input.ControlBinding;
 import com.tetris.input.EventType;
 import com.tetris.input.InputMap;
 import com.tetris.logic.SettingsModel;
 import javafx.beans.property.*;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import javafx.scene.input.KeyCode;
+
+import javax.naming.ldap.Control;
 
 public class SettingsViewModel {
     private final SettingsModel settingsModel;
@@ -13,6 +18,14 @@ public class SettingsViewModel {
 
     public SettingsViewModel(SettingsModel settingsModel) {
         this.settingsModel = settingsModel;
+    }
+
+    public ObservableList<ControlBinding> controlBindingsProperty() {
+        ObservableList<ControlBinding> result = new SimpleListProperty<>();
+        for (var entry: settingsModel.inputMapProperty().getValue().entrySet()) {
+            result.add(new ControlBinding(entry.getValue(), entry.getKey()));
+        }
+        return result;
     }
 
     public ReadOnlyObjectProperty<InputMap> inputMapProperty() {
