@@ -84,7 +84,7 @@ public class SimpleBoard implements Board {
                 if (moveBrick(nextShape, xOffset, 0)) return true;
             }
         } else {
-            for (int xOffset = -(nextShape[0].length - 1); xOffset <= -1; ++xOffset) {
+            for (int xOffset = -1; xOffset >= -(nextShape[0].length - 1); --xOffset) {
                 if (moveBrick(nextShape, xOffset, 0)) return true;
             }
         }
