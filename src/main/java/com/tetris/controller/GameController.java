@@ -11,6 +11,8 @@ import javafx.animation.AnimationTimer;
 
 public class GameController implements InputEventListener {
 
+    private double SPEED = 2.3; // Rows per Second
+    private static final int SCORE_PER_ROW = 1;
     private static final int BASE_BONUS = 50;
     private final Board board = new SimpleBoard(25, 10);
 
@@ -39,7 +41,7 @@ public class GameController implements InputEventListener {
                     return;
                 }
 
-                long interval = 400_000_000;
+                long interval = (long) (1.0/SPEED * 1_000_000_000);
                 if (now - lastUpdate >= interval) {
                     onDownEvent(EventSource.THREAD);
                     lastUpdate = now;
@@ -69,14 +71,16 @@ public class GameController implements InputEventListener {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
-        boolean canMove;
-        do {
-            canMove = board.moveBrickDown();
-        } while (canMove);
+        int rowsUntilFloor = board.getRowUntilFloor();
+
+        for (int i=0; i<rowsUntilFloor; i++) {
+            board.moveBrickDown();
+            board.addScore(SCORE_PER_ROW);
+        }
+
         handleBrickOnFloor();
 
-        gameRenderer.refreshBrick(board.getViewData());
-
+        refresh();
     }
 
     private void onDownEvent(EventSource eventSource) {
@@ -88,11 +92,49 @@ public class GameController implements InputEventListener {
             handleBrickOnFloor();
         } else {
             if (eventSource == EventSource.USER) {
-                board.addScore(1);
+                board.addScore(SCORE_PER_ROW);
             }
         }
 
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
+    }
+
+    private void onLeftEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        board.moveBrickLeft();
+        refresh();
+    }
+
+    private void onRightEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        board.moveBrickRight();
+        refresh();
+    }
+
+    private void onRotateEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        board.rotateLeftBrick();
+        refresh();
+    }
+
+    private void onHoldEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        if (gameModel.canHoldProperty().getValue()) {
+            board.holdBrick();
+            gameModel.setHold(board.getViewData().holdBrickData());
+            gameModel.setCanHold(false);
+            gameModel.setNextBrick(board.getViewData().nextBrickData());
+
+            refresh();
+        }
     }
 
     private void handleBrickOnFloor() {
@@ -102,8 +144,7 @@ public class GameController implements InputEventListener {
         if (newBrick()) {
             gameOver();
         }
-
-        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+        refresh();
     }
 
     private void checkClearedRows() {
@@ -120,50 +161,12 @@ public class GameController implements InputEventListener {
         gameModel.setIsGameOver(true);
     }
 
-    private void onLeftEvent() {
-        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return;
-        }
-        board.moveBrickLeft();
-        gameRenderer.refreshBrick(board.getViewData());
-    }
-
-
-    private void onRightEvent() {
-        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return;
-        }
-        board.moveBrickRight();
-        gameRenderer.refreshBrick(board.getViewData());
-    }
-
-    private void onRotateEvent() {
-        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return;
-        }
-        board.rotateLeftBrick();
-        gameRenderer.refreshBrick(board.getViewData());
-    }
-
-    private void onHoldEvent() {
-        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
-            return;
-        }
-        if (gameModel.canHoldProperty().getValue()) {
-            board.holdBrick();
-            gameModel.setHold(board.getViewData().holdBrickData());
-            gameModel.setCanHold(false);
-            gameModel.setNextBrick(board.getViewData().nextBrickData());
-        }
-    }
-
     private void createNewGame() {
         gameModel.setIsGameOver(false);
         gameModel.setIsPause(false);
         board.newGame();
         resetHudBricks();
-        gameRenderer.refreshGameBackground(board.getBoardMatrix());
-        gameRenderer.refreshBrick(board.getViewData());
+        refresh();
         gameLoop.start();
     }
 
@@ -171,6 +174,7 @@ public class GameController implements InputEventListener {
         if (gameModel.pauseProperty().getValue()) {
             gameLoop.start();
             gameModel.setIsPause(false);
+            gameRenderer.requestFocus();
         } else {
             gameLoop.stop();
             gameModel.setIsPause(true);
@@ -187,5 +191,11 @@ public class GameController implements InputEventListener {
         gameModel.setNextBrick(board.getViewData().nextBrickData());
         gameModel.setHold(board.getViewData().holdBrickData());
         gameModel.setCanHold(true);
+    }
+
+    private void refresh() {
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+        gameRenderer.refreshBrick(board.getViewData());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
     }
 }

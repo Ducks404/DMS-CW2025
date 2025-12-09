@@ -10,21 +10,40 @@
 <HBox fx:controller="com.tetris.view.GuiController"
       xmlns:fx="http://javafx.com/fxml"
       alignment="CENTER"
-      spacing="10">
+      spacing="10"
+      fx:id="root">
 
-    <VBox>
-        <VBox styleClass="brickContainer, holdBrickContainer">
+    <VBox spacing="10">
+        <VBox styleClass="brickContainer, holdBrickContainer" alignment="CENTER">
             <Label styleClass="containerLabel, holdLabel">Hold</Label>
-            <GridPane fx:id="holdBrickPanel" vgap="1" hgap="1"/>
+            <GridPane fx:id="holdBrickPanel" vgap="1" hgap="1" alignment="CENTER"/>
+        </VBox>
+        <VBox styleClass="controlsContainer" alignment="CENTER">
+            <Label styleClass="containerLabel, controlsLabel">Controls</Label>
+            <VBox fx:id="controlsPanel">
+                <!-- This Panel is filled in GuiController -->
+                <!-- The order of controls can be decided from the InputMap binding order-->
+
+                <!-- Example final structure -->
+<!--                <HBox><Label styleClass="controlText">Pause</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">P</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">New Game</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">N</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Rotate</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↑</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Left</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">←</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Right</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">→</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Soft Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↓</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Hard Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">Space</Label></HBox>-->
+<!--                <Button>Change Keybinds</Button>-->
+            </VBox>
         </VBox>
     </VBox>
-    <VBox>
+    <VBox fx:id="gameArea">
         <BorderPane styleClass="gameBoard">
             <center>
-                <Pane snapToPixel="false" style="-fx-background-color:#004455">
+                <Pane fx:id="gameBoard" snapToPixel="false" style="-fx-background-color:#004455">
                     <GridPane fx:id="gamePanel" hgap="1" vgap="1" snapToPixel="false"/>
 
                     <GridPane fx:id="brickPanel" vgap="1" hgap="1" snapToPixel="false" managed="false"/>
+                    <GridPane fx:id="ghostPanel" vgap="1" hgap="1" snapToPixel="false" managed="false"/>
 
                     <Group fx:id="groupNotification" managed="false">
                         <VBox alignment="CENTER">
@@ -45,7 +64,7 @@
         </VBox>
         <VBox styleClass="brickContainer, nextBrickContainer" alignment="CENTER">
             <Label styleClass="containerLabel, nextLabel">Next:</Label>
-            <GridPane fx:id="nextBrickPanel" vgap="1" hgap="1"/>
+            <GridPane fx:id="nextBrickPanel" vgap="1" hgap="1" alignment="CENTER"/>
         </VBox>
     </VBox>
 

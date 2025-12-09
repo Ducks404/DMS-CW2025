@@ -1,18 +1,31 @@
 package com.tetris.view;
 
+import com.tetris.input.ControlBinding;
+import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
+
+    @FXML
+    private VBox controlsPanel;
+    @FXML
+    private HBox root;
+    @FXML
+    private VBox gameArea;
+    @FXML
+    private GridPane ghostPanel;
 
     @FXML
     private GridPane holdBrickPanel;
@@ -39,28 +52,36 @@ public class GuiController implements Initializable {
     private Label scoreLabel;
 
     private ViewModel viewModel;
+    private SettingsViewModel settingsViewModel;
+    private ControlPanelController controlPanelController;
     private final HudRenderer hudRenderer = new HudRenderer();
+    private GameRenderer gameRenderer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
+        gameArea.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         gamePanel.setFocusTraversable(true);
-        gamePanel.requestFocus();
         gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
+        Platform.runLater(()->{
+           gamePanel.requestFocus();
+        });
+        Platform.runLater(()->{
+            gamePanel.requestFocus();
+        });
         gameOverPanel.setVisible(false);
         pausePanel.setVisible(false);
-
         final Reflection reflection = new Reflection();
         reflection.setFraction(0.8);
         reflection.setTopOpacity(0.9);
         reflection.setTopOffset(-12);
     }
 
-    public void setViewModel(ViewModel viewModel) {
+    public void setGameViewModel(ViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
-    public void bindViewModel() {
+    public void bindGameViewModel() {
         pausePanel.visibleProperty().bind(viewModel.pauseProperty());
         gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
         scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
@@ -72,6 +93,16 @@ public class GuiController implements Initializable {
         });
     }
 
+    public void setSettingsViewModel(SettingsViewModel settingsViewModel) {
+        this.settingsViewModel = settingsViewModel;
+
+    }
+
+    public void bindSettingsViewModel() {
+        this.controlPanelController = new ControlPanelController(viewModel, settingsViewModel, controlsPanel);
+        controlPanelController.initControlsPanel();
+    }
+
     public void initHud() {
         if (viewModel == null) {
             return;
@@ -80,15 +111,11 @@ public class GuiController implements Initializable {
         hudRenderer.initPreview(holdBrickPanel, viewModel.holdBrickProperty().getValue());
     }
 
-    public GridPane getGamePanel() {
-        return gamePanel;
-    }
-
-    public GridPane getBrickPanel() {
-        return brickPanel;
-    }
-
-    public Group getGroupNotification() {
-        return groupNotification;
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.gameRenderer = gameRenderer;
+        gameRenderer.setGamePanel(gamePanel);
+        gameRenderer.setBrickPanel(brickPanel);
+        gameRenderer.setGhostPanel(ghostPanel);
+        gameRenderer.setGroupNotification(groupNotification);
     }
 }

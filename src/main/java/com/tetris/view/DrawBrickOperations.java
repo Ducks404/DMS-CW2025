@@ -8,18 +8,26 @@ public class DrawBrickOperations {
 
     private DrawBrickOperations() {}
 
-    public static void drawGrid(int[][] gridData, Rectangle[][] grid) {
+    public static void drawGrid(int[][] gridData, Rectangle[][] grid, double opacity) {
         for (int i = 0; i < gridData.length; i++) {
-            for (int j = 0; j < gridData.length; j++) {
-                DrawBrickOperations.setRectangleData(gridData[i][j], grid[i][j]);
+            for (int j = 0; j < gridData[0].length; j++) {
+                DrawBrickOperations.setRectangleData(gridData[i][j], grid[i][j], opacity);
             }
         }
     }
 
-    public static void setRectangleData(int color, Rectangle rectangle) {
-        rectangle.setFill(getFillColor(color));
+    public static void drawGrid(int[][] gridData, Rectangle[][] grid) {
+        drawGrid(gridData, grid, 1.0);
+    }
+
+    public static void setRectangleData(int color, Rectangle rectangle, double opacity) {
+        rectangle.setFill(((Color) getFillColor(color)).deriveColor(1.0, 1.0, 1.0, opacity));
         rectangle.setArcHeight(9);
         rectangle.setArcWidth(9);
+    }
+
+    public static void setRectangleData(int color, Rectangle rectangle) {
+        setRectangleData(color, rectangle, 1.0);
     }
 
     public static Paint getFillColor(int i) {
