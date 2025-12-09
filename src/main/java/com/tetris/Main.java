@@ -58,14 +58,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Settings Model and Settings ViewModel
-        SettingsModel settingsModel = new SettingsModel();
-        settingsModel.setInputMap(new GameInputMap());
-
-        SettingsViewModel settingsViewModel = new SettingsViewModel(settingsModel);
-        guiController.setSettingsViewModel(settingsViewModel);
-        guiController.bindSettingsViewModel();
-
         // Game Renderer
         GameRenderer gameRenderer = new GameRenderer();
         guiController.setGameRenderer(gameRenderer);
@@ -74,10 +66,19 @@ public class Main extends Application {
         GameModel gameModel = new GameModel();
         GameController gameController = new GameController(gameRenderer, gameModel);
 
+        // Settings Model
+        SettingsModel settingsModel = new SettingsModel();
+        settingsModel.setInputMap(new GameInputMap());
+
         // Game ViewModel
         ViewModel gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
         guiController.setGameViewModel(gameViewModel);
         guiController.bindGameViewModel();
+
+        // Settings ViewModel
+        SettingsViewModel settingsViewModel = new SettingsViewModel(settingsModel);
+        guiController.setSettingsViewModel(settingsViewModel);
+        guiController.bindSettingsViewModel();
 
         guiController.initHud();
 
