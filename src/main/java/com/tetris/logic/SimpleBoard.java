@@ -145,6 +145,7 @@ public class SimpleBoard implements Board {
     public void newGame() {
         currentGameMatrix = new int[height][width];
         score.reset();
+        holdBrick = NullBrick.getInstance();
         createNewBrick();
     }
 

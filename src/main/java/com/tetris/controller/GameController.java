@@ -165,6 +165,7 @@ public class GameController implements InputEventListener {
         gameModel.setIsGameOver(false);
         gameModel.setIsPause(false);
         board.newGame();
+        resetHudBricks();
         refresh();
         gameLoop.start();
     }
@@ -181,10 +182,14 @@ public class GameController implements InputEventListener {
 
     private boolean newBrick() {
         boolean collisionsOnNewBrick = board.createNewBrick();
+        resetHudBricks();
+        return collisionsOnNewBrick;
+    }
+
+    private void resetHudBricks() {
         gameModel.setNextBrick(board.getViewData().nextBrickData());
         gameModel.setHold(board.getViewData().holdBrickData());
         gameModel.setCanHold(true);
-        return collisionsOnNewBrick;
     }
 
     private void refresh() {
