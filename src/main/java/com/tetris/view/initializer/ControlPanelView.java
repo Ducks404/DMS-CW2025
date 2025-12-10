@@ -1,7 +1,8 @@
-package com.tetris.view;
+package com.tetris.view.initializer;
 
 import com.tetris.input.ControlBinding;
 import com.tetris.input.EventType;
+import com.tetris.view.components.ControlLine;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.collections.ListChangeListener;
@@ -11,13 +12,13 @@ import javafx.scene.layout.Pane;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ControlPanelController {
+public class ControlPanelView {
     private final SettingsViewModel settingsViewModel;
     private final ViewModel viewModel;
     private final Pane controlsPanel;
     private final Map<EventType, ControlLine> controlLines = new HashMap<>();
 
-    public ControlPanelController(ViewModel viewModel, SettingsViewModel settingsViewModel, Pane controlsPanel) {
+    public ControlPanelView(ViewModel viewModel, SettingsViewModel settingsViewModel, Pane controlsPanel) {
         this.viewModel = viewModel;
         this.settingsViewModel = settingsViewModel;
         this.controlsPanel = controlsPanel;

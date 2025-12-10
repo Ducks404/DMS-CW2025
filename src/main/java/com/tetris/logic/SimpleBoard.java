@@ -5,6 +5,7 @@ import com.tetris.logic.bricks.BrickGenerator;
 import com.tetris.logic.bricks.NullBrick;
 import com.tetris.logic.bricks.RandomBrickGenerator;
 import com.tetris.util.MatrixOperations;
+import javafx.beans.property.IntegerProperty;
 
 import java.awt.*;
 
@@ -19,11 +20,11 @@ public class SimpleBoard implements Board {
     private Point currentOffset;
     private final Score score;
 
-    public SimpleBoard(int height, int width) {
+    public SimpleBoard(int height, int width, BrickGenerator brickGenerator) {
         this.width = width;
         this.height = height;
+        this.brickGenerator = brickGenerator;
         currentGameMatrix = new int[height][width];
-        brickGenerator = new RandomBrickGenerator();
         brickRotator = new BrickRotator();
         score = new Score();
     }
@@ -84,7 +85,7 @@ public class SimpleBoard implements Board {
                 if (moveBrick(nextShape, xOffset, 0)) return true;
             }
         } else {
-            for (int xOffset = -(nextShape[0].length - 1); xOffset <= -1; ++xOffset) {
+            for (int xOffset = -1; xOffset >= -(nextShape[0].length - 1); --xOffset) {
                 if (moveBrick(nextShape, xOffset, 0)) return true;
             }
         }
@@ -142,8 +143,8 @@ public class SimpleBoard implements Board {
     }
 
     @Override
-    public Score getScore() {
-        return score;
+    public IntegerProperty scoreProperty() {
+        return score.scoreProperty();
     }
 
     @Override

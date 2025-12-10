@@ -1,4 +1,4 @@
-package com.tetris.view;
+package com.tetris.view.components;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;

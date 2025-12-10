@@ -6,32 +6,52 @@ import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
 import com.tetris.logic.GameModel;
 import com.tetris.logic.SimpleBoard;
-import com.tetris.view.GameRenderer;
+import com.tetris.logic.bricks.RandomBrickGenerator;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
+import com.tetris.view.renderer.SimpleGameRenderer;
 import javafx.animation.AnimationTimer;
 
-public class GameController implements InputEventListener {
+public abstract class BaseGameController implements InputEventListener{
 
-    private double SPEED = 2.3; // Rows per Second
-    private static final int SCORE_PER_ROW = 1;
-    private static final int BASE_BONUS = 50;
-    private final Board board = new SimpleBoard(25, 10);
+    protected double SPEED = 2.3; // Rows per Second
+    protected int SCORE_PER_ROW = 1;
+    protected int BASE_BONUS = 50;
+    protected Board board;
 
-    private final GameRenderer gameRenderer;
-    private final GameModel gameModel;
+    protected final SimpleGameRenderer gameRenderer;
+    protected final GameModel gameModel;
 
-    private AnimationTimer gameLoop;
+    protected AnimationTimer gameLoop;
 
-    public GameController(GameRenderer gameRenderer, GameModel gameModel) {
+    public BaseGameController(SimpleGameRenderer gameRenderer, GameModel gameModel) {
         this.gameModel = gameModel;
-        gameModel.setScore(board.getScore());
-        newBrick();
-
         this.gameRenderer = gameRenderer;
-        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+        board = createBoard();
+        SPEED = setInitialSpeed();
+        SCORE_PER_ROW = setScoreDown();
+        BASE_BONUS = setBaseBonus();
+
+        gameModel.scoreProperty().bind(board.scoreProperty());
+        newBrick();
     }
 
     public void start() {
-        gameLoop = new AnimationTimer() {
+        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+
+        gameLoop = initGameLoop();
+
+        gameLoop.start();
+    }
+
+    protected abstract Board createBoard();
+    protected abstract void handleCustomEvents(EventType eventType);
+    protected abstract double setInitialSpeed();
+    protected abstract int setScoreDown();
+    protected abstract int setBaseBonus();
+
+    protected AnimationTimer initGameLoop() {
+        return new AnimationTimer() {
             private long lastUpdate = 0;
 
             @Override
@@ -48,8 +68,6 @@ public class GameController implements InputEventListener {
                 }
             }
         };
-
-        gameLoop.start();
     }
 
     @Override
@@ -63,11 +81,16 @@ public class GameController implements InputEventListener {
             case EventType.HOLD -> onHoldEvent();
             case EventType.PAUSE -> onPauseEvent();
             case EventType.NEW_GAME -> createNewGame();
-            default -> System.err.println("Game event not handled by this game controller.");
+            case EventType.EXIT -> exit();
+            default -> handleCustomEvents(eventType);
         }
     }
+    protected void exit() {
+        SceneManager.getInstance().switchTo(SceneType.MENU);
+    }
 
-    private void onHardDropEvent() {
+
+    protected void onHardDropEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -83,7 +106,7 @@ public class GameController implements InputEventListener {
         refresh();
     }
 
-    private void onDownEvent(EventSource eventSource) {
+    protected void onDownEvent(EventSource eventSource) {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -99,7 +122,7 @@ public class GameController implements InputEventListener {
         refresh();
     }
 
-    private void onLeftEvent() {
+    protected void onLeftEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -107,7 +130,7 @@ public class GameController implements InputEventListener {
         refresh();
     }
 
-    private void onRightEvent() {
+    protected void onRightEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -115,7 +138,7 @@ public class GameController implements InputEventListener {
         refresh();
     }
 
-    private void onRotateEvent() {
+    protected void onRotateEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -123,7 +146,7 @@ public class GameController implements InputEventListener {
         refresh();
     }
 
-    private void onHoldEvent() {
+    protected void onHoldEvent() {
         if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
             return;
         }
@@ -137,7 +160,7 @@ public class GameController implements InputEventListener {
         }
     }
 
-    private void handleBrickOnFloor() {
+    protected void handleBrickOnFloor() {
         board.mergeBrickToBackground();
         checkClearedRows();
 
@@ -147,7 +170,7 @@ public class GameController implements InputEventListener {
         refresh();
     }
 
-    private void checkClearedRows() {
+    protected void checkClearedRows() {
         ClearRow clearRow = board.clearRows();
         if (clearRow.linesRemoved() > 0) {
             int scoreBonus = BASE_BONUS * clearRow.linesRemoved() * clearRow.linesRemoved();
@@ -156,12 +179,12 @@ public class GameController implements InputEventListener {
         }
     }
 
-    private void gameOver() {
+    protected void gameOver() {
         gameLoop.stop();
         gameModel.setIsGameOver(true);
     }
 
-    private void createNewGame() {
+    protected void createNewGame() {
         gameModel.setIsGameOver(false);
         gameModel.setIsPause(false);
         board.newGame();
@@ -170,7 +193,7 @@ public class GameController implements InputEventListener {
         gameLoop.start();
     }
 
-    private void onPauseEvent() {
+    protected void onPauseEvent() {
         if (gameModel.pauseProperty().getValue()) {
             gameLoop.start();
             gameModel.setIsPause(false);
@@ -181,19 +204,19 @@ public class GameController implements InputEventListener {
         }
     }
 
-    private boolean newBrick() {
+    protected boolean newBrick() {
         boolean collisionsOnNewBrick = board.createNewBrick();
         resetHudBricks();
         return collisionsOnNewBrick;
     }
 
-    private void resetHudBricks() {
+    protected void resetHudBricks() {
         gameModel.setNextBrick(board.getViewData().nextBrickData());
         gameModel.setHold(board.getViewData().holdBrickData());
         gameModel.setCanHold(true);
     }
 
-    private void refresh() {
+    protected void refresh() {
         gameRenderer.refreshGameBackground(board.getBoardMatrix());
         gameRenderer.refreshBrick(board.getViewData());
         gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());

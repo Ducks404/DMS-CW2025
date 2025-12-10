@@ -1,4 +1,4 @@
-package com.tetris.view;
+package com.tetris.view.components;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -7,8 +7,8 @@ import javafx.scene.layout.BorderPane;
 public class PausePanel extends BorderPane {
 
     public PausePanel() {
-        final Label pauseLabel = new Label("P to UNPAUSE");
-        pauseLabel.getStyleClass().add("gameOverStyle");
+        final Label pauseLabel = new Label("Paused");
+        pauseLabel.getStyleClass().add("pauseStyle");
         setCenter(pauseLabel);
     }
 

@@ -1,10 +1,7 @@
 package com.tetris.viewmodel;
 
-import com.sun.scenario.Settings;
 import com.tetris.controller.InputEventListener;
-import com.tetris.input.BaseInputMap;
 import com.tetris.input.EventType;
-import com.tetris.input.GameInputMap;
 import com.tetris.input.InputMap;
 import com.tetris.logic.GameModel;
 import com.tetris.logic.SettingsModel;

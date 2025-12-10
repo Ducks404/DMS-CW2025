@@ -1,5 +1,7 @@
 package com.tetris.logic;
 
+import javafx.beans.property.IntegerProperty;
+
 public interface Board {
 
     boolean moveBrickDown();
@@ -22,7 +24,7 @@ public interface Board {
 
     ClearRow clearRows();
 
-    Score getScore();
+    IntegerProperty scoreProperty();
 
     void addScore(int num);
 

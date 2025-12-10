@@ -4,7 +4,6 @@ import com.tetris.input.ControlBinding;
 import com.tetris.input.EventType;
 import com.tetris.input.InputMap;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.ControlLine;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
