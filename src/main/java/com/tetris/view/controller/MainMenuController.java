@@ -1,4 +1,4 @@
-package com.tetris.view;
+package com.tetris.view.controller;
 
 import com.tetris.SceneManager;
 import com.tetris.SceneType;

@@ -1,6 +1,6 @@
-package com.tetris.view;
+package com.tetris.view.initializer;
 
-import com.tetris.view.HudRenderer;
+import com.tetris.view.renderer.HudRenderer;
 import com.tetris.viewmodel.ViewModel;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;

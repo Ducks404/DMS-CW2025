@@ -1,7 +1,8 @@
-package com.tetris.view;
+package com.tetris.view.renderer;
 
 import com.tetris.logic.ViewData;
 import com.tetris.util.DrawBrickOperations;
+import com.tetris.view.components.NotificationPanel;
 import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;

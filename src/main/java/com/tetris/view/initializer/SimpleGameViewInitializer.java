@@ -1,12 +1,12 @@
-package com.tetris.view;
+package com.tetris.view.initializer;
 
-import javafx.application.Platform;
+import com.tetris.view.renderer.SimpleGameRenderer;
 import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
-public class SimpleGameViewInitializer implements GameViewInitializer{
+public class SimpleGameViewInitializer implements GameViewInitializer {
     private final SimpleGameRenderer gameRenderer;
     private Pane gameArea;
     private GridPane gamePanel;

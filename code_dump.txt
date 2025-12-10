@@ -8,8 +8,8 @@ import com.tetris.controller.SimpleGameController;
 import com.tetris.input.SimpleInputMap;
 import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.SimpleGameRenderer;
-import com.tetris.view.GuiController;
+import com.tetris.view.renderer.SimpleGameRenderer;
+import com.tetris.view.controller.GuiController;
 import com.tetris.viewmodel.GameViewModel;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
@@ -82,8 +82,8 @@ import com.tetris.controller.SimpleGameController;
 import com.tetris.input.SimpleInputMap;
 import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.SimpleGameRenderer;
-import com.tetris.view.GuiController;
+import com.tetris.view.renderer.SimpleGameRenderer;
+import com.tetris.view.controller.GuiController;
 import com.tetris.viewmodel.GameViewModel;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
@@ -133,7 +133,7 @@ public class Main extends Application {
 
 package com.tetris;
 
-import com.tetris.view.MainMenuController;
+import com.tetris.view.controller.MainMenuController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
@@ -286,7 +286,7 @@ import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
 import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SimpleBoard;
-import com.tetris.view.SimpleGameRenderer;
+import com.tetris.view.renderer.SimpleGameRenderer;
 import javafx.animation.AnimationTimer;
 
 public class GameController implements InputEventListener {
@@ -2303,7 +2303,7 @@ import com.tetris.input.ControlBinding;
 import com.tetris.input.EventType;
 import com.tetris.input.InputMap;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.ControlLine;
+import com.tetris.view.components.ControlLine;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -2415,8 +2415,8 @@ public interface ViewModel {
 
 === .\src\main\resources\gameLayout.fxml ===
 
-<?import com.tetris.view.GameOverPanel?>
-<?import com.tetris.view.PausePanel?>
+<?import com.tetris.view.components.GameOverPanel?>
+<?import com.tetris.view.components.PausePanel?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
@@ -2424,7 +2424,7 @@ public interface ViewModel {
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<HBox fx:controller="com.tetris.view.GuiController"
+<HBox fx:controller="com.tetris.view.controller.GuiController"
       xmlns:fx="http://javafx.com/fxml"
       alignment="CENTER"
       spacing="10"
@@ -2502,7 +2502,7 @@ public interface ViewModel {
 <?import javafx.scene.text.Font?>
 
 
-<HBox fx:id="root" fx:controller="com.tetris.view.MainMenuController"
+<HBox fx:id="root" fx:controller="com.tetris.view.controller.MainMenuController"
       alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
     <VBox alignment="CENTER" maxWidth="Infinity" maxHeight="Infinity" spacing="20.0">
         <Label text="TETRIS" textOverrun="CLIP">

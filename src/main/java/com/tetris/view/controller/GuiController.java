@@ -1,5 +1,12 @@
-package com.tetris.view;
+package com.tetris.view.controller;
 
+import com.tetris.view.initializer.ControlPanelView;
+import com.tetris.view.initializer.GameViewInitializer;
+import com.tetris.view.initializer.PassiveGuiBinder;
+import com.tetris.view.initializer.SimpleGameViewInitializer;
+import com.tetris.view.components.GameOverPanel;
+import com.tetris.view.components.PausePanel;
+import com.tetris.view.renderer.SimpleGameRenderer;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;

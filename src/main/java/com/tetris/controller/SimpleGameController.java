@@ -8,7 +8,7 @@ import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
 import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SimpleBoard;
-import com.tetris.view.SimpleGameRenderer;
+import com.tetris.view.renderer.SimpleGameRenderer;
 import javafx.animation.AnimationTimer;
 
 public class SimpleGameController implements InputEventListener {

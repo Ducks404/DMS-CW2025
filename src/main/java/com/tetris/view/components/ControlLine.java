@@ -1,8 +1,7 @@
-package com.tetris.view;
+package com.tetris.view.components;
 
 import com.tetris.input.ControlBinding;
 import com.tetris.util.StringOperations;
-import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
