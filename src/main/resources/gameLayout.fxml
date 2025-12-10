@@ -11,6 +11,7 @@
       xmlns:fx="http://javafx.com/fxml"
       alignment="CENTER"
       spacing="10"
+      style="-fx-padding:200px 0 0 0;"
       fx:id="root">
 
     <VBox spacing="10">
