@@ -37,8 +37,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-### Personal stuff ###
-tetris.zip
-dump_text.py
-code_dump.txt
