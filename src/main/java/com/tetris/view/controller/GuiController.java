@@ -42,9 +42,7 @@ public class GuiController implements Initializable {
     private SimpleGameRenderer gameRenderer;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
-    }
+    public void initialize(URL location, ResourceBundle resources) {}
 
     public void start() {
         initGameView();
