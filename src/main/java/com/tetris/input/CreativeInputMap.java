@@ -11,6 +11,7 @@ public class CreativeInputMap extends BaseInputMap {
         map.put(KeyCode.SPACE, EventType.HARD_DROP);
         map.put(KeyCode.UP, EventType.MOVE_ROTATE);
         map.put(KeyCode.F, EventType.PLACE);
+        map.put(KeyCode.C, EventType.CLEAR);
         map.put(KeyCode.H, EventType.HOLD);
         map.put(KeyCode.ENTER, EventType.TOGGLE_PLAY);
         map.put(KeyCode.P, EventType.PAUSE);

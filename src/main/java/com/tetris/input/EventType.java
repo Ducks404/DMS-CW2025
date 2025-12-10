@@ -12,7 +12,8 @@ public enum EventType {
     EXIT("Exit"),
     MOVE_UP("Move up"),
     PLACE("Place"),
-    TOGGLE_PLAY("Play/Edit");
+    TOGGLE_PLAY("Play/Edit"),
+    CLEAR("Clear");
 
     private final String displayName;
 

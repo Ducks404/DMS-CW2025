@@ -9,6 +9,8 @@ import com.tetris.logic.bricks.RandomBrickGenerator;
 import com.tetris.view.renderer.SimpleGameRenderer;
 
 public class CreativeGameController extends BaseGameController{
+    private int[][] latestBoard;
+
     public CreativeGameController(SimpleGameRenderer gameRenderer, GameModel gameModel) {
         super(gameRenderer, gameModel);
     }
@@ -23,13 +25,22 @@ public class CreativeGameController extends BaseGameController{
         switch(eventType) {
             case MOVE_UP -> onUpEvent();
             case PLACE -> onPlaceEvent();
+            case CLEAR -> onClearEvent();
             case TOGGLE_PLAY -> onPlayEvent();
             default -> System.err.println("Event not handled by this controller");
         }
     }
 
+    private void onClearEvent() {
+        if (gameModel.creativeProperty().getValue()) {
+            board.newGame();
+            refresh();
+        }
+    }
+
     private void onPlayEvent() {
         if (gameModel.creativeProperty().getValue()) {
+            latestBoard = board.getBoardMatrix();
             createNewGame();
             gameModel.setCreative(false);
         } else {
@@ -42,10 +53,15 @@ public class CreativeGameController extends BaseGameController{
     protected void createNewGame() {
         gameModel.setIsGameOver(false);
         gameModel.setIsPause(false);
-        board.newGame(board.getBoardMatrix());
+        if (!gameModel.creativeProperty().getValue()) {
+            board.newGame(latestBoard);
+            gameLoop.stop();
+        } else {
+            board.newGame(latestBoard);
+            gameLoop.start();
+        }
         resetHudBricks();
         refresh();
-        gameLoop.start();
     }
 
     private void onPlaceEvent() {
@@ -93,11 +109,11 @@ public class CreativeGameController extends BaseGameController{
 
     @Override
     protected int setScoreDown() {
-        return 0;
+        return 1;
     }
 
     @Override
     protected int setBaseBonus() {
-        return 0;
+        return 50;
     }
 }
