@@ -1,7 +1,7 @@
 package com.tetris.view.controller;
 
-import com.tetris.SceneManager;
-import com.tetris.SceneType;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;

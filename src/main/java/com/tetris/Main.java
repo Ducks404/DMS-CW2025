@@ -1,6 +1,10 @@
 package com.tetris;
 
 import com.tetris.logic.SettingsModel;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
+import com.tetris.scene.SimpleGameModeBuilder;
+import com.tetris.scene.mainMenuBuilder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

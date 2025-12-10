@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.scene;
 
 import com.tetris.view.controller.MainMenuController;
 import javafx.fxml.FXMLLoader;

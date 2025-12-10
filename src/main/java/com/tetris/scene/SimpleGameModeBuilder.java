@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.scene;
 
 import com.tetris.controller.SimpleGameController;
 import com.tetris.input.SimpleInputMap;
@@ -15,7 +15,7 @@ import javafx.scene.layout.Region;
 
 import java.io.IOException;
 
-public class SimpleGameModeBuilder implements SceneBuilder{
+public class SimpleGameModeBuilder implements SceneBuilder {
 
     private final SettingsModel settingsModel;
     private GuiController guiController;

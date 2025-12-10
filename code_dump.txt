@@ -278,8 +278,8 @@ public enum SceneType {
 
 package com.tetris.controller;
 
-import com.tetris.SceneManager;
-import com.tetris.SceneType;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
 import com.tetris.input.EventSource;
 import com.tetris.input.EventType;
 import com.tetris.logic.Board;
@@ -1913,7 +1913,7 @@ public interface GameViewInitializer {
 
 package com.tetris.view;
 
-import com.tetris.SceneManager;
+import com.tetris.scene.SceneManager;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;
@@ -2078,8 +2078,8 @@ public class HudRenderer {
 
 package com.tetris.view;
 
-import com.tetris.SceneManager;
-import com.tetris.SceneType;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;

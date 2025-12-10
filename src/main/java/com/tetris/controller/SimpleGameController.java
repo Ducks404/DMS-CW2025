@@ -1,7 +1,7 @@
 package com.tetris.controller;
 
-import com.tetris.SceneManager;
-import com.tetris.SceneType;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
 import com.tetris.input.EventSource;
 import com.tetris.input.EventType;
 import com.tetris.logic.Board;
