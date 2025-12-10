@@ -1,5 +1,6 @@
 package com.tetris.scene;
 
+import com.tetris.gamemodes.CreativeGameFactory;
 import com.tetris.gamemodes.SimpleGameFactory;
 import com.tetris.logic.SettingsModel;
 import javafx.fxml.FXMLLoader;
@@ -41,7 +42,7 @@ public class SceneManager {
 
         SceneType.MENU.builder = new mainMenuBuilder();
         SceneType.GAME_MODE_NORMAL.builder = new GameModeBuilder(settings, new SimpleGameFactory());
-//        SceneType.GAME_MODE_2.builder = new GameMode2Builder(viewModel, settings);
+        SceneType.GAME_MODE_CREATIVE.builder = new GameModeBuilder(settings, new CreativeGameFactory());
     }
 
     public void switchTo(SceneType type) {

@@ -19,7 +19,7 @@ public class SimpleGameController extends BaseGameController {
     }
 
     @Override
-    protected void handleCustomEvents(EventType eventType) {}
+    protected void handleCustomEvents(EventType eventType) {System.err.println("Event not handled by this controller");}
 
     @Override
     protected double setInitialSpeed() {

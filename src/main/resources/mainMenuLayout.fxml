@@ -15,12 +15,12 @@
                 <Font name="Consolas Bold" size="52.0"/>
             </font>
         </Label>
-        <Button fx:id="playButton" mnemonicParsing="false" text="Play" textOverrun="CLIP">
+        <Button fx:id="normalButton" mnemonicParsing="false" text="Play Normal" textOverrun="CLIP">
             <font>
                 <Font name="Consolas Bold" size="26.0"/>
             </font>
         </Button>
-        <Button fx:id="helpButton" mnemonicParsing="false" text="Help">
+        <Button fx:id="creativeButton" mnemonicParsing="false" text="Play Creative">
             <font>
                 <Font name="Consolas Bold" size="26.0"/>
             </font>

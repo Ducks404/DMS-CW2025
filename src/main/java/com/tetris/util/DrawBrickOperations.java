@@ -22,8 +22,8 @@ public class DrawBrickOperations {
 
     public static void setRectangleData(int color, Rectangle rectangle, double opacity) {
         rectangle.setFill(((Color) getFillColor(color)).deriveColor(1.0, 1.0, 1.0, opacity));
-        rectangle.setArcHeight(9);
-        rectangle.setArcWidth(9);
+        rectangle.setArcHeight(5);
+        rectangle.setArcWidth(5);
     }
 
     public static void setRectangleData(int color, Rectangle rectangle) {

@@ -9,7 +9,10 @@ public enum EventType {
     NEW_GAME("New Game"),
     HOLD("Hold"),
     HARD_DROP("Hard Drop"),
-    EXIT("Exit");
+    EXIT("Exit"),
+    MOVE_UP("Move up"),
+    PLACE("Place"),
+    TOGGLE_PLAY("Play/Edit");
 
     private final String displayName;
 

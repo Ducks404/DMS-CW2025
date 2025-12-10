@@ -46,7 +46,7 @@
                     <GridPane fx:id="brickPanel" vgap="1" hgap="1" snapToPixel="false" managed="false"/>
                     <GridPane fx:id="ghostPanel" vgap="1" hgap="1" snapToPixel="false" managed="false"/>
 
-                    <Group fx:id="groupNotification" HBox.hgrow="ALWAYS">
+                    <Group fx:id="groupNotification" managed="false" HBox.hgrow="ALWAYS">
                         <VBox alignment="CENTER">
                             <GameOverPanel fx:id="gameOverPanel"/>
                         </VBox>

@@ -16,15 +16,18 @@ public class MainMenuController implements Initializable {
     private HBox root;
 
     @FXML
-    private Button playButton;
+    private Button normalButton;
 
     @FXML
-    private Button helpButton;
+    private Button creativeButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        playButton.setOnAction(e -> {
+        normalButton.setOnAction(e -> {
             SceneManager.getInstance().switchTo(SceneType.GAME_MODE_NORMAL);
+        });
+        creativeButton.setOnAction(e -> {
+            SceneManager.getInstance().switchTo(SceneType.GAME_MODE_CREATIVE);
         });
     }
 }

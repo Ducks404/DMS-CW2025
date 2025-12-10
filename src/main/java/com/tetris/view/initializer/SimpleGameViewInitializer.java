@@ -19,17 +19,14 @@ public class SimpleGameViewInitializer implements GameViewInitializer {
         this.gameArea = gameArea;
         this.gamePanel = gamePanel;
         this.brickPanel = brickPanel;
-        this. ghostPanel = ghostPanel;
-        this. groupNotifications = groupNotifications;
+        this.ghostPanel = ghostPanel;
+        this.groupNotifications = groupNotifications;
     }
 
     @Override
     public void setupGamePanes() {
         gameArea.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         groupNotifications.setLayoutY(200);
-        for (var notif : groupNotifications.getChildren()) {
-            notif.setVisible(false);
-        }
 
         passGamePanes();
     }
