@@ -14,19 +14,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Manages scene switching and caching for the Tetris application.
+ * <p>
+ * Singleton class responsible for loading FXML scenes, managing the primary stage,
+ * and caching scenes that should be reused. Initializes scene builders for menu
+ * and game modes.
+ * </p>
+ */
 public class SceneManager {
+    /** Preferred window width in pixels */
     private static final int PREF_WIDTH = 600;
+    /** Preferred window height in pixels */
     private static final int PREF_HEIGHT = 900;
+    /** Minimum window width in pixels */
     private static final int MIN_WIDTH = 600;
+    /** Minimum window height in pixels */
     private static final int MIN_HEIGHT = 900;
 
+    /** Singleton instance */
     private static SceneManager instance;
 
+    /** The primary JavaFX stage */
     private Stage primaryStage;
+    /** Cache of scenes that should be reused */
     private final Map<SceneType, Scene> sceneCache = new HashMap<>();
 
+    /**
+     * Private constructor for singleton pattern.
+     */
     private SceneManager() {}
 
+    /**
+     * Gets the singleton instance of SceneManager.
+     *
+     * @return the SceneManager instance
+     */
     public static SceneManager getInstance() {
         if (instance == null) {
             instance = new SceneManager();
@@ -34,6 +57,15 @@ public class SceneManager {
         return instance;
     }
 
+    /**
+     * Initializes the SceneManager with the primary stage.
+     * <p>
+     * Sets up the stage properties and initializes scene builders for
+     * menu and game modes.
+     * </p>
+     *
+     * @param stage the primary JavaFX stage
+     */
     public void init(Stage stage) {
         this.primaryStage = stage;
         primaryStage.setResizable(false);
@@ -45,6 +77,15 @@ public class SceneManager {
         SceneType.GAME_MODE_CREATIVE.builder = new GameModeBuilder(settings, new CreativeGameFactory());
     }
 
+    /**
+     * Switches to the specified scene type.
+     * <p>
+     * Loads the scene (from cache if enabled for this type) and displays it
+     * on the primary stage.
+     * </p>
+     *
+     * @param type the scene type to switch to
+     */
     public void switchTo(SceneType type) {
         Scene scene;
 
@@ -58,7 +99,17 @@ public class SceneManager {
         primaryStage.show();
     }
 
-
+    /**
+     * Loads a scene from its FXML file.
+     * <p>
+     * Loads the FXML file specified by the scene type, creates the scene
+     * using the scene type's builder, and configures size constraints.
+     * </p>
+     *
+     * @param type the scene type to load
+     * @return the loaded Scene
+     * @throws RuntimeException if the FXML file cannot be loaded
+     */
     private Scene loadScene(SceneType type) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(type.fxmlPath)));

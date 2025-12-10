@@ -8,18 +8,44 @@ import com.tetris.logic.SimpleBoard;
 import com.tetris.logic.bricks.RandomBrickGenerator;
 import com.tetris.view.renderer.SimpleGameRenderer;
 
+/**
+ * Controller for the creative Tetris game mode.
+ * <p>
+ * Extends BaseGameController to provide creative gameplay with custom features including
+ * upward brick movement, manual brick placement, board clearing, and toggle between
+ * edit and play modes. Supports full board design without time pressure.
+ * </p>
+ */
 public class CreativeGameController extends BaseGameController{
+
+    /** Stores the board state for switching between edit and play modes. */
     private int[][] latestBoard;
 
+    /**
+     * Constructs a CreativeGameController.
+     *
+     * @param gameRenderer the renderer for displaying game graphics
+     * @param gameModel the model containing game state properties
+     */
     public CreativeGameController(SimpleGameRenderer gameRenderer, GameModel gameModel) {
         super(gameRenderer, gameModel);
     }
 
+    /**
+     * Creates a standard Tetris board with 25 rows and 10 columns.
+     *
+     * @return the created SimpleBoard instance
+     */
     @Override
     protected Board createBoard() {
         return new SimpleBoard(25,10,new RandomBrickGenerator());
     }
 
+    /**
+     * Handles custom events specific to creative mode.
+     *
+     * @param eventType the event type to handle
+     */
     @Override
     protected void handleCustomEvents(EventType eventType) {
         switch(eventType) {
@@ -31,6 +57,9 @@ public class CreativeGameController extends BaseGameController{
         }
     }
 
+    /**
+     * Clears the board in edit mode.
+     */
     private void onClearEvent() {
         if (gameModel.creativeProperty().getValue()) {
             board.newGame();
@@ -38,6 +67,10 @@ public class CreativeGameController extends BaseGameController{
         }
     }
 
+    /**
+     * Toggles between edit and play modes.
+     * Saves board state when switching modes.
+     */
     private void onPlayEvent() {
         if (gameModel.creativeProperty().getValue()) {
             latestBoard = board.getBoardMatrix();
@@ -49,6 +82,9 @@ public class CreativeGameController extends BaseGameController{
         }
     }
 
+    /**
+     * Creates a new game with the saved board state.
+     */
     @Override
     protected void createNewGame() {
         gameModel.setIsGameOver(false);
@@ -64,12 +100,18 @@ public class CreativeGameController extends BaseGameController{
         refresh();
     }
 
+    /**
+     * Manually places the current brick in edit mode.
+     */
     private void onPlaceEvent() {
         if (gameModel.creativeProperty().getValue()) {
             handleBrickOnFloor();
         }
     }
 
+    /**
+     * Starts the creative game in edit mode.
+     */
     @Override
     public void start() {
         super.start();
@@ -77,6 +119,11 @@ public class CreativeGameController extends BaseGameController{
         gameModel.setCreative(true);
     }
 
+    /**
+     * Handles downward brick movement, with different behavior in edit vs play mode.
+     *
+     * @param eventSource whether the event came from user input or game thread
+     */
     @Override
     protected void onDownEvent(EventSource eventSource) {
         if (!gameModel.creativeProperty().getValue()) {
@@ -87,6 +134,9 @@ public class CreativeGameController extends BaseGameController{
         }
     }
 
+    /**
+     * Moves brick upward in edit mode.
+     */
     private void onUpEvent() {
         if (gameModel.creativeProperty().getValue()) {
             board.moveBrickUp();
@@ -94,6 +144,9 @@ public class CreativeGameController extends BaseGameController{
         }
     }
 
+    /**
+     * Refreshes game graphics, with special ghost brick handling in edit mode.
+     */
     @Override
     protected void refresh() {
         super.refresh();
@@ -102,16 +155,31 @@ public class CreativeGameController extends BaseGameController{
         }
     }
 
+    /**
+     * Returns the initial game speed for creative mode: 2.3 rows per second.
+     *
+     * @return 2.3
+     */
     @Override
     protected double setInitialSpeed() {
         return 2.3;
     }
 
+    /**
+     * Returns the score awarded for soft dropping one row: 1 point.
+     *
+     * @return 1
+     */
     @Override
     protected int setScoreDown() {
         return 1;
     }
 
+    /**
+     * Returns the base bonus multiplier for clearing lines: 50.
+     *
+     * @return 50
+     */
     @Override
     protected int setBaseBonus() {
         return 50;

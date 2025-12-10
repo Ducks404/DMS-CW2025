@@ -9,17 +9,47 @@ import javafx.beans.property.IntegerProperty;
 
 import java.awt.*;
 
+/**
+ * Implementation of the Board interface for standard Tetris gameplay.
+ * <p>
+ * Manages the game board state, brick positioning and movement, collision detection,
+ * line clearing, and scoring. Integrates with BrickRotator for rotation logic and
+ * the Score manager for score tracking.
+ * </p>
+ */
 public class SimpleBoard implements Board {
 
+    /** The width of the game board in columns. */
     private final int width;
+
+    /** The height of the game board in rows. */
     private final int height;
+
+    /** Generates random bricks for the game. */
     private final BrickGenerator brickGenerator;
+
+    /** Manages brick rotation and current shape tracking. */
     private final BrickRotator brickRotator;
+
+    /** The currently held brick. */
     private Brick holdBrick = NullBrick.getInstance();
+
+    /** The current game board matrix (filled blocks). */
     private int[][] currentGameMatrix;
+
+    /** The current brick position (x, y coordinates). */
     private Point currentOffset;
+
+    /** Manages the game score. */
     private final Score score;
 
+    /**
+     * Constructs a SimpleBoard with specified dimensions and brick generator.
+     *
+     * @param height the number of rows on the board
+     * @param width the number of columns on the board
+     * @param brickGenerator the generator for creating bricks
+     */
     public SimpleBoard(int height, int width, BrickGenerator brickGenerator) {
         this.width = width;
         this.height = height;
@@ -44,10 +74,25 @@ public class SimpleBoard implements Board {
         return moveBrick(1, 0);
     }
 
+    /**
+     * Moves the brick by the specified offset.
+     *
+     * @param xOffset the horizontal offset
+     * @param yOffset the vertical offset
+     * @return true if the move was successful, false if blocked
+     */
     private boolean moveBrick(int xOffset, int yOffset) {
         return moveBrick(brickRotator.getCurrentShape(), xOffset, yOffset);
     }
 
+    /**
+     * Attempts to move a brick shape by the specified offset.
+     *
+     * @param shape the brick shape to move
+     * @param xOffset the horizontal offset
+     * @param yOffset the vertical offset
+     * @return true if the move was successful, false if blocked
+     */
     private boolean moveBrick(int[][] shape, int xOffset, int yOffset) {
         int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
         Point p = new Point(currentOffset);
@@ -79,7 +124,14 @@ public class SimpleBoard implements Board {
         }
     }
 
-    private boolean checkForKick(int[][] nextShape, Point currentOffset) {
+    /**
+     * Attempts to kick the brick when rotation is blocked (wall kick logic).
+     * Tries moving the brick horizontally or down if rotation failed.
+     *
+     * @param nextShape the rotated brick shape
+     * @param currentOffset the brick's current position
+     * @return true if a valid position was found, false otherwise
+     */
         if (currentOffset.getX() < 0) {
             for (int xOffset = 1; xOffset <= nextShape[0].length-1; ++xOffset) {
                 if (moveBrick(nextShape, xOffset, 0)) return true;
@@ -113,6 +165,12 @@ public class SimpleBoard implements Board {
         changeBrick(temp);
     }
 
+    /**
+     * Changes the current brick to a new one and positions it at spawn location.
+     *
+     * @param brick the new brick to set as current
+     * @return true if the brick immediately collides (game over), false otherwise
+     */
     private boolean changeBrick(Brick brick) {
         brickRotator.setBrick(brick);
         currentOffset = new Point(width/2-1,0);
@@ -161,6 +219,12 @@ public class SimpleBoard implements Board {
         }
     }
 
+    /**
+     * Starts a new game with the specified board state.
+     *
+     * @param boardMatrix the initial board matrix
+     * @throws RuntimeException if board dimensions don't match
+     */
     public void newGame(int[][] boardMatrix) {
         if (boardMatrix.length!=height || boardMatrix[0].length!=width) throw new RuntimeException();
         currentGameMatrix = boardMatrix;

@@ -12,12 +12,31 @@ import javafx.scene.layout.Pane;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * View for the game controls and key binding settings panel.
+ * <p>
+ * Manages the display of control lines for all game actions and provides
+ * a button for toggling key remapping mode. Updates control displays
+ * when bindings change.
+ * </p>
+ */
 public class ControlPanelView {
+    /** View model providing settings and control binding data */
     private final SettingsViewModel settingsViewModel;
+    /** View model providing game state for pause handling */
     private final ViewModel viewModel;
+    /** Pane containing all control UI elements */
     private final Pane controlsPanel;
+    /** Map from EventType to ControlLine for efficient updates */
     private final Map<EventType, ControlLine> controlLines = new HashMap<>();
 
+    /**
+     * Constructs a ControlPanelView.
+     *
+     * @param viewModel the game view model
+     * @param settingsViewModel the settings view model
+     * @param controlsPanel the pane to populate with control elements
+     */
     public ControlPanelView(ViewModel viewModel, SettingsViewModel settingsViewModel, Pane controlsPanel) {
         this.viewModel = viewModel;
         this.settingsViewModel = settingsViewModel;
@@ -36,6 +55,9 @@ public class ControlPanelView {
         });
     }
 
+    /**
+     * Initializes the controls panel with all control lines and a remap button.
+     */
     public void initControlsPanel() {
         for (var entry : settingsViewModel.controlBindingsProperty()) {
             ControlLine line = getControlLine(entry);
@@ -48,6 +70,12 @@ public class ControlPanelView {
         controlsPanel.getChildren().add(controlsButton);
     }
 
+    /**
+     * Refreshes the control panel display when bindings change.
+     * <p>
+     * Updates all key labels and removes hover styling.
+     * </p>
+     */
     private void refreshControlsPanel() {
         for (var entry : settingsViewModel.controlBindingsProperty()) {
             controlLines.get(entry.eventType()).setKeyLabel(entry.keyCode());
@@ -55,6 +83,12 @@ public class ControlPanelView {
         }
     }
 
+    /**
+     * Creates a control line for a key binding.
+     *
+     * @param entry the control binding to create a line for
+     * @return a ControlLine component
+     */
     private ControlLine getControlLine(ControlBinding entry) {
         ControlLine line = new ControlLine(entry);
         line.setFocusTraversable(false);
@@ -75,6 +109,11 @@ public class ControlPanelView {
         return line;
     }
 
+    /**
+     * Creates the button for toggling key remapping mode.
+     *
+     * @return a Button for changing key bindings
+     */
     private Button getControlsButton() {
         Button controlsButton = new Button("Change Keybinds");
         controlsButton.setFocusTraversable(false);

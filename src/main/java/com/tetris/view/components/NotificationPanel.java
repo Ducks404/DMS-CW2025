@@ -14,8 +14,20 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+/**
+ * Floating notification panel displaying score bonuses.
+ * <p>
+ * Shows temporary floating text with a glow effect that animates upward
+ * and fades out, then removes itself from the display.
+ * </p>
+ */
 public class NotificationPanel extends BorderPane {
 
+    /**
+     * Constructs a NotificationPanel with the given text.
+     *
+     * @param text the text to display in the notification (e.g., "+100")
+     */
     public NotificationPanel(String text) {
         setMinHeight(200);
         setMinWidth(220);
@@ -28,6 +40,15 @@ public class NotificationPanel extends BorderPane {
 
     }
 
+    /**
+     * Plays the notification animation and removes it from the display.
+     * <p>
+     * Animates the notification upward with a fade out effect,
+     * then removes it from the given list when complete.
+     * </p>
+     *
+     * @param list the ObservableList containing this notification
+     */
     public void showScore(ObservableList<Node> list) {
         FadeTransition ft = new FadeTransition(Duration.millis(2000), this);
         TranslateTransition tt = new TranslateTransition(Duration.millis(2500), this);

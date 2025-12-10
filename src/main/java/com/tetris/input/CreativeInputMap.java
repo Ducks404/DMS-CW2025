@@ -2,7 +2,33 @@ package com.tetris.input;
 
 import javafx.scene.input.KeyCode;
 
+/**
+ * Input map for creative Tetris game mode.
+ * <p>
+ * Extends standard controls with creative-mode-specific bindings for
+ * board editing (up movement, manual placement, clearing).
+ * </p>
+ */
 public class CreativeInputMap extends BaseInputMap {
+
+    /**
+     * Constructs a CreativeInputMap with creative mode key bindings.
+     * <ul>
+     *   <li>W: Move up</li>
+     *   <li>LEFT arrow: Move left</li>
+     *   <li>RIGHT arrow: Move right</li>
+     *   <li>DOWN arrow: Move down</li>
+     *   <li>SPACE: Hard drop</li>
+     *   <li>UP arrow: Rotate</li>
+     *   <li>F: Place brick</li>
+     *   <li>C: Clear board</li>
+     *   <li>H: Hold</li>
+     *   <li>ENTER: Toggle play/edit mode</li>
+     *   <li>P: Pause</li>
+     *   <li>N: New game</li>
+     *   <li>ESCAPE: Exit</li>
+     * </ul>
+     */
     public CreativeInputMap() {
         map.put(KeyCode.W, EventType.MOVE_UP);
         map.put(KeyCode.LEFT, EventType.MOVE_LEFT);
