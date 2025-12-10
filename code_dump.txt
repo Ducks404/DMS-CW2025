@@ -1,0 +1,2524 @@
+
+
+=== .\src\main\java\com\tetris\baseGameModeBuilder.java ===
+
+package com.tetris;
+
+import com.tetris.controller.SimpleGameController;
+import com.tetris.input.SimpleInputMap;
+import com.tetris.logic.SimpleGameModel;
+import com.tetris.logic.SettingsModel;
+import com.tetris.view.renderer.SimpleGameRenderer;
+import com.tetris.view.controller.GuiController;
+import com.tetris.viewmodel.GameViewModel;
+import com.tetris.viewmodel.SettingsViewModel;
+import com.tetris.viewmodel.ViewModel;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class baseGameModeBuilder implements SceneBuilder{
+
+    private final SettingsModel settingsModel;
+    private GuiController guiController;
+    private ViewModel gameViewModel;
+    private SettingsViewModel settingsViewModel;
+    private GameModel gameModel;
+    private GameController gameController;
+    private GameRenderer gameRenderer;
+
+    public baseGameModeBuilder(SettingsModel settingsModel) {
+        this.settingsModel = settingsModel;
+    }
+
+    @Override
+    public Scene build(FXMLLoader fxmlLoader, Region root) throws IOException {
+        this.guiController = fxmlLoader.getController();
+
+        // Game Renderer
+        this.gameRenderer = getGameRenderer(guiController);
+
+        // Game Model and Game Controller
+        this.gameModel = new GameModel();
+        this.gameController = new GameController(gameRenderer, gameModel);
+
+        // Settings Model
+        settingsModel.setInputMap(new GameInputMap());
+
+        // Game ViewModel
+        this.gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
+        guiController.setGameViewModel(gameViewModel);
+
+        // Settings ViewModel
+        this.settingsViewModel = new SettingsViewModel(settingsModel);
+        guiController.setSettingsViewModel(settingsViewModel);
+
+        guiController.start();
+        gameController.start();
+
+        // RETURN FINAL SCENE
+        return new Scene(root);
+    }
+
+    private GameRenderer getGameRenderer(GuiController guiController) {
+        GameRenderer gameRenderer = new GameRenderer();
+        guiController.setGameRenderer(gameRenderer);
+        return gameRenderer;
+    }
+
+}
+
+
+=== .\src\main\java\com\tetris\Main.java ===
+
+package com.tetris;
+
+import com.tetris.controller.SimpleGameController;
+import com.tetris.input.SimpleInputMap;
+import com.tetris.logic.SimpleGameModel;
+import com.tetris.logic.SettingsModel;
+import com.tetris.view.renderer.SimpleGameRenderer;
+import com.tetris.view.controller.GuiController;
+import com.tetris.viewmodel.GameViewModel;
+import com.tetris.viewmodel.SettingsViewModel;
+import com.tetris.viewmodel.ViewModel;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+import javafx.stage.Stage;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class Main extends Application {
+    private static final int PREF_WIDTH = 600;
+    private static final int PREF_HEIGHT = 900;
+    private static final int MIN_WIDTH = 600;
+    private static final int MIN_HEIGHT = 900;
+    private static final int MAX_WIDTH = 1350;
+    private static final int MAX_HEIGHT = 900;
+
+    public void init() {
+        var settings = new SettingsModel();
+
+        SceneType.MENU.builder = new mainMenuBuilder();
+        SceneType.GAME_MODE_NORMAL.builder = new baseGameModeBuilder(settings);
+//        SceneType.GAME_MODE_2.builder = new GameMode2Builder(viewModel, settings);
+    }
+
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        init();
+        SceneManager sm = SceneManager.getInstance();
+        sm.init(primaryStage);
+        sm.switchTo(SceneType.MENU);
+    }
+
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\mainMenuBuilder.java ===
+
+package com.tetris;
+
+import com.tetris.view.controller.MainMenuController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+
+import java.io.IOException;
+
+public class mainMenuBuilder implements SceneBuilder {
+
+    @Override
+    public Scene build(FXMLLoader fxmlLoader, Region root) throws IOException {
+        MainMenuController mainMenuController = fxmlLoader.getController();
+        return new Scene(root);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\SceneBuilder.java ===
+
+package com.tetris;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+
+import java.io.IOException;
+
+public interface SceneBuilder {
+    Scene build(FXMLLoader fxmlLoader, Region root) throws IOException;
+}
+
+
+=== .\src\main\java\com\tetris\SceneManager.java ===
+
+package com.tetris;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+public class SceneManager {
+    private static final int PREF_WIDTH = 600;
+    private static final int PREF_HEIGHT = 900;
+    private static final int MIN_WIDTH = 600;
+    private static final int MIN_HEIGHT = 900;
+    private static final int MAX_WIDTH = 1350;
+    private static final int MAX_HEIGHT = 900;
+
+    private static SceneManager instance;
+
+    private Stage primaryStage;
+    private final Map<SceneType, Scene> sceneCache = new HashMap<>();
+
+    private SceneManager() {}
+
+    public static SceneManager getInstance() {
+        if (instance == null) {
+            instance = new SceneManager();
+        }
+        return instance;
+    }
+
+    public void init(Stage stage) {
+        this.primaryStage = stage;
+    }
+
+    public void switchTo(SceneType type) {
+        Scene scene;
+
+        if (type.cache) {
+            scene = sceneCache.computeIfAbsent(type, this::loadScene);
+        } else {
+            scene = loadScene(type); // always reload
+        }
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+
+    private Scene loadScene(SceneType type) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource(type.fxmlPath)));
+            Parent root = fxmlLoader.load();
+            Scene scene;
+            if (root instanceof Region regionRoot) {
+                regionRoot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
+                regionRoot.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+                regionRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+                scene = type.buildScene(fxmlLoader, regionRoot);
+                return scene;
+            } else {
+                throw new IllegalArgumentException("Root is not a Region! Can't set sizes.");
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load scene: " + type, e);
+        }
+    }
+}
+
+
+=== .\src\main\java\com\tetris\SceneType.java ===
+
+package com.tetris;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+
+import java.io.IOException;
+
+public enum SceneType {
+    MENU("mainMenuLayout.fxml", true),
+    GAME_MODE_NORMAL("gameLayout.fxml",false);
+//    GAME_MODE_VERSUS(false);
+
+    public final String fxmlPath;
+    public final boolean cache;
+    public SceneBuilder builder;
+
+    SceneType(String fxmlPath, boolean cache) {
+        this.fxmlPath = fxmlPath;
+        this.cache = cache;
+    }
+
+    public Scene buildScene(FXMLLoader fxmlLoader, Region root) throws IOException {
+        return builder.build(fxmlLoader, root);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\controller\GameController.java ===
+
+package com.tetris.controller;
+
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
+import com.tetris.input.EventSource;
+import com.tetris.input.EventType;
+import com.tetris.logic.Board;
+import com.tetris.logic.ClearRow;
+import com.tetris.logic.SimpleGameModel;
+import com.tetris.logic.SimpleBoard;
+import com.tetris.view.renderer.SimpleGameRenderer;
+import javafx.animation.AnimationTimer;
+
+public class GameController implements InputEventListener {
+
+    private double SPEED = 2.3; // Rows per Second
+    private static final int SCORE_PER_ROW = 1;
+    private static final int BASE_BONUS = 50;
+    private final Board board = new SimpleBoard(25, 10);
+
+    private final GameRenderer gameRenderer;
+    private final GameModel gameModel;
+
+    private AnimationTimer gameLoop;
+
+    public GameController(GameRenderer gameRenderer, GameModel gameModel) {
+        this.gameModel = gameModel;
+        this.gameRenderer = gameRenderer;
+    }
+
+    public void start() {
+        gameModel.setScore(board.getScore());
+        newBrick();
+        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+
+        gameLoop = new AnimationTimer() {
+            private long lastUpdate = 0;
+
+            @Override
+            public void handle(long now) {
+                if (lastUpdate == 0) {
+                    lastUpdate = now;
+                    return;
+                }
+
+                long interval = (long) (1.0/SPEED * 1_000_000_000);
+                if (now - lastUpdate >= interval) {
+                    onDownEvent(EventSource.THREAD);
+                    lastUpdate = now;
+                }
+            }
+        };
+
+        gameLoop.start();
+    }
+
+    @Override
+    public void handleEvent(EventType eventType) {
+        switch (eventType) {
+            case EventType.MOVE_DOWN -> onDownEvent(EventSource.USER);
+            case EventType.MOVE_LEFT -> onLeftEvent();
+            case EventType.MOVE_RIGHT -> onRightEvent();
+            case EventType.MOVE_ROTATE -> onRotateEvent();
+            case EventType.HARD_DROP -> onHardDropEvent();
+            case EventType.HOLD -> onHoldEvent();
+            case EventType.PAUSE -> onPauseEvent();
+            case EventType.NEW_GAME -> createNewGame();
+            case EventType.EXIT -> exit();
+            default -> System.err.println("Game event not handled by this game controller.");
+        }
+    }
+    private void exit() {
+        SceneManager.getInstance().switchTo(SceneType.MENU);
+    }
+
+    private void onHardDropEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        int rowsUntilFloor = board.getRowUntilFloor();
+
+        for (int i=0; i<rowsUntilFloor; i++) {
+            board.moveBrickDown();
+            board.addScore(SCORE_PER_ROW);
+        }
+
+        handleBrickOnFloor();
+
+        refresh();
+    }
+
+    private void onDownEvent(EventSource eventSource) {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        boolean canMove = board.moveBrickDown();
+        if (!canMove) {
+            handleBrickOnFloor();
+        } else {
+            if (eventSource == EventSource.USER) {
+                board.addScore(SCORE_PER_ROW);
+            }
+        }
+
+        refresh();
+    }
+
+    private void onLeftEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        board.moveBrickLeft();
+        refresh();
+    }
+
+    private void onRightEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        board.moveBrickRight();
+        refresh();
+    }
+
+    private void onRotateEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        board.rotateLeftBrick();
+        refresh();
+    }
+
+    private void onHoldEvent() {
+        if (gameModel.pauseProperty().getValue() || gameModel.gameOverProperty().getValue()) {
+            return;
+        }
+        if (gameModel.canHoldProperty().getValue()) {
+            board.holdBrick();
+            gameModel.setHold(board.getViewData().holdBrickData());
+            gameModel.setCanHold(false);
+            gameModel.setNextBrick(board.getViewData().nextBrickData());
+
+            refresh();
+        }
+    }
+
+    private void handleBrickOnFloor() {
+        board.mergeBrickToBackground();
+        checkClearedRows();
+
+        if (newBrick()) {
+            gameOver();
+        }
+        refresh();
+    }
+
+    private void checkClearedRows() {
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.linesRemoved() > 0) {
+            int scoreBonus = BASE_BONUS * clearRow.linesRemoved() * clearRow.linesRemoved();
+            board.addScore(scoreBonus);
+            gameRenderer.sendNotification(scoreBonus);
+        }
+    }
+
+    private void gameOver() {
+        gameLoop.stop();
+        gameModel.setIsGameOver(true);
+    }
+
+    private void createNewGame() {
+        gameModel.setIsGameOver(false);
+        gameModel.setIsPause(false);
+        board.newGame();
+        resetHudBricks();
+        refresh();
+        gameLoop.start();
+    }
+
+    private void onPauseEvent() {
+        if (gameModel.pauseProperty().getValue()) {
+            gameLoop.start();
+            gameModel.setIsPause(false);
+            gameRenderer.requestFocus();
+        } else {
+            gameLoop.stop();
+            gameModel.setIsPause(true);
+        }
+    }
+
+    private boolean newBrick() {
+        boolean collisionsOnNewBrick = board.createNewBrick();
+        resetHudBricks();
+        return collisionsOnNewBrick;
+    }
+
+    private void resetHudBricks() {
+        gameModel.setNextBrick(board.getViewData().nextBrickData());
+        gameModel.setHold(board.getViewData().holdBrickData());
+        gameModel.setCanHold(true);
+    }
+
+    private void refresh() {
+        gameRenderer.refreshGameBackground(board.getBoardMatrix());
+        gameRenderer.refreshBrick(board.getViewData());
+        gameRenderer.refreshGhost(board.getViewData(), board.getRowUntilFloor());
+    }
+}
+
+
+=== .\src\main\java\com\tetris\controller\InputEventListener.java ===
+
+package com.tetris.controller;
+
+import com.tetris.input.EventType;
+
+public interface InputEventListener {
+
+    void handleEvent(EventType eventType);
+}
+
+
+=== .\src\main\java\com\tetris\input\BaseInputMap.java ===
+
+package com.tetris.input;
+
+import javafx.beans.property.MapProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
+import javafx.scene.input.KeyCode;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class BaseInputMap implements InputMap {
+    final ObservableMap<KeyCode, EventType> map = FXCollections.observableMap(new LinkedHashMap<>());
+    final MapProperty<KeyCode, EventType> mapProperty = new SimpleMapProperty<>(map);
+
+    @Override
+    public EventType get(KeyCode key) {
+        if (has(key)) {
+            return map.get(key);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public int bind(KeyCode key, EventType eventType) {
+        if (!map.containsValue(eventType)) {
+            return 1;
+        }
+        map.remove(keyOf(eventType));
+        map.put(key, eventType);
+        return 0;
+    }
+
+    private KeyCode keyOf(EventType eventType){
+        for (var entry: map.entrySet()) {
+            if (entry.getValue()== eventType) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean has(KeyCode key) {
+        return map.containsKey(key);
+    }
+
+    @Override
+    public Set<Map.Entry<KeyCode, EventType>> entrySet() {
+        return map.entrySet();
+    }
+
+    @Override
+    public MapProperty<KeyCode, EventType> mapProperty() {
+        return mapProperty;
+    }
+}
+
+
+=== .\src\main\java\com\tetris\input\ControlBinding.java ===
+
+package com.tetris.input;
+
+import javafx.scene.input.KeyCode;
+
+public record ControlBinding(EventType eventType, KeyCode keyCode, String displayName) {
+
+    public ControlBinding(EventType eventType, KeyCode keyCode){
+        this(eventType, keyCode, eventType.getDisplayName());
+    }
+}
+
+
+=== .\src\main\java\com\tetris\input\EventSource.java ===
+
+package com.tetris.input;
+
+public enum EventSource {
+    USER, THREAD
+}
+
+
+=== .\src\main\java\com\tetris\input\EventType.java ===
+
+package com.tetris.input;
+
+public enum EventType {
+    MOVE_DOWN("Soft Drop"),
+    MOVE_LEFT("Move Left"),
+    MOVE_RIGHT("Move Right"),
+    MOVE_ROTATE("Rotate"),
+    PAUSE("Pause"),
+    NEW_GAME("New Game"),
+    HOLD("Hold"),
+    HARD_DROP("Hard Drop"),
+    EXIT("Exit");
+
+    private final String displayName;
+
+    EventType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+}
+
+
+=== .\src\main\java\com\tetris\input\GameInputMap.java ===
+
+package com.tetris.input;
+
+import javafx.scene.input.KeyCode;
+
+public class GameInputMap extends BaseInputMap {
+    public GameInputMap() {
+        map.put(KeyCode.UP, EventType.MOVE_ROTATE);
+        map.put(KeyCode.LEFT, EventType.MOVE_LEFT);
+        map.put(KeyCode.RIGHT, EventType.MOVE_RIGHT);
+        map.put(KeyCode.DOWN, EventType.MOVE_DOWN);
+        map.put(KeyCode.SPACE, EventType.HARD_DROP);
+        map.put(KeyCode.H, EventType.HOLD);
+        map.put(KeyCode.P, EventType.PAUSE);
+        map.put(KeyCode.N, EventType.NEW_GAME);
+        map.put(KeyCode.ESCAPE, EventType.EXIT);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\input\InputMap.java ===
+
+package com.tetris.input;
+
+import javafx.beans.Observable;
+import javafx.beans.property.MapProperty;
+import javafx.scene.input.KeyCode;
+
+import java.util.Map;
+import java.util.Set;
+
+public interface InputMap {
+    EventType get(KeyCode key);
+    int bind(KeyCode key, EventType eventType);
+    boolean has(KeyCode key);
+    Set<Map.Entry<KeyCode, EventType>> entrySet();
+    MapProperty<KeyCode, EventType> mapProperty();
+}
+
+
+=== .\src\main\java\com\tetris\logic\Board.java ===
+
+package com.tetris.logic;
+
+public interface Board {
+
+    boolean moveBrickDown();
+
+    boolean moveBrickLeft();
+
+    boolean moveBrickRight();
+
+    boolean rotateLeftBrick();
+
+    boolean createNewBrick();
+
+    void holdBrick();
+
+    int[][] getBoardMatrix();
+
+    ViewData getViewData();
+
+    void mergeBrickToBackground();
+
+    ClearRow clearRows();
+
+    Score getScore();
+
+    void addScore(int num);
+
+    void newGame();
+
+    int getRowUntilFloor();
+}
+
+
+=== .\src\main\java\com\tetris\logic\BrickRotator.java ===
+
+package com.tetris.logic;
+
+import com.tetris.logic.bricks.Brick;
+
+public class BrickRotator {
+
+    private Brick brick;
+    private int currentShape = 0;
+
+    private int nextShapeIndex(){
+        return (currentShape+1) % brick.getShapeMatrix().size();
+    }
+
+    public int[][] getNextShape() {
+        return brick.getShapeMatrix().get(nextShapeIndex());
+    }
+
+    public void changeToNextShape() {
+        this.currentShape = nextShapeIndex();
+    }
+
+    public int[][] getCurrentShape() {
+        return brick.getShapeMatrix().get(currentShape);
+    }
+
+    public void setBrick(Brick brick) {
+        this.brick = brick;
+        currentShape = 0;
+    }
+
+    public Brick getBrick() {
+        return brick;
+    }
+
+
+}
+
+
+=== .\src\main\java\com\tetris\logic\ClearRow.java ===
+
+package com.tetris.logic;
+
+import com.tetris.util.MatrixOperations;
+
+public record ClearRow(int linesRemoved, int[][] newMatrix) {
+
+    @Override
+    public int[][] newMatrix() {
+        return MatrixOperations.copy(newMatrix);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\GameModel.java ===
+
+package com.tetris.logic;
+
+import javafx.beans.property.*;
+
+public class GameModel {
+
+    private final BooleanProperty isPause = new SimpleBooleanProperty();
+
+    private final BooleanProperty isGameOver = new SimpleBooleanProperty();
+
+    private Score score;
+
+    private final ObjectProperty<int[][]> nextBrick = new SimpleObjectProperty<>(new int[0][0]);
+
+    private final BooleanProperty canHold = new SimpleBooleanProperty();
+    private final ObjectProperty<int[][]> holdBrick = new SimpleObjectProperty<>(new int[0][0]);
+
+    public GameModel() {
+        isPause.setValue(false);
+        isGameOver.setValue(false);
+        canHold.setValue(true);
+    }
+
+    public BooleanProperty pauseProperty() {
+        return isPause;
+    }
+
+    public void setIsPause(boolean bool) {
+        isPause.setValue(bool);
+    }
+
+    public BooleanProperty gameOverProperty() {
+        return isGameOver;
+    }
+
+    public void setIsGameOver(boolean bool) {
+        isGameOver.setValue(bool);
+    }
+
+    public IntegerProperty scoreProperty() {
+        return score.scoreProperty();
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+    }
+
+    public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {
+        return nextBrick;
+    }
+
+    public void setNextBrick(int[][] brick) {
+        nextBrick.set(brick);
+    }
+
+    public void setCanHold(boolean bool) {
+        canHold.setValue(bool);
+    }
+
+    public ReadOnlyBooleanProperty canHoldProperty() {
+        return canHold;
+    }
+
+    public ReadOnlyObjectProperty<int[][]> holdBrickProperty() {
+        return holdBrick;
+    }
+
+    public void setHold(int[][] brick) {
+        holdBrick.set(brick);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\Score.java ===
+
+package com.tetris.logic;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
+public final class Score {
+
+    private final IntegerProperty score = new SimpleIntegerProperty(0);
+
+    public IntegerProperty scoreProperty() {
+        return score;
+    }
+
+    public void add(int i){
+        score.setValue(score.getValue() + i);
+    }
+
+    public void reset() {
+        score.setValue(0);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\SettingsModel.java ===
+
+package com.tetris.logic;
+
+import com.tetris.input.InputMap;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+
+public class SettingsModel {
+
+    private final ObjectProperty<InputMap> inputMap = new SimpleObjectProperty<>();
+
+    public void setInputMap(InputMap inputMap) {
+        if (inputMap == null) {
+            throw new IllegalArgumentException("InputMap cannot be set to null!");
+        }
+        this.inputMap.set(inputMap);
+    }
+
+    public ObjectProperty<InputMap> inputMapProperty() {
+        return inputMap;
+    }
+
+    public InputMap getInputMap() {
+        return inputMap.get();
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\SimpleBoard.java ===
+
+package com.tetris.logic;
+
+import com.tetris.logic.bricks.Brick;
+import com.tetris.logic.bricks.BrickGenerator;
+import com.tetris.logic.bricks.NullBrick;
+import com.tetris.logic.bricks.RandomBrickGenerator;
+import com.tetris.util.MatrixOperations;
+
+import java.awt.*;
+
+public class SimpleBoard implements Board {
+
+    private final int width;
+    private final int height;
+    private final BrickGenerator brickGenerator;
+    private final BrickRotator brickRotator;
+    private Brick holdBrick = NullBrick.getInstance();
+    private int[][] currentGameMatrix;
+    private Point currentOffset;
+    private final Score score;
+
+    public SimpleBoard(int height, int width) {
+        this.width = width;
+        this.height = height;
+        currentGameMatrix = new int[height][width];
+        brickGenerator = new RandomBrickGenerator();
+        brickRotator = new BrickRotator();
+        score = new Score();
+    }
+
+    @Override
+    public boolean moveBrickDown() {
+        return moveBrick(0, 1);
+    }
+
+    @Override
+    public boolean moveBrickLeft() {
+        return moveBrick(-1, 0);
+    }
+
+    @Override
+    public boolean moveBrickRight() {
+        return moveBrick(1, 0);
+    }
+
+    private boolean moveBrick(int xOffset, int yOffset) {
+        return moveBrick(brickRotator.getCurrentShape(), xOffset, yOffset);
+    }
+
+    private boolean moveBrick(int[][] shape, int xOffset, int yOffset) {
+        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
+        Point p = new Point(currentOffset);
+        p.translate(xOffset, yOffset);
+        boolean conflict = MatrixOperations.intersect(currentMatrix, shape, (int) p.getX(), (int) p.getY());
+        if (conflict) {
+            return false;
+        } else {
+            currentOffset = p;
+            return true;
+        }
+    }
+
+    @Override
+    public boolean rotateLeftBrick() {
+        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
+        int[][] nextShape = brickRotator.getNextShape();
+        boolean conflict = MatrixOperations.intersect(currentMatrix, nextShape, (int) currentOffset.getX(), (int) currentOffset.getY());
+        if (conflict) {
+            if (checkForKick(nextShape, currentOffset)) {
+                brickRotator.changeToNextShape();
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            brickRotator.changeToNextShape();
+            return true;
+        }
+    }
+
+    private boolean checkForKick(int[][] nextShape, Point currentOffset) {
+        if (currentOffset.getX() < 0) {
+            for (int xOffset = 1; xOffset <= nextShape[0].length-1; ++xOffset) {
+                if (moveBrick(nextShape, xOffset, 0)) return true;
+            }
+        } else {
+            for (int xOffset = -1; xOffset >= -(nextShape[0].length - 1); --xOffset) {
+                if (moveBrick(nextShape, xOffset, 0)) return true;
+            }
+        }
+        for (int yOffset = 0; yOffset <= nextShape.length-1; ++yOffset) {
+            if (moveBrick(nextShape, 0, yOffset)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean createNewBrick() {
+        Brick currentBrick = brickGenerator.getBrick();
+        return changeBrick(currentBrick);
+    }
+
+    @Override
+    public void holdBrick() {
+        Brick temp;
+        if (holdBrick == NullBrick.getInstance()) {
+            temp = brickGenerator.getBrick();
+        } else {
+            temp = holdBrick;
+        }
+        holdBrick = brickRotator.getBrick();
+        changeBrick(temp);
+    }
+
+    private boolean changeBrick(Brick brick) {
+        brickRotator.setBrick(brick);
+        currentOffset = new Point(width/2-1,0);
+        return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+    }
+
+    @Override
+    public int[][] getBoardMatrix() {
+        return currentGameMatrix;
+    }
+
+    @Override
+    public ViewData getViewData() {
+        return new ViewData(brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY(), brickGenerator.getNextBrick().getShapeMatrix().getFirst(), holdBrick.getShapeMatrix().getFirst());
+    }
+
+    @Override
+    public void mergeBrickToBackground() {
+        currentGameMatrix = MatrixOperations.merge(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+    }
+
+    @Override
+    public ClearRow clearRows() {
+        ClearRow clearRow = MatrixOperations.checkRemoving(currentGameMatrix);
+        currentGameMatrix = clearRow.newMatrix();
+        return clearRow;
+
+    }
+
+    @Override
+    public Score getScore() {
+        return score;
+    }
+
+    @Override
+    public void addScore(int num) {
+        score.add(num);
+    }
+
+    @Override
+    public void newGame() {
+        currentGameMatrix = new int[height][width];
+        score.reset();
+        holdBrick = NullBrick.getInstance();
+        createNewBrick();
+    }
+
+    @Override
+    public int getRowUntilFloor() {
+        int numRows = 0;
+        int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
+        boolean conflict;
+        do {
+            numRows++;
+            Point p = new Point(currentOffset);
+            p.translate(0, numRows);
+            conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
+        } while (!conflict);
+
+        return numRows-1;
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\ViewData.java ===
+
+package com.tetris.logic;
+
+import com.tetris.util.MatrixOperations;
+
+public record ViewData(int[][] brickData, int xPosition, int yPosition, int[][] nextBrickData, int[][] holdBrickData) {
+
+    @Override
+    public int[][] brickData() {
+        return MatrixOperations.copy(brickData);
+    }
+
+    @Override
+    public int[][] nextBrickData() {
+        return MatrixOperations.copy(nextBrickData);
+    }
+
+    @Override
+    public int[][] holdBrickData() {
+        return MatrixOperations.copy(holdBrickData);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\Brick.java ===
+
+package com.tetris.logic.bricks;
+
+import java.util.List;
+
+public interface Brick {
+
+    List<int[][]> getShapeMatrix();
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\BrickGenerator.java ===
+
+package com.tetris.logic.bricks;
+
+public interface BrickGenerator {
+
+    Brick getBrick();
+
+    Brick getNextBrick();
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\IBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class IBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public IBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {1, 1, 1, 1},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 1, 0, 0},
+                {0, 1, 0, 0},
+                {0, 1, 0, 0},
+                {0, 1, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\JBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class JBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public JBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 0, 2, 0},
+                {0, 0, 2, 0},
+                {0, 2, 2, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {2, 2, 2, 0},
+                {0, 0, 2, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 2, 2, 0},
+                {0, 2, 0, 0},
+                {0, 2, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 2, 0, 0},
+                {0, 2, 2, 2},
+                {0, 0, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\LBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class LBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public LBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 3, 0, 0},
+                {0, 3, 0, 0},
+                {0, 3, 3, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 0, 3, 0},
+                {3, 3, 3, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 3, 3, 0},
+                {0, 0, 3, 0},
+                {0, 0, 3, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 3, 3, 3},
+                {0, 3, 0, 0},
+                {0, 0, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\NullBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class NullBrick implements Brick {
+    private static NullBrick instance;
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    private NullBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
+        });
+    }
+
+    public static NullBrick getInstance() {
+        if (instance == null) {
+            instance = new NullBrick();
+        }
+        return instance;
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+}
+
+=== .\src\main\java\com\tetris\logic\bricks\OBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class OBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public OBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 4, 4, 0},
+                {0, 4, 4, 0},
+                {0, 0, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\RandomBrickGenerator.java ===
+
+package com.tetris.logic.bricks;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class RandomBrickGenerator implements BrickGenerator {
+
+    private final List<Brick> brickList;
+
+    private final Deque<Brick> nextBricks = new ArrayDeque<>();
+
+    public RandomBrickGenerator() {
+        brickList = new ArrayList<>();
+        brickList.add(new IBrick());
+        brickList.add(new JBrick());
+        brickList.add(new LBrick());
+        brickList.add(new OBrick());
+        brickList.add(new SBrick());
+        brickList.add(new TBrick());
+        brickList.add(new ZBrick());
+        nextBricks.add(brickList.get(ThreadLocalRandom.current().nextInt(brickList.size())));
+        nextBricks.add(brickList.get(ThreadLocalRandom.current().nextInt(brickList.size())));
+    }
+
+    @Override
+    public Brick getBrick() {
+        if (nextBricks.size() <= 1) {
+            nextBricks.add(brickList.get(ThreadLocalRandom.current().nextInt(brickList.size())));
+        }
+        return nextBricks.poll();
+    }
+
+    @Override
+    public Brick getNextBrick() {
+        return nextBricks.peek();
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\SBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class SBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public SBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 5, 0, 0},
+                {0, 5, 5, 0},
+                {0, 0, 5, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {0, 5, 5, 0},
+                {5, 5, 0, 0},
+                {0, 0, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\TBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class TBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public TBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {6, 6, 6, 0},
+                {0, 6, 0, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 6, 0, 0},
+                {0, 6, 6, 0},
+                {0, 6, 0, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 6, 0, 0},
+                {6, 6, 6, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 6, 0, 0},
+                {6, 6, 0, 0},
+                {0, 6, 0, 0},
+                {0, 0, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\logic\bricks\ZBrick.java ===
+
+package com.tetris.logic.bricks;
+
+import com.tetris.util.MatrixOperations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class ZBrick implements Brick {
+
+    private final List<int[][]> brickMatrix = new ArrayList<>();
+
+    public ZBrick() {
+        brickMatrix.add(new int[][]{
+                {0, 0, 7, 0},
+                {0, 7, 7, 0},
+                {0, 7, 0, 0},
+                {0, 0, 0, 0}
+        });
+        brickMatrix.add(new int[][]{
+                {0, 0, 0, 0},
+                {7, 7, 0, 0},
+                {0, 7, 7, 0},
+                {0, 0, 0, 0}
+        });
+    }
+
+    @Override
+    public List<int[][]> getShapeMatrix() {
+        return MatrixOperations.deepCopyList(brickMatrix);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\util\DrawBrickOperations.java ===
+
+package com.tetris.util;
+
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
+
+public class DrawBrickOperations {
+
+    private DrawBrickOperations() {}
+
+    public static void drawGrid(int[][] gridData, Rectangle[][] grid, double opacity) {
+        for (int i = 0; i < gridData.length; i++) {
+            for (int j = 0; j < gridData[0].length; j++) {
+                DrawBrickOperations.setRectangleData(gridData[i][j], grid[i][j], opacity);
+            }
+        }
+    }
+
+    public static void drawGrid(int[][] gridData, Rectangle[][] grid) {
+        drawGrid(gridData, grid, 1.0);
+    }
+
+    public static void setRectangleData(int color, Rectangle rectangle, double opacity) {
+        rectangle.setFill(((Color) getFillColor(color)).deriveColor(1.0, 1.0, 1.0, opacity));
+        rectangle.setArcHeight(9);
+        rectangle.setArcWidth(9);
+    }
+
+    public static void setRectangleData(int color, Rectangle rectangle) {
+        setRectangleData(color, rectangle, 1.0);
+    }
+
+    public static Paint getFillColor(int i) {
+        return switch (i) {
+            case 0 -> Color.TRANSPARENT;
+            case 1 -> Color.AQUA;
+            case 2 -> Color.BLUEVIOLET;
+            case 3 -> Color.DARKGREEN;
+            case 4 -> Color.YELLOW;
+            case 5 -> Color.RED;
+            case 6 -> Color.BEIGE;
+            case 7 -> Color.BURLYWOOD;
+            default -> Color.WHITE;
+        };
+    }
+}
+
+
+=== .\src\main\java\com\tetris\util\MatrixOperations.java ===
+
+package com.tetris.util;
+
+import com.tetris.logic.ClearRow;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MatrixOperations {
+
+
+    //We don't want to instantiate this utility class
+    private MatrixOperations(){
+
+    }
+
+    public static boolean intersect(final int[][] matrix, final int[][] brick, int x, int y) {
+        for (int row = 0; row < brick.length; row++) {
+            for (int col = 0; col < brick[row].length; col++) {
+                int targetX = x + col;
+                int targetY = y + row;
+                if (brick[row][col] != 0 && (checkOutOfBound(matrix, targetX, targetY) || matrix[targetY][targetX] != 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkOutOfBound(int[][] matrix, int targetX, int targetY) {
+        return targetX < 0 || targetY >= matrix.length || targetX >= matrix[targetY].length;
+    }
+
+    public static int[][] copy(int[][] original) {
+        int[][] myInt = new int[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            int[] aMatrix = original[i];
+            int aLength = aMatrix.length;
+            myInt[i] = new int[aLength];
+            System.arraycopy(aMatrix, 0, myInt[i], 0, aLength);
+        }
+        return myInt;
+    }
+
+    public static int[][] merge(int[][] filledFields, int[][] brick, int x, int y) {
+        int[][] copy = copy(filledFields);
+        for (int row = 0; row < brick.length; row++) {
+            for (int col = 0; col < brick[row].length; col++) {
+                int targetX = x + col;
+                int targetY = y + row;
+                if (brick[row][col] != 0) {
+                    copy[targetY][targetX] = brick[row][col];
+                }
+            }
+        }
+        return copy;
+    }
+
+    public static ClearRow checkRemoving(final int[][] matrix) {
+        int[][] tmp = new int[matrix.length][matrix[0].length];
+        Deque<int[]> newRows = new ArrayDeque<>();
+        List<Integer> clearedRows = new ArrayList<>();
+
+        for (int row = 0; row < matrix.length; row++) {
+            int[] tmpRow = new int[matrix[row].length];
+            boolean rowToClear = true;
+            for (int col = 0; col < matrix[0].length; col++) {
+                if (matrix[row][col] == 0) {
+                    rowToClear = false;
+                }
+                tmpRow[col] = matrix[row][col];
+            }
+            if (rowToClear) {
+                clearedRows.add(row);
+            } else {
+                newRows.add(tmpRow);
+            }
+        }
+        for (int i = matrix.length - 1; i >= 0; i--) {
+            int[] row = newRows.pollLast();
+            if (row != null) {
+                tmp[i] = row;
+            } else {
+                break;
+            }
+        }
+        return new ClearRow(clearedRows.size(), tmp);
+    }
+
+    public static List<int[][]> deepCopyList(List<int[][]> list){
+        return list.stream().map(MatrixOperations::copy).collect(Collectors.toList());
+    }
+
+}
+
+
+=== .\src\main\java\com\tetris\util\StringOperations.java ===
+
+package com.tetris.util;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+public class StringOperations {
+    private StringOperations(){}
+
+    public static String toTitleCase(String s) {
+        return Arrays.stream(s.split("_"))
+                .map(w -> w.substring(0, 1).toUpperCase() + w.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\ControlLine.java ===
+
+package com.tetris.view;
+
+import com.tetris.input.ControlBinding;
+import com.tetris.util.StringOperations;
+import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+
+public class ControlLine extends HBox {
+    final static String normalStyle = "controlText";
+    final static String hoverStyle = "controlTextHover";
+    final Label eventLabel;
+    final Label keyLabel;
+
+    public ControlLine(ControlBinding controlBinding) {
+        this.eventLabel = new Label(controlBinding.displayName());
+        eventLabel.getStyleClass().add(normalStyle);
+
+        this.keyLabel = new Label(StringOperations.toTitleCase(controlBinding.keyCode().toString()));
+        keyLabel.getStyleClass().add(normalStyle);
+
+        Region spacer = new Region();
+        spacer.setMinWidth(10);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        getChildren().addAll(eventLabel, spacer, keyLabel);
+    }
+
+    public void setKeyLabel(KeyCode keyCode) {
+        keyLabel.setText(StringOperations.toTitleCase(keyCode.toString()));
+    }
+
+    public void setKeyLabel(String s) {
+        keyLabel.setText(s);
+    }
+
+    public void onHover() {
+        setStyle(eventLabel,hoverStyle);
+        setStyle(keyLabel, hoverStyle);
+    }
+    public void offHover() {
+        setStyle(eventLabel, normalStyle);
+        setStyle(keyLabel, normalStyle);
+    }
+
+    private void setStyle(Label label, String style) {
+        label.getStyleClass().clear();
+        label.getStyleClass().add(style);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\ControlPanelView.java ===
+
+package com.tetris.view;
+
+import com.tetris.input.ControlBinding;
+import com.tetris.input.EventType;
+import com.tetris.viewmodel.SettingsViewModel;
+import com.tetris.viewmodel.ViewModel;
+import javafx.collections.ListChangeListener;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ControlPanelView {
+    private final SettingsViewModel settingsViewModel;
+    private final ViewModel viewModel;
+    private final Pane controlsPanel;
+    private final Map<EventType, ControlLine> controlLines = new HashMap<>();
+
+    public ControlPanelView(ViewModel viewModel, SettingsViewModel settingsViewModel, Pane controlsPanel) {
+        this.viewModel = viewModel;
+        this.settingsViewModel = settingsViewModel;
+        this.controlsPanel = controlsPanel;
+
+        settingsViewModel.controlBindingsProperty().addListener(new ListChangeListener<ControlBinding>() {
+            @Override
+            public void onChanged(Change<? extends ControlBinding> change) {
+                refreshControlsPanel();
+            }
+        });
+        settingsViewModel.eventWaitingForKeyProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal==null) return;
+            controlLines.get(newVal).setKeyLabel("<Press Key>");
+            controlLines.get(newVal).requestFocus();
+        });
+    }
+
+    public void initControlsPanel() {
+        for (var entry : settingsViewModel.controlBindingsProperty()) {
+            ControlLine line = getControlLine(entry);
+
+            controlsPanel.getChildren().add(line);
+            controlLines.put(entry.eventType(), line);
+        }
+
+        Button controlsButton = getControlsButton();
+        controlsPanel.getChildren().add(controlsButton);
+    }
+
+    private void refreshControlsPanel() {
+        for (var entry : settingsViewModel.controlBindingsProperty()) {
+            controlLines.get(entry.eventType()).setKeyLabel(entry.keyCode());
+            controlLines.get(entry.eventType()).offHover();
+        }
+    }
+
+    private ControlLine getControlLine(ControlBinding entry) {
+        ControlLine line = new ControlLine(entry);
+        line.setFocusTraversable(false);
+
+        line.hoverProperty().addListener(((obs, OldBool, newBool) -> {
+            if (settingsViewModel.isRemapModeProperty().getValue() && settingsViewModel.eventWaitingForKeyProperty().getValue()==null) {
+                if (newBool) {
+                    line.onHover();
+                } else {
+                    line.offHover();
+                }
+            }
+        }));
+
+        line.setOnMouseClicked(e -> settingsViewModel.onControlLineClicked(entry.eventType()));
+
+        line.setOnKeyPressed(e -> settingsViewModel.onKeyPressedDuringRemap(e.getCode()));
+        return line;
+    }
+
+    private Button getControlsButton() {
+        Button controlsButton = new Button("Change Keybinds");
+        controlsButton.setFocusTraversable(false);
+        controlsButton.setOnAction(e -> {
+            if (!settingsViewModel.isRemapModeProperty().getValue()) {
+                controlsButton.setText("Done");
+            } else {
+                controlsButton.setText("Change Keybinds");
+            }
+            settingsViewModel.onChangeKeybindButtonPressed();
+            viewModel.onChangeKeybindButtonPressed();
+        });
+        return controlsButton;
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\GameOverPanel.java ===
+
+package com.tetris.view;
+
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+
+
+public class GameOverPanel extends BorderPane {
+
+    public GameOverPanel() {
+        final Label gameOverLabel = new Label("GAME OVER");
+        gameOverLabel.getStyleClass().add("gameOverStyle");
+        setCenter(gameOverLabel);
+    }
+
+}
+
+
+=== .\src\main\java\com\tetris\view\GameRenderer.java ===
+
+package com.tetris.view;
+
+import com.tetris.logic.ViewData;
+import com.tetris.util.DrawBrickOperations;
+import javafx.scene.Group;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
+
+import java.util.Arrays;
+
+public class GameRenderer {
+
+    private static final int BRICK_SIZE = 20;
+    private static final int ROWS_ABOVE_GRID = 2;
+
+    private GridPane gamePanel;
+    private GridPane brickPanel;
+    private Group groupNotification;
+    private GridPane ghostPanel;
+
+    private Rectangle[][] displayMatrix;
+    private Rectangle[][] brickMatrix;
+    private Rectangle[][] ghostMatrix;
+
+    public GameRenderer() {}
+
+    public void setGamePanel(GridPane gamePanel) {
+        this.gamePanel = gamePanel;
+    }
+    public void setBrickPanel(GridPane brickPanel) {
+        this.brickPanel = brickPanel;
+    }
+    public void setGhostPanel(GridPane ghostPanel) {
+        this.ghostPanel = ghostPanel;
+    }
+    public void setGroupNotification(Group groupNotification) {
+        this.groupNotification = groupNotification;
+    }
+
+    private Rectangle[][] initGrid(GridPane gridPane, int[][] matrix) {
+        Rectangle[][] rectangles = new Rectangle[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
+                rectangles[i][j] = rectangle;
+                gridPane.add(rectangle, j, i);
+            }
+        }
+
+        return rectangles;
+    }
+
+    public void initGameView(int[][] boardMatrix, ViewData brick) {
+        displayMatrix = initGrid(gamePanel, Arrays.copyOfRange(boardMatrix, ROWS_ABOVE_GRID, boardMatrix.length));
+        refreshGameBackground(boardMatrix);
+
+        brickMatrix = initGrid(brickPanel, brick.brickData());
+        refreshBrick(brick);
+
+        ghostMatrix = initGrid(ghostPanel, brick.brickData());
+        refreshGhost(brick, boardMatrix.length-ROWS_ABOVE_GRID-1);
+    }
+
+    private void setPanelLayout(Pane panel, double x, double y) {
+        panel.setLayoutX(x);
+        panel.setLayoutY(y);
+    }
+
+    public void refreshGameBackground(int[][] board) {
+        DrawBrickOperations.drawGrid(Arrays.copyOfRange(board, ROWS_ABOVE_GRID, board.length), displayMatrix);
+    }
+
+    public void refreshBrick(ViewData brick) {
+        setPanelLayout(brickPanel,
+                brick.xPosition() * (brickPanel.getHgap() + BRICK_SIZE),
+                (brick.yPosition()-ROWS_ABOVE_GRID) * (brickPanel.getVgap() + BRICK_SIZE)
+        );
+        DrawBrickOperations.drawGrid(brick.brickData(), brickMatrix);
+    }
+
+    public void refreshGhost(ViewData brick, int rowUntilFloor) {
+        setPanelLayout(ghostPanel,
+                brick.xPosition() * (ghostPanel.getHgap() + BRICK_SIZE),
+                (brick.yPosition() + rowUntilFloor - ROWS_ABOVE_GRID) * (ghostPanel.getVgap() + BRICK_SIZE)
+        );
+        DrawBrickOperations.drawGrid(brick.brickData(), ghostMatrix, 0.25);
+    }
+
+    public void sendNotification(int scoreBonus) {
+        NotificationPanel notificationPanel = new NotificationPanel("+" + scoreBonus);
+        groupNotification.getChildren().add(notificationPanel);
+        notificationPanel.showScore(groupNotification.getChildren());
+    }
+
+    public void requestFocus() {
+        gamePanel.requestFocus();
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\GameViewInitializer.java ===
+
+package com.tetris.view;
+
+public interface GameViewInitializer {
+    void setupGamePanes();
+}
+
+
+=== .\src\main\java\com\tetris\view\GuiController.java ===
+
+package com.tetris.view;
+
+import com.tetris.scene.SceneManager;
+import com.tetris.viewmodel.SettingsViewModel;
+import com.tetris.viewmodel.ViewModel;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Group;
+import javafx.scene.control.Label;
+import javafx.scene.effect.Reflection;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class GuiController implements Initializable {
+
+    @FXML
+    private VBox controlsPanel;
+    @FXML
+    private HBox root;
+    @FXML
+    private VBox gameArea;
+    @FXML
+    private GridPane ghostPanel;
+
+    @FXML
+    private GridPane holdBrickPanel;
+
+    @FXML
+    private GridPane nextBrickPanel;
+
+    @FXML
+    private GridPane gamePanel;
+
+    @FXML
+    private Group groupNotification;
+
+    @FXML
+    private GridPane brickPanel;
+
+    @FXML
+    private GameOverPanel gameOverPanel;
+
+    @FXML
+    private PausePanel pausePanel;
+
+    @FXML
+    private Label scoreLabel;
+
+    private ViewModel viewModel;
+    private SettingsViewModel settingsViewModel;
+    private ControlPanelView controlPanelView;
+    private final HudRenderer hudRenderer = new HudRenderer();
+    private GameRenderer gameRenderer;
+
+//    private PassiveGuiBinder passiveGuiBinder;
+//    private ActiveGuiBinder activeGuiBinder;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
+
+        gamePanel.setFocusTraversable(true);
+        gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
+        Platform.runLater(()->{
+           gamePanel.requestFocus();
+        });
+    }
+
+    public void start() {
+        initGameView();
+        bindGameViewModel();
+        initHud();
+        bindSettingsViewModel();
+    }
+
+    public void setGameViewModel(ViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
+    public void bindGameViewModel() {
+        pausePanel.visibleProperty().bind(viewModel.pauseProperty());
+        gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
+        scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
+        viewModel.nextBrickProperty().addListener((obs, oldVal, newVal) -> {
+            hudRenderer.refreshPreview(nextBrickPanel, newVal);
+        });
+        viewModel.holdBrickProperty().addListener((obs, oldVal, newVal) -> {
+            hudRenderer.refreshPreview(holdBrickPanel, newVal);
+        });
+    }
+
+    public void setSettingsViewModel(SettingsViewModel settingsViewModel) {
+        this.settingsViewModel = settingsViewModel;
+
+    }
+
+    public void bindSettingsViewModel() {
+        this.controlPanelView = new ControlPanelView(viewModel, settingsViewModel, controlsPanel);
+        controlPanelView.initControlsPanel();
+    }
+
+    public void initHud() {
+        if (viewModel == null) {
+            return;
+        }
+        hudRenderer.initPreview(nextBrickPanel, viewModel.nextBrickProperty().getValue());
+        hudRenderer.initPreview(holdBrickPanel, viewModel.holdBrickProperty().getValue());
+    }
+
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.gameRenderer = gameRenderer;
+    }
+
+    private void initGameView() {
+        if (gameRenderer == null) {
+            System.err.println("Game Renderer not set");
+        }
+        GameViewInitializer gameViewInitializer = new SimpleGameViewInitializer(gameRenderer,gamePanel, brickPanel, ghostPanel, groupNotification);
+        gameViewInitializer.setupGamePanes();
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\HudRenderer.java ===
+
+package com.tetris.view;
+
+import com.tetris.util.DrawBrickOperations;
+import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class HudRenderer {
+    private final static int PREVIEW_BRICK_SIZE = 20;
+
+    private final Map<GridPane, Rectangle[][]> gridToRectangles = new HashMap<GridPane, Rectangle[][]>();
+
+    public void initPreview(GridPane brickPanel, int[][] brick) {
+        Rectangle[][] rectangles = new Rectangle[brick.length][brick[0].length];
+        gridToRectangles.put(brickPanel, rectangles);
+
+        for (int i = 0; i < brick.length; i++) {
+            for (int j = 0; j < brick.length; j++) {
+                Rectangle rectangle = new Rectangle(PREVIEW_BRICK_SIZE, PREVIEW_BRICK_SIZE);
+                rectangles[i][j] = rectangle;
+                brickPanel.add(rectangle, j, i);
+            }
+        }
+        DrawBrickOperations.drawGrid(brick, rectangles);
+    }
+
+    public void refreshPreview(GridPane nextBrick, int[][] brick) {
+        DrawBrickOperations.drawGrid(brick, gridToRectangles.get(nextBrick));
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\MainMenuController.java ===
+
+package com.tetris.view;
+
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class MainMenuController implements Initializable {
+
+    @FXML
+    private HBox root;
+
+    @FXML
+    private Button playButton;
+
+    @FXML
+    private Button helpButton;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        playButton.setOnAction(e -> {
+            SceneManager.getInstance().switchTo(SceneType.GAME_MODE_NORMAL);
+        });
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\NotificationPanel.java ===
+
+package com.tetris.view;
+
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.Glow;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
+public class NotificationPanel extends BorderPane {
+
+    public NotificationPanel(String text) {
+        setMinHeight(200);
+        setMinWidth(220);
+        final Label score = new Label(text);
+        score.getStyleClass().add("bonusStyle");
+        final Effect glow = new Glow(0.6);
+        score.setEffect(glow);
+        score.setTextFill(Color.WHITE);
+        setCenter(score);
+
+    }
+
+    public void showScore(ObservableList<Node> list) {
+        FadeTransition ft = new FadeTransition(Duration.millis(2000), this);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(2500), this);
+        tt.setToY(this.getLayoutY() - 40);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+        ParallelTransition transition = new ParallelTransition(tt, ft);
+        transition.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                list.remove(NotificationPanel.this);
+            }
+        });
+        transition.play();
+    }
+}
+
+
+=== .\src\main\java\com\tetris\view\PausePanel.java ===
+
+package com.tetris.view;
+
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+
+
+public class PausePanel extends BorderPane {
+
+    public PausePanel() {
+        final Label pauseLabel = new Label("Paused");
+        pauseLabel.getStyleClass().add("pauseStyle");
+        setCenter(pauseLabel);
+    }
+
+}
+
+
+=== .\src\main\java\com\tetris\view\SimpleGameViewInitializer.java ===
+
+package com.tetris.view;
+
+import javafx.scene.Group;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
+
+public class SimpleGameViewInitializer implements GameViewInitializer{
+    private final GameRenderer gameRenderer;
+    private GridPane gamePanel;
+    private GridPane brickPanel;
+    private GridPane ghostPanel;
+    private Group groupNotifications;
+
+    public SimpleGameViewInitializer(GameRenderer gameRenderer, GridPane gamePanel, GridPane brickPanel, GridPane ghostPanel, Group groupNotifications) {
+        this.gameRenderer = gameRenderer;
+        this.gamePanel = gamePanel;
+        this.brickPanel = brickPanel;
+        this. ghostPanel = ghostPanel;
+        this. groupNotifications = groupNotifications;
+    }
+
+    @Override
+    public void setupGamePanes() {
+        gamePanel.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        groupNotifications.setLayoutY(200);
+        for (var notif : groupNotifications.getChildren()) {
+            notif.setVisible(false);
+        }
+
+        passGamePanes();
+    }
+
+    private void passGamePanes() {
+        gameRenderer.setGamePanel(gamePanel);
+        gameRenderer.setBrickPanel(brickPanel);
+        gameRenderer.setGhostPanel(ghostPanel);
+        gameRenderer.setGroupNotification(groupNotifications);
+    }
+}
+
+
+=== .\src\main\java\com\tetris\viewmodel\GameViewModel.java ===
+
+package com.tetris.viewmodel;
+
+import com.sun.scenario.Settings;
+import com.tetris.controller.InputEventListener;
+import com.tetris.input.BaseInputMap;
+import com.tetris.input.EventType;
+import com.tetris.input.SimpleInputMap;
+import com.tetris.input.InputMap;
+import com.tetris.logic.SimpleGameModel;
+import com.tetris.logic.SettingsModel;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.scene.input.KeyEvent;
+
+public class GameViewModel implements ViewModel {
+    private final InputEventListener eventListener;
+    private final ReadOnlyObjectProperty<InputMap> inputMapProperty;
+    private final GameModel gameModel;
+
+    public GameViewModel(InputEventListener eventListener, GameModel gameModel, SettingsModel settingsModel){
+        this.eventListener = eventListener;
+        this.gameModel = gameModel;
+        this.inputMapProperty = settingsModel.inputMapProperty();
+    }
+
+    @Override
+    public void handleKey(KeyEvent keyEvent) {
+        EventType intent = getInputMap().get(keyEvent.getCode());
+        if (intent != null) {
+            eventListener.handleEvent(intent);
+        }
+        keyEvent.consume();
+    }
+
+    private void togglePause() {
+        eventListener.handleEvent(EventType.PAUSE);
+    }
+
+    public ReadOnlyBooleanProperty pauseProperty() {
+        return gameModel.pauseProperty();
+    }
+
+    public ReadOnlyBooleanProperty gameOverProperty() {
+        return gameModel.gameOverProperty();
+    }
+
+    public ReadOnlyIntegerProperty scoreProperty() {
+        return gameModel.scoreProperty();
+    }
+
+    public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {
+        return gameModel.nextBrickProperty();
+    }
+
+    public ReadOnlyObjectProperty<int[][]> holdBrickProperty() {
+        return gameModel.holdBrickProperty();
+    }
+
+    @Override
+    public void onChangeKeybindButtonPressed() {
+        togglePause();
+    }
+
+    private InputMap getInputMap() {
+        if (inputMapProperty.get() == null) {
+            throw new IllegalStateException("InputMap is set to null! Have not setInputMap!");
+        }
+        return inputMapProperty.get();
+    }
+}
+
+
+=== .\src\main\java\com\tetris\viewmodel\SettingsViewModel.java ===
+
+package com.tetris.viewmodel;
+
+import com.tetris.input.ControlBinding;
+import com.tetris.input.EventType;
+import com.tetris.input.InputMap;
+import com.tetris.logic.SettingsModel;
+import com.tetris.view.components.ControlLine;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.input.KeyCode;
+
+public class SettingsViewModel {
+    private final SettingsModel settingsModel;
+    private final ListProperty<ControlBinding> controlBindings = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<EventType> eventWaitingForKey= new SimpleObjectProperty<>();
+    private final BooleanProperty isRemapMode = new SimpleBooleanProperty(false);
+
+    public SettingsViewModel(SettingsModel settingsModel) {
+        this.settingsModel = settingsModel;
+        refreshControlBindings();
+        settingsModel.inputMapProperty().getValue().mapProperty().addListener(new MapChangeListener<KeyCode, EventType>() {
+            @Override
+            public void onChanged(Change<? extends KeyCode, ? extends EventType> change) {
+                refreshControlBindings();
+            }
+        });
+    }
+
+    public ObservableList<ControlBinding> controlBindingsProperty() {
+        return controlBindings;
+    }
+
+    private void refreshControlBindings() {
+        controlBindings.clear();
+        InputMap inputMap = settingsModel.getInputMap();
+        if (inputMap==null) return;
+
+        for (var entry: inputMap.entrySet()) {
+            controlBindings.add(new ControlBinding(entry.getValue(), entry.getKey()));
+        }
+    }
+
+    public ReadOnlyObjectProperty<InputMap> inputMapProperty() {
+        return settingsModel.inputMapProperty();
+    }
+
+    public ReadOnlyBooleanProperty isRemapModeProperty() {
+        return isRemapMode;
+    }
+
+    public ReadOnlyObjectProperty<EventType> eventWaitingForKeyProperty() {
+        return eventWaitingForKey;
+    }
+
+    private void toggleIsRemapMode() {
+        isRemapMode.setValue(!isRemapMode.getValue());
+    }
+
+    private void startRemapping(EventType eventType) {
+        eventWaitingForKey.setValue(eventType);
+    }
+
+    private void finishRemapping(KeyCode keyCode) {
+        settingsModel.inputMapProperty().getValue().bind(keyCode, eventWaitingForKey.getValue());
+        eventWaitingForKey.setValue(null);
+    }
+
+    public InputMap getInputMap() {
+        return inputMapProperty().getValue();
+    }
+
+    public void onChangeKeybindButtonPressed() {
+        toggleIsRemapMode();
+    }
+
+    public void onKeyPressedDuringRemap(KeyCode keyCode) {
+        finishRemapping(keyCode);
+    }
+
+    public void onControlLineClicked(EventType eventType) {
+        if (isRemapModeProperty().getValue() && eventWaitingForKeyProperty().getValue()==null) {
+            startRemapping(eventType);
+        }
+    }
+}
+
+
+=== .\src\main\java\com\tetris\viewmodel\ViewModel.java ===
+
+package com.tetris.viewmodel;
+
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.scene.input.KeyEvent;
+
+public interface ViewModel {
+
+    void handleKey(KeyEvent keyEvent);
+
+    ReadOnlyBooleanProperty pauseProperty();
+
+    ReadOnlyBooleanProperty gameOverProperty();
+
+    ReadOnlyIntegerProperty scoreProperty();
+
+    ReadOnlyObjectProperty<int[][]> nextBrickProperty();
+
+    ReadOnlyObjectProperty<int[][]> holdBrickProperty();
+
+    void onChangeKeybindButtonPressed();
+}
+
+
+=== .\src\main\resources\gameLayout.fxml ===
+
+<?import com.tetris.view.components.GameOverPanel?>
+<?import com.tetris.view.components.PausePanel?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<HBox fx:controller="com.tetris.view.controller.GuiController"
+      xmlns:fx="http://javafx.com/fxml"
+      alignment="CENTER"
+      spacing="10"
+      fx:id="root">
+
+    <VBox spacing="10">
+        <VBox styleClass="brickContainer, holdBrickContainer" alignment="CENTER">
+            <Label styleClass="containerLabel, holdLabel">Hold</Label>
+            <GridPane fx:id="holdBrickPanel" vgap="1" hgap="1" alignment="CENTER"/>
+        </VBox>
+        <VBox styleClass="controlsContainer" alignment="CENTER">
+            <Label styleClass="containerLabel, controlsLabel">Controls</Label>
+            <VBox fx:id="controlsPanel">
+                <!-- This Panel is filled in GuiController -->
+                <!-- The order of controls can be decided from the InputMap binding order-->
+
+                <!-- Example final structure -->
+<!--                <HBox><Label styleClass="controlText">Pause</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">P</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">New Game</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">N</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Rotate</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↑</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Left</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">←</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Right</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">→</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Soft Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">↓</Label></HBox>-->
+<!--                <HBox><Label styleClass="controlText">Hard Drop</Label><Region HBox.hgrow="ALWAYS"/><Label styleClass="controlText">Space</Label></HBox>-->
+<!--                <Button>Change Keybinds</Button>-->
+            </VBox>
+        </VBox>
+    </VBox>
+    <VBox fx:id="gameArea">
+        <BorderPane styleClass="gameBoard">
+            <center>
+                <Pane fx:id="gameBoard" snapToPixel="false" style="-fx-background-color:#004455">
+                    <GridPane fx:id="gamePanel" hgap="1" vgap="1" snapToPixel="false"/>
+
+                    <GridPane fx:id="brickPanel" vgap="1" hgap="1" snapToPixel="false" managed="false"/>
+                    <GridPane fx:id="ghostPanel" vgap="1" hgap="1" snapToPixel="false" managed="false"/>
+
+                    <Group fx:id="groupNotification" HBox.hgrow="ALWAYS">
+                        <VBox alignment="CENTER">
+                            <GameOverPanel fx:id="gameOverPanel"/>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                            <PausePanel fx:id="pausePanel"/>
+                        </VBox>
+                    </Group>
+                </Pane>
+            </center>
+        </BorderPane>
+    </VBox>
+    <VBox spacing="10">
+        <VBox alignment="TOP_CENTER" styleClass="scoreContainer">
+            <Label styleClass="scoreClass">Score</Label>
+            <Label styleClass="scoreClass" fx:id="scoreLabel"/>
+        </VBox>
+        <VBox styleClass="brickContainer, nextBrickContainer" alignment="CENTER">
+            <Label styleClass="containerLabel, nextLabel">Next:</Label>
+            <GridPane fx:id="nextBrickPanel" vgap="1" hgap="1" alignment="CENTER"/>
+        </VBox>
+    </VBox>
+
+
+    <stylesheets>
+        <URL value="@window_style.css"/>
+    </stylesheets>
+</HBox>
+
+=== .\src\main\resources\mainMenuLayout.fxml ===
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<HBox fx:id="root" fx:controller="com.tetris.view.controller.MainMenuController"
+      alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
+    <VBox alignment="CENTER" maxWidth="Infinity" maxHeight="Infinity" spacing="20.0">
+        <Label text="TETRIS" textOverrun="CLIP">
+            <font>
+                <Font name="Consolas Bold" size="52.0"/>
+            </font>
+        </Label>
+        <Button fx:id="playButton" mnemonicParsing="false" text="Play" textOverrun="CLIP">
+            <font>
+                <Font name="Consolas Bold" size="26.0"/>
+            </font>
+        </Button>
+        <Button fx:id="helpButton" mnemonicParsing="false" text="Help">
+            <font>
+                <Font name="Consolas Bold" size="26.0"/>
+            </font>
+        </Button>
+    </VBox>
+</HBox>

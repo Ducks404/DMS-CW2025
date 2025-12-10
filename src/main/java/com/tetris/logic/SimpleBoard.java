@@ -5,6 +5,7 @@ import com.tetris.logic.bricks.BrickGenerator;
 import com.tetris.logic.bricks.NullBrick;
 import com.tetris.logic.bricks.RandomBrickGenerator;
 import com.tetris.util.MatrixOperations;
+import javafx.beans.property.IntegerProperty;
 
 import java.awt.*;
 
@@ -142,8 +143,8 @@ public class SimpleBoard implements Board {
     }
 
     @Override
-    public Score getScore() {
-        return score;
+    public IntegerProperty scoreProperty() {
+        return score.scoreProperty();
     }
 
     @Override

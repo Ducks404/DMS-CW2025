@@ -1,23 +1,12 @@
 package com.tetris;
 
-import com.tetris.controller.GameController;
-import com.tetris.input.GameInputMap;
-import com.tetris.logic.GameModel;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.GameRenderer;
-import com.tetris.view.GuiController;
-import com.tetris.viewmodel.GameViewModel;
-import com.tetris.viewmodel.SettingsViewModel;
-import com.tetris.viewmodel.ViewModel;
+import com.tetris.scene.SceneManager;
+import com.tetris.scene.SceneType;
+import com.tetris.scene.SimpleGameModeBuilder;
+import com.tetris.scene.mainMenuBuilder;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class Main extends Application {
     private static final int PREF_WIDTH = 600;
@@ -31,7 +20,7 @@ public class Main extends Application {
         var settings = new SettingsModel();
 
         SceneType.MENU.builder = new mainMenuBuilder();
-        SceneType.GAME_MODE_NORMAL.builder = new baseGameModeBuilder(settings);
+        SceneType.GAME_MODE_NORMAL.builder = new SimpleGameModeBuilder(settings);
 //        SceneType.GAME_MODE_2.builder = new GameMode2Builder(viewModel, settings);
     }
 

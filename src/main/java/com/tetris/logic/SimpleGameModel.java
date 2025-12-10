@@ -2,20 +2,20 @@ package com.tetris.logic;
 
 import javafx.beans.property.*;
 
-public class GameModel {
+public class SimpleGameModel {
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
 
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
-    private Score score;
+    private final IntegerProperty score = new SimpleIntegerProperty();
 
     private final ObjectProperty<int[][]> nextBrick = new SimpleObjectProperty<>(new int[0][0]);
 
     private final BooleanProperty canHold = new SimpleBooleanProperty();
     private final ObjectProperty<int[][]> holdBrick = new SimpleObjectProperty<>(new int[0][0]);
 
-    public GameModel() {
+    public SimpleGameModel() {
         isPause.setValue(false);
         isGameOver.setValue(false);
         canHold.setValue(true);
@@ -38,11 +38,7 @@ public class GameModel {
     }
 
     public IntegerProperty scoreProperty() {
-        return score.scoreProperty();
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
+        return score;
     }
 
     public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {

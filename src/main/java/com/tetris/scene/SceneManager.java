@@ -1,4 +1,4 @@
-package com.tetris;
+package com.tetris.scene;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

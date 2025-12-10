@@ -1,4 +1,4 @@
-package com.tetris.view;
+package com.tetris.view.components;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;

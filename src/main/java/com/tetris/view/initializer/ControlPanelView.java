@@ -1,7 +1,8 @@
-package com.tetris.view;
+package com.tetris.view.initializer;
 
 import com.tetris.input.ControlBinding;
 import com.tetris.input.EventType;
+import com.tetris.view.components.ControlLine;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.collections.ListChangeListener;
