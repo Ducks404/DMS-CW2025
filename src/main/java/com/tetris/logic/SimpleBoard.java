@@ -154,10 +154,20 @@ public class SimpleBoard implements Board {
 
     @Override
     public void newGame() {
-        currentGameMatrix = new int[height][width];
+        try {
+            newGame(new int[height][width]);
+        } catch (Exception e) {
+            System.err.println("Impossible state reached");
+        }
+    }
+
+    public void newGame(int[][] boardMatrix) {
+        if (boardMatrix.length!=height || boardMatrix[0].length!=width) throw new RuntimeException();
+        currentGameMatrix = boardMatrix;
         score.reset();
         holdBrick = NullBrick.getInstance();
         createNewBrick();
+
     }
 
     @Override
@@ -173,5 +183,10 @@ public class SimpleBoard implements Board {
         } while (!conflict);
 
         return numRows-1;
+    }
+
+    @Override
+    public void moveBrickUp() {
+        moveBrick(0, -1);
     }
 }

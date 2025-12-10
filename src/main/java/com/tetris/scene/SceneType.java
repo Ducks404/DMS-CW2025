@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public enum SceneType {
     MENU("mainMenuLayout.fxml", true),
-    GAME_MODE_NORMAL("gameLayout.fxml",false);
-//    GAME_MODE_VERSUS(false);
+    GAME_MODE_NORMAL("gameLayout.fxml",false),
+    GAME_MODE_CREATIVE("gameLayout.fxml", false);
 
     public final String fxmlPath;
     public final boolean cache;

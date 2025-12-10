@@ -30,5 +30,9 @@ public interface Board {
 
     void newGame();
 
+    void newGame(int[][] matrix);
+
     int getRowUntilFloor();
+
+    void moveBrickUp();
 }
