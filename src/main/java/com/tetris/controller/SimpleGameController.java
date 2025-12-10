@@ -1,5 +1,6 @@
 package com.tetris.controller;
 
+import com.tetris.logic.bricks.RandomBrickGenerator;
 import com.tetris.scene.SceneManager;
 import com.tetris.scene.SceneType;
 import com.tetris.input.EventSource;
@@ -16,7 +17,7 @@ public class SimpleGameController implements InputEventListener {
     private double SPEED = 2.3; // Rows per Second
     private static final int SCORE_PER_ROW = 1;
     private static final int BASE_BONUS = 50;
-    private final Board board = new SimpleBoard(25, 10);
+    private final Board board = new SimpleBoard(25, 10, new RandomBrickGenerator());
 
     private final SimpleGameRenderer gameRenderer;
     private final SimpleGameModel gameModel;
