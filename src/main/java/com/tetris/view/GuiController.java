@@ -15,100 +15,69 @@ import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
 
-    @FXML
-    private VBox controlsPanel;
-    @FXML
-    private HBox root;
-    @FXML
-    private VBox gameArea;
-    @FXML
-    private GridPane ghostPanel;
+    // Game Area
+    @FXML private Pane gameArea;
+    @FXML private GridPane gamePanel;
+    @FXML private GridPane brickPanel;
+    @FXML private Group groupNotification;
+    @FXML private GameOverPanel gameOverPanel;
+    @FXML private PausePanel pausePanel;
 
-    @FXML
-    private GridPane holdBrickPanel;
-
-    @FXML
-    private GridPane nextBrickPanel;
-
-    @FXML
-    private GridPane gamePanel;
-
-    @FXML
-    private Group groupNotification;
-
-    @FXML
-    private GridPane brickPanel;
-
-    @FXML
-    private GameOverPanel gameOverPanel;
-
-    @FXML
-    private PausePanel pausePanel;
-
-    @FXML
-    private Label scoreLabel;
+    // Surrounding HUD
+    @FXML private GridPane ghostPanel;
+    @FXML private GridPane holdBrickPanel;
+    @FXML private GridPane nextBrickPanel;
+    @FXML private Label scoreLabel;
+    @FXML private VBox controlsPanel;
 
     private ViewModel viewModel;
     private SettingsViewModel settingsViewModel;
-    private ControlPanelView controlPanelView;
-    private final HudRenderer hudRenderer = new HudRenderer();
     private SimpleGameRenderer gameRenderer;
-
-//    private PassiveGuiBinder passiveGuiBinder;
-//    private ActiveGuiBinder activeGuiBinder;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
-
-        gamePanel.setFocusTraversable(true);
-        gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
-        Platform.runLater(()->{
-           gamePanel.requestFocus();
-        });
     }
 
     public void start() {
         initGameView();
-        bindGameViewModel();
-        initHud();
+        bindPassive();
+        bindActive();
         bindSettingsViewModel();
     }
 
+    private void bindActive() {
+        gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
+
+        gamePanel.setFocusTraversable(true);
+        Platform.runLater(()->{
+            gamePanel.requestFocus();
+        });
+    }
+
+    // GuiBinding
     public void setGameViewModel(ViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
-    public void bindGameViewModel() {
-        pausePanel.visibleProperty().bind(viewModel.pauseProperty());
-        gameOverPanel.visibleProperty().bind(viewModel.gameOverProperty());
-        scoreLabel.textProperty().bind(viewModel.scoreProperty().asString());
-        viewModel.nextBrickProperty().addListener((obs, oldVal, newVal) -> {
-            hudRenderer.refreshPreview(nextBrickPanel, newVal);
-        });
-        viewModel.holdBrickProperty().addListener((obs, oldVal, newVal) -> {
-            hudRenderer.refreshPreview(holdBrickPanel, newVal);
-        });
+    public void bindPassive() {
+        PassiveGuiBinder passiveGuiBinder = new PassiveGuiBinder();
+        passiveGuiBinder.bind(viewModel,scoreLabel,pausePanel,gameOverPanel,nextBrickPanel,holdBrickPanel);
+        passiveGuiBinder.initHud(viewModel, nextBrickPanel, holdBrickPanel);
     }
 
+    // Settings
     public void setSettingsViewModel(SettingsViewModel settingsViewModel) {
         this.settingsViewModel = settingsViewModel;
 
     }
 
     public void bindSettingsViewModel() {
-        this.controlPanelView = new ControlPanelView(viewModel, settingsViewModel, controlsPanel);
+        ControlPanelView controlPanelView = new ControlPanelView(viewModel, settingsViewModel, controlsPanel);
         controlPanelView.initControlsPanel();
     }
 
-    public void initHud() {
-        if (viewModel == null) {
-            return;
-        }
-        hudRenderer.initPreview(nextBrickPanel, viewModel.nextBrickProperty().getValue());
-        hudRenderer.initPreview(holdBrickPanel, viewModel.holdBrickProperty().getValue());
-    }
-
+    // GameView Handover
     public void setGameRenderer(SimpleGameRenderer gameRenderer) {
         this.gameRenderer = gameRenderer;
     }
@@ -117,7 +86,7 @@ public class GuiController implements Initializable {
         if (gameRenderer == null) {
             System.err.println("Game Renderer not set");
         }
-        GameViewInitializer gameViewInitializer = new SimpleGameViewInitializer(gameRenderer,gamePanel, brickPanel, ghostPanel, groupNotification);
+        GameViewInitializer gameViewInitializer = new SimpleGameViewInitializer(gameRenderer, gameArea, gamePanel, brickPanel, ghostPanel, groupNotification);
         gameViewInitializer.setupGamePanes();
     }
 }
