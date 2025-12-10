@@ -1,8 +1,10 @@
 package com.tetris.scene;
 
+import com.tetris.controller.BaseGameController;
 import com.tetris.controller.SimpleGameController;
+import com.tetris.gamemodes.GameFactory;
 import com.tetris.input.SimpleInputMap;
-import com.tetris.logic.SimpleGameModel;
+import com.tetris.logic.GameModel;
 import com.tetris.logic.SettingsModel;
 import com.tetris.view.renderer.SimpleGameRenderer;
 import com.tetris.view.controller.GuiController;
@@ -15,40 +17,36 @@ import javafx.scene.layout.Region;
 
 import java.io.IOException;
 
-public class SimpleGameModeBuilder implements SceneBuilder {
+public class GameModeBuilder implements SceneBuilder {
 
     private final SettingsModel settingsModel;
-    private GuiController guiController;
-    private ViewModel gameViewModel;
-    private SettingsViewModel settingsViewModel;
-    private SimpleGameModel gameModel;
-    private SimpleGameController gameController;
-    private SimpleGameRenderer gameRenderer;
+    private final GameFactory gameFactory;
 
-    public SimpleGameModeBuilder(SettingsModel settingsModel) {
+    public GameModeBuilder(SettingsModel settingsModel, GameFactory gameFactory) {
         this.settingsModel = settingsModel;
+        this.gameFactory = gameFactory;
     }
 
     @Override
     public Scene build(FXMLLoader fxmlLoader, Region root) throws IOException {
-        this.guiController = fxmlLoader.getController();
+        GuiController guiController = fxmlLoader.getController();
 
         // Game Renderer
-        this.gameRenderer = getGameRenderer(guiController);
+        SimpleGameRenderer gameRenderer = getGameRenderer(guiController);
 
         // Game Model and Game Controller
-        this.gameModel = new SimpleGameModel();
-        this.gameController = new SimpleGameController(gameRenderer, gameModel);
+        GameModel gameModel = gameFactory.createModel();
+        BaseGameController gameController = gameFactory.createController(gameRenderer, gameModel);
 
         // Settings Model
-        settingsModel.setInputMap(new SimpleInputMap());
+        settingsModel.setInputMap(gameFactory.createInputMap());
 
         // Game ViewModel
-        this.gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
+        ViewModel gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
         guiController.setGameViewModel(gameViewModel);
 
         // Settings ViewModel
-        this.settingsViewModel = new SettingsViewModel(settingsModel);
+        SettingsViewModel settingsViewModel = new SettingsViewModel(settingsModel);
         guiController.setSettingsViewModel(settingsViewModel);
 
         guiController.start();

@@ -1,5 +1,7 @@
 package com.tetris.scene;
 
+import com.tetris.gamemodes.SimpleGameFactory;
+import com.tetris.logic.SettingsModel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,8 +18,6 @@ public class SceneManager {
     private static final int PREF_HEIGHT = 900;
     private static final int MIN_WIDTH = 600;
     private static final int MIN_HEIGHT = 900;
-    private static final int MAX_WIDTH = 1350;
-    private static final int MAX_HEIGHT = 900;
 
     private static SceneManager instance;
 
@@ -35,6 +35,13 @@ public class SceneManager {
 
     public void init(Stage stage) {
         this.primaryStage = stage;
+        primaryStage.setResizable(false);
+
+        var settings = new SettingsModel();
+
+        SceneType.MENU.builder = new mainMenuBuilder();
+        SceneType.GAME_MODE_NORMAL.builder = new GameModeBuilder(settings, new SimpleGameFactory());
+//        SceneType.GAME_MODE_2.builder = new GameMode2Builder(viewModel, settings);
     }
 
     public void switchTo(SceneType type) {

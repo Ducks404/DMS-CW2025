@@ -2,7 +2,7 @@ package com.tetris.logic;
 
 import javafx.beans.property.*;
 
-public class SimpleGameModel {
+public class GameModel {
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
 
@@ -15,7 +15,7 @@ public class SimpleGameModel {
     private final BooleanProperty canHold = new SimpleBooleanProperty();
     private final ObjectProperty<int[][]> holdBrick = new SimpleObjectProperty<>(new int[0][0]);
 
-    public SimpleGameModel() {
+    public GameModel() {
         isPause.setValue(false);
         isGameOver.setValue(false);
         canHold.setValue(true);
