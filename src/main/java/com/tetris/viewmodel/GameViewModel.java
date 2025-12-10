@@ -3,7 +3,7 @@ package com.tetris.viewmodel;
 import com.tetris.controller.InputEventListener;
 import com.tetris.input.EventType;
 import com.tetris.input.InputMap;
-import com.tetris.logic.SimpleGameModel;
+import com.tetris.logic.GameModel;
 import com.tetris.logic.SettingsModel;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -13,9 +13,9 @@ import javafx.scene.input.KeyEvent;
 public class GameViewModel implements ViewModel {
     private final InputEventListener eventListener;
     private final ReadOnlyObjectProperty<InputMap> inputMapProperty;
-    private final SimpleGameModel gameModel;
+    private final GameModel gameModel;
 
-    public GameViewModel(InputEventListener eventListener, SimpleGameModel gameModel, SettingsModel settingsModel){
+    public GameViewModel(InputEventListener eventListener, GameModel gameModel, SettingsModel settingsModel){
         this.eventListener = eventListener;
         this.gameModel = gameModel;
         this.inputMapProperty = settingsModel.inputMapProperty();
