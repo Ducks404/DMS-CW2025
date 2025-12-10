@@ -27,7 +27,7 @@ public class SimpleGameController implements InputEventListener {
         this.gameModel = gameModel;
         this.gameRenderer = gameRenderer;
 
-        gameModel.scoreProperty().bind(board.getScore().scoreProperty());
+        gameModel.scoreProperty().bind(board.scoreProperty());
         newBrick();
     }
 
