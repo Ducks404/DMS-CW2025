@@ -8,7 +8,7 @@ public class GameModel {
 
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
-    private Score score;
+    private final IntegerProperty score = new SimpleIntegerProperty();
 
     private final ObjectProperty<int[][]> nextBrick = new SimpleObjectProperty<>(new int[0][0]);
 
@@ -38,11 +38,7 @@ public class GameModel {
     }
 
     public IntegerProperty scoreProperty() {
-        return score.scoreProperty();
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
+        return score;
     }
 
     public ReadOnlyObjectProperty<int[][]> nextBrickProperty() {

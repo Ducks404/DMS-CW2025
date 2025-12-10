@@ -56,18 +56,25 @@ public class GuiController implements Initializable {
     private final HudRenderer hudRenderer = new HudRenderer();
     private GameRenderer gameRenderer;
 
+//    private PassiveGuiBinder passiveGuiBinder;
+//    private ActiveGuiBinder activeGuiBinder;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
-        gameArea.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
         gamePanel.setFocusTraversable(true);
         gamePanel.setOnKeyPressed(e -> viewModel.handleKey(e));
         Platform.runLater(()->{
            gamePanel.requestFocus();
         });
-        groupNotification.setLayoutY(200);
-        gameOverPanel.setVisible(false);
-        pausePanel.setVisible(false);
+    }
+
+    public void start() {
+        initGameView();
+        bindGameViewModel();
+        initHud();
+        bindSettingsViewModel();
     }
 
     public void setGameViewModel(ViewModel viewModel) {
@@ -106,9 +113,13 @@ public class GuiController implements Initializable {
 
     public void setGameRenderer(GameRenderer gameRenderer) {
         this.gameRenderer = gameRenderer;
-        gameRenderer.setGamePanel(gamePanel);
-        gameRenderer.setBrickPanel(brickPanel);
-        gameRenderer.setGhostPanel(ghostPanel);
-        gameRenderer.setGroupNotification(groupNotification);
+    }
+
+    private void initGameView() {
+        if (gameRenderer == null) {
+            System.err.println("Game Renderer not set");
+        }
+        GameViewInitializer gameViewInitializer = new SimpleGameViewInitializer(gameRenderer,gamePanel, brickPanel, ghostPanel, groupNotification);
+        gameViewInitializer.setupGamePanes();
     }
 }

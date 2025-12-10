@@ -49,14 +49,12 @@ public class baseGameModeBuilder implements SceneBuilder{
         // Game ViewModel
         this.gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
         guiController.setGameViewModel(gameViewModel);
-        guiController.bindGameViewModel();
 
         // Settings ViewModel
         this.settingsViewModel = new SettingsViewModel(settingsModel);
         guiController.setSettingsViewModel(settingsViewModel);
-        guiController.bindSettingsViewModel();
 
-        guiController.initHud();
+        guiController.start();
         gameController.start();
 
         // RETURN FINAL SCENE

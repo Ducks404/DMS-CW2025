@@ -25,14 +25,15 @@ public class GameController implements InputEventListener {
 
     public GameController(GameRenderer gameRenderer, GameModel gameModel) {
         this.gameModel = gameModel;
-        gameModel.setScore(board.getScore());
-        newBrick();
-
         this.gameRenderer = gameRenderer;
-        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+
+        gameModel.scoreProperty().bind(board.getScore().scoreProperty());
+        newBrick();
     }
 
     public void start() {
+        gameRenderer.initGameView(board.getBoardMatrix(), board.getViewData());
+
         gameLoop = new AnimationTimer() {
             private long lastUpdate = 0;
 
