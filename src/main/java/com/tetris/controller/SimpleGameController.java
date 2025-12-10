@@ -6,24 +6,24 @@ import com.tetris.input.EventSource;
 import com.tetris.input.EventType;
 import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
-import com.tetris.logic.GameModel;
+import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SimpleBoard;
-import com.tetris.view.GameRenderer;
+import com.tetris.view.SimpleGameRenderer;
 import javafx.animation.AnimationTimer;
 
-public class GameController implements InputEventListener {
+public class SimpleGameController implements InputEventListener {
 
     private double SPEED = 2.3; // Rows per Second
     private static final int SCORE_PER_ROW = 1;
     private static final int BASE_BONUS = 50;
     private final Board board = new SimpleBoard(25, 10);
 
-    private final GameRenderer gameRenderer;
-    private final GameModel gameModel;
+    private final SimpleGameRenderer gameRenderer;
+    private final SimpleGameModel gameModel;
 
     private AnimationTimer gameLoop;
 
-    public GameController(GameRenderer gameRenderer, GameModel gameModel) {
+    public SimpleGameController(SimpleGameRenderer gameRenderer, SimpleGameModel gameModel) {
         this.gameModel = gameModel;
         this.gameRenderer = gameRenderer;
 

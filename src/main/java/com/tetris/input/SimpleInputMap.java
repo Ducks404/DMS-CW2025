@@ -2,8 +2,8 @@ package com.tetris.input;
 
 import javafx.scene.input.KeyCode;
 
-public class GameInputMap extends BaseInputMap {
-    public GameInputMap() {
+public class SimpleInputMap extends BaseInputMap {
+    public SimpleInputMap() {
         map.put(KeyCode.UP, EventType.MOVE_ROTATE);
         map.put(KeyCode.LEFT, EventType.MOVE_LEFT);
         map.put(KeyCode.RIGHT, EventType.MOVE_RIGHT);

@@ -1,6 +1,5 @@
 package com.tetris.view;
 
-import com.tetris.SceneManager;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.application.Platform;
@@ -8,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Reflection;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
@@ -54,7 +52,7 @@ public class GuiController implements Initializable {
     private SettingsViewModel settingsViewModel;
     private ControlPanelView controlPanelView;
     private final HudRenderer hudRenderer = new HudRenderer();
-    private GameRenderer gameRenderer;
+    private SimpleGameRenderer gameRenderer;
 
 //    private PassiveGuiBinder passiveGuiBinder;
 //    private ActiveGuiBinder activeGuiBinder;
@@ -111,7 +109,7 @@ public class GuiController implements Initializable {
         hudRenderer.initPreview(holdBrickPanel, viewModel.holdBrickProperty().getValue());
     }
 
-    public void setGameRenderer(GameRenderer gameRenderer) {
+    public void setGameRenderer(SimpleGameRenderer gameRenderer) {
         this.gameRenderer = gameRenderer;
     }
 

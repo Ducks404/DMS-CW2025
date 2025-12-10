@@ -9,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Arrays;
 
-public class GameRenderer {
+public class SimpleGameRenderer {
 
     private static final int BRICK_SIZE = 20;
     private static final int ROWS_ABOVE_GRID = 2;
@@ -23,7 +23,7 @@ public class GameRenderer {
     private Rectangle[][] brickMatrix;
     private Rectangle[][] ghostMatrix;
 
-    public GameRenderer() {}
+    public SimpleGameRenderer() {}
 
     public void setGamePanel(GridPane gamePanel) {
         this.gamePanel = gamePanel;

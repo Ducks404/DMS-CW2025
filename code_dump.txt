@@ -4,11 +4,11 @@
 
 package com.tetris;
 
-import com.tetris.controller.GameController;
-import com.tetris.input.GameInputMap;
-import com.tetris.logic.GameModel;
+import com.tetris.controller.SimpleGameController;
+import com.tetris.input.SimpleInputMap;
+import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.GameRenderer;
+import com.tetris.view.SimpleGameRenderer;
 import com.tetris.view.GuiController;
 import com.tetris.viewmodel.GameViewModel;
 import com.tetris.viewmodel.SettingsViewModel;
@@ -78,11 +78,11 @@ public class baseGameModeBuilder implements SceneBuilder{
 
 package com.tetris;
 
-import com.tetris.controller.GameController;
-import com.tetris.input.GameInputMap;
-import com.tetris.logic.GameModel;
+import com.tetris.controller.SimpleGameController;
+import com.tetris.input.SimpleInputMap;
+import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.GameRenderer;
+import com.tetris.view.SimpleGameRenderer;
 import com.tetris.view.GuiController;
 import com.tetris.viewmodel.GameViewModel;
 import com.tetris.viewmodel.SettingsViewModel;
@@ -284,9 +284,9 @@ import com.tetris.input.EventSource;
 import com.tetris.input.EventType;
 import com.tetris.logic.Board;
 import com.tetris.logic.ClearRow;
-import com.tetris.logic.GameModel;
+import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SimpleBoard;
-import com.tetris.view.GameRenderer;
+import com.tetris.view.SimpleGameRenderer;
 import javafx.animation.AnimationTimer;
 
 public class GameController implements InputEventListener {
@@ -2228,9 +2228,9 @@ import com.sun.scenario.Settings;
 import com.tetris.controller.InputEventListener;
 import com.tetris.input.BaseInputMap;
 import com.tetris.input.EventType;
-import com.tetris.input.GameInputMap;
+import com.tetris.input.SimpleInputMap;
 import com.tetris.input.InputMap;
-import com.tetris.logic.GameModel;
+import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SettingsModel;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;

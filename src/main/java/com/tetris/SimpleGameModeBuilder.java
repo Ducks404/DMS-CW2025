@@ -1,34 +1,31 @@
 package com.tetris;
 
-import com.tetris.controller.GameController;
-import com.tetris.input.GameInputMap;
-import com.tetris.logic.GameModel;
+import com.tetris.controller.SimpleGameController;
+import com.tetris.input.SimpleInputMap;
+import com.tetris.logic.SimpleGameModel;
 import com.tetris.logic.SettingsModel;
-import com.tetris.view.GameRenderer;
+import com.tetris.view.SimpleGameRenderer;
 import com.tetris.view.GuiController;
 import com.tetris.viewmodel.GameViewModel;
 import com.tetris.viewmodel.SettingsViewModel;
 import com.tetris.viewmodel.ViewModel;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class baseGameModeBuilder implements SceneBuilder{
+public class SimpleGameModeBuilder implements SceneBuilder{
 
     private final SettingsModel settingsModel;
     private GuiController guiController;
     private ViewModel gameViewModel;
     private SettingsViewModel settingsViewModel;
-    private GameModel gameModel;
-    private GameController gameController;
-    private GameRenderer gameRenderer;
+    private SimpleGameModel gameModel;
+    private SimpleGameController gameController;
+    private SimpleGameRenderer gameRenderer;
 
-    public baseGameModeBuilder(SettingsModel settingsModel) {
+    public SimpleGameModeBuilder(SettingsModel settingsModel) {
         this.settingsModel = settingsModel;
     }
 
@@ -40,11 +37,11 @@ public class baseGameModeBuilder implements SceneBuilder{
         this.gameRenderer = getGameRenderer(guiController);
 
         // Game Model and Game Controller
-        this.gameModel = new GameModel();
-        this.gameController = new GameController(gameRenderer, gameModel);
+        this.gameModel = new SimpleGameModel();
+        this.gameController = new SimpleGameController(gameRenderer, gameModel);
 
         // Settings Model
-        settingsModel.setInputMap(new GameInputMap());
+        settingsModel.setInputMap(new SimpleInputMap());
 
         // Game ViewModel
         this.gameViewModel = new GameViewModel(gameController, gameModel, settingsModel);
@@ -61,8 +58,8 @@ public class baseGameModeBuilder implements SceneBuilder{
         return new Scene(root);
     }
 
-    private GameRenderer getGameRenderer(GuiController guiController) {
-        GameRenderer gameRenderer = new GameRenderer();
+    private SimpleGameRenderer getGameRenderer(GuiController guiController) {
+        SimpleGameRenderer gameRenderer = new SimpleGameRenderer();
         guiController.setGameRenderer(gameRenderer);
         return gameRenderer;
     }
