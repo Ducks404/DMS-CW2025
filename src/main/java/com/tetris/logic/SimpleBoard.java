@@ -344,7 +344,6 @@ public class SimpleBoard implements Board {
     /**
      * Moves the falling brick up one cell (creative mode).
      *
-     * @return true if the brick moved successfully, false if blocked
      */
     @Override
     public void moveBrickUp() {
